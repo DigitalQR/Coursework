@@ -1,8 +1,3 @@
-Coursework
-==========
-
-Computing coursework.
-
 Installing
 ===
 
