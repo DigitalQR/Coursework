@@ -2,7 +2,25 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="Lib/jinput-windows-native.jar"/>
-	<classpathentry kind="lib" path="Lib/jinput.jar"/>
+	<classpathentry kind="lib" path="Lib/Jars/lwjgl_util.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Coursework/Lib/Natives-win"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="Lib/Jars/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Coursework/Lib/Natives-win"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="Lib/Jars/slick-util.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Coursework/Lib/Natives-win"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="Lib/Jars/jinput.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Coursework/Lib/Natives-win"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
