@@ -1,4 +1,4 @@
-package RenderEngine;
+package RenderEngine.Model;
 
 public class RawModel {
 	
