@@ -79,8 +79,10 @@ public class Gamepad {
 		return Control.getName();
 	}
 
-	List<String> BoundButtons = new ArrayList<String>();
+	List<String> BoundButtons;
 	public void setBindings(){
+		BoundButtons = new ArrayList<String>();
+		
 			for(int k = 0; k<KeyName.length; k++){
 				System.out.println("Press " + KeyName[k]);
 				

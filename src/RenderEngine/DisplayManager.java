@@ -7,7 +7,7 @@ import org.lwjgl.opengl.DisplayMode;
 
 public class DisplayManager{
 	
-	private static final int FPS = 60;
+	private static final int FPS = 120;
 	
 	
 	public static void create(){

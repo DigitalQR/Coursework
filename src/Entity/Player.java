@@ -10,17 +10,22 @@ import Tools.Maths.Vector2f;
 
 public class Player{
 	
-	Vector2f Location;
+	private Vector2f Location;
 	Vector2f Size = new Vector2f(0.2f, 0.6f);
 	
 	Vector2f Velocity = new Vector2f(0,0);
 	Vector2f AccelerationLimit = new Vector2f(0.1f, 2f);
 	boolean TouchingGround = false;
 	int TouchingWall = 0;
-	
+	private float 
+	COLOUR_RED = (float) Math.random(),
+	COLOUR_GREEN = (float) Math.random(),
+	COLOUR_BLUE = (float) Math.random();
 	
 	public Player(float x, float y){
-		setMovement(TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_F, Keyboard.KEY_G);
+		setControlScheme(TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_F, Keyboard.KEY_G);
+		
+		//Checking spawn
 		Main: while(true){
 			boolean Escape = true;
 			Check: for(StaticHitbox2f hb:Settings.hb){
@@ -40,6 +45,25 @@ public class Player{
 		Location = new Vector2f(x,y);
 	}
 	
+	public void setColour(float r, float g, float b){
+		COLOUR_RED = r;
+		COLOUR_GREEN = g;
+		COLOUR_BLUE = b;
+	}
+	
+	public float getRed(){
+		return COLOUR_RED;
+	}
+	
+	public float getGreen(){
+		return COLOUR_GREEN;
+	}
+	
+	public float getBlue(){
+		return COLOUR_BLUE;
+	}
+	
+	
 	public void setLocation(float x, float y){
 		Location.x = x;
 		Location.y = y;
@@ -54,14 +78,15 @@ public class Player{
 	}
 	
 	public static final int TYPE_KEYBOARD = -1, TYPE_CONTROL= 0;
+	@SuppressWarnings("unused")
 	private int TYPE, UP, DOWN, LEFT, RIGHT, PRIMARY, SECONDARY, GPID;
 
-	public void setMovement(int type, int up, int down, int left, int right, int primary, int secondary){
+	public void setControlScheme(int type, int up, int down, int left, int right, int primary, int secondary){
 		TYPE = type;
 		UP = up; DOWN = down; LEFT = left; RIGHT = right; PRIMARY = primary; SECONDARY = secondary;
 	}
 
-	public void setMovement(int GPID){
+	public void setControlScheme(int GPID){
 		TYPE = TYPE_CONTROL;
 		this.GPID = GPID;
 		UP = Gamepad.A; DOWN = Gamepad.B; LEFT = Gamepad.LEFT_STICK_LEFT; RIGHT = Gamepad.LEFT_STICK_RIGHT; PRIMARY = Gamepad.LEFT_TRIGGER; SECONDARY = Gamepad.RIGHT_TRIGGER;
@@ -170,7 +195,6 @@ public class Player{
 				System.err.println("Location: \n x: " + Location.x + "\n y: " + Location.y + "\n");
 				System.err.println("Velocity: \n x: " + Velocity.x + "\n y: " + Velocity.y + "\n");
 				System.err.println("Touching Ground: " + TouchingGround + "\n");
-				//System.exit(0);
 			}
 		}
 	}

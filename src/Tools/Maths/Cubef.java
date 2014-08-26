@@ -46,4 +46,21 @@ public class Cubef{
 		};
 		return temp;
 	}
+	
+	public float[] getFrontVertices(){
+		float[] temp = {
+				StartLocation.x, StartLocation.y, StartLocation.z,//FTL 0
+				EndLocation.x, StartLocation.y, StartLocation.z,//FTR 1
+				StartLocation.x, EndLocation.y, StartLocation.z,//FBL 2 
+				EndLocation.x, EndLocation.y, StartLocation.z,//FBR 3
+		};
+		return temp;
+	}
+	
+	public int[] getFrontIndices(){
+		int[] temp = {
+				0,2,3, 0,3,1
+		};
+		return temp;
+	}
 }

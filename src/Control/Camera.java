@@ -2,6 +2,7 @@ package Control;
 
 import org.lwjgl.input.Keyboard;
 
+import Entity.Player;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector3f;
 
@@ -37,21 +38,22 @@ public class Camera {
 		}
 		
 		float x = 0, y = 0;
-		for(int i = 0; i<Settings.User.length; i++){
-			x-=Settings.User[i].getLocation().x;
-			y-=Settings.User[i].getLocation().y;
+		Player[] User = Settings.User.clone();
+		for(int i = 0; i<User.length; i++){
+			x-=User[i].getLocation().x;
+			y-=User[i].getLocation().y;
 		}
-		Location_AIM.x = x/Settings.User.length;
-		Location_AIM.y = y/Settings.User.length;
+		Location_AIM.x = x/User.length;
+		Location_AIM.y = y/User.length;
 		
 		
 		
 		float Delta = 0;
-		for(int i = 0; i<Settings.User.length; i++){
-			for(int n = 0; n<Settings.User.length; n++){
+		for(int i = 0; i<User.length; i++){
+			for(int n = 0; n<User.length; n++){
 				if(n!=i){
-					float dx = (float)-Toolkit.Modulus(Toolkit.Differencef(Settings.User[i].getLocation().x, Settings.User[n].getLocation().x));
-					float dy = (float)-Toolkit.Modulus(Toolkit.Differencef(Settings.User[i].getLocation().y, Settings.User[n].getLocation().y));
+					float dx = (float)-Toolkit.Modulus(Toolkit.Differencef(User[i].getLocation().x, User[n].getLocation().x));
+					float dy = (float)-Toolkit.Modulus(Toolkit.Differencef(User[i].getLocation().y, User[n].getLocation().y));
 					if(dx < Delta){
 						Delta = dx;
 					}if(dy < Delta){
@@ -61,8 +63,8 @@ public class Camera {
 			}
 		}
 		Location_AIM.z = Delta;
-		if(Location_AIM.z > -10){
-			Location_AIM.z = -10;
+		if(Location_AIM.z > -8){
+			Location_AIM.z = -8;
 		}
 	}
 }

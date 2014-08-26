@@ -18,7 +18,6 @@ public class StaticHitbox2f{
 		ID = IDTrack++;
 	}
 	
-	//Does the point lie inside the hitbox's region?
 	public boolean PointIntersect(float X, float Y){
 		float x = Math.round(this.x*100);
 		float y = Math.round(this.y*100);
@@ -30,7 +29,6 @@ public class StaticHitbox2f{
 		return false;
 	}
 	
-	//Does any point of the rectangle lie inside the hitbox's region?
 	public boolean AreaIntersect(Vector2f a, Vector2f s){
 		float X = Math.round(a.x*100);
 		float Y = Math.round(a.y*100);
@@ -54,8 +52,6 @@ public class StaticHitbox2f{
 		return false;
 	}
 
-	
-	//Generates an array of "random" hitbox locations
 	public static StaticHitbox2f[] RandomGeneration(int n, int x, int y, int Width, int Height, int MaxSize){
 		StaticHitbox2f[] Temp = new StaticHitbox2f[n];
 		float divisor = 20;

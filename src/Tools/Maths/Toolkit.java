@@ -1,24 +1,6 @@
 package Tools.Maths;
 
 public class Toolkit {
-	static final long LaunchTime = System.currentTimeMillis();
-	
-	public static String getTime(){
-		int Dif = (int) (System.currentTimeMillis()-LaunchTime);
-		int Seconds = (int) Math.round(Dif/1000);
-		int Minutes = 0;
-		int Hours = 0;
-		while(Seconds >= 60){
-			Minutes++;
-			Seconds-=60;
-		}
-		while(Minutes >= 60){
-			Hours++;
-			Minutes-=60;
-		}
-		return String.format("%02d:%02d:%02d", Hours, Minutes, Seconds);
-	}
-	
 	
 	public static float Modulus(float a){
 		return a*Sign(a);
