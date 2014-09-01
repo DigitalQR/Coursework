@@ -87,8 +87,8 @@ public class Renderer{
 		GL20.glEnableVertexAttribArray(0);
 
 		float[] rgba = model.getRGBA();
-
-		GL11.glColor4f(rgba[0], rgba[1], rgba[2], rgba[3]);
+		
+		//GL11.glColor4f(rgba[0], rgba[1], rgba[2], rgba[3]);
 		//System.out.println(rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3]);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertextCount(), GL11.GL_UNSIGNED_INT, 0);
 		
