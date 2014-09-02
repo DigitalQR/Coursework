@@ -13,7 +13,7 @@ public class MainControl{
 	public static boolean Paused = true;
 	
 	public static void main(String[] args){
-		//Gamepad.setup();
+		Gamepad.setup();
 		setup();
 		new Thread(new DisplayControl()).start();
 

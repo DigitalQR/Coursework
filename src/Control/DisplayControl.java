@@ -30,12 +30,12 @@ public class DisplayControl implements Runnable{
 	}
 	
 	private static void setupOpenGL(){
-		GL11.glEnable(GL11.GL_DEPTH);
-		/*
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
 		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
-		*/
+		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
@@ -59,13 +59,6 @@ public class DisplayControl implements Runnable{
         GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
 	}
 
-	private int SelectedButton = 1;
-	private static int CURRENT_STAGE = 1;
-	
-	public static final int 
-	STAGE_OVERWORLD = 0,
-	STAGE_MENU = 1;
-
 	public void run(){
 		start();
 		Renderer renderer = new Renderer();
@@ -81,17 +74,12 @@ public class DisplayControl implements Runnable{
 			//model[i].setRGBA(1f, 0.3f, 0.3f, 0f);
 		}
 		
-		long MenuLastInput = System.currentTimeMillis();
-		
-
 		ModelTexture texture = new ModelTexture(loader.loadTexture("test"));
 		
 		while(!Display.isCloseRequested()){
 			renderer.prepare();
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			
-			switch(CURRENT_STAGE){
-			case STAGE_OVERWORLD:
 				MainControl.Paused = false;
 				Camera.process();
 				GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
@@ -105,9 +93,12 @@ public class DisplayControl implements Runnable{
 		        
 		        //Draw hitboxes
 				for(int i = 0; i<model.length; i++){
-					renderer.render(model[i]);
+					Cubef temp = new Cubef(new Vector3f(Settings.hb[i].x, Settings.hb[i].y, 0f), new Vector3f(Settings.hb[i].x+Settings.hb[i].width, Settings.hb[i].y+Settings.hb[i].height, 1f));
+
+					renderer.render(temp, texture.getID());
+					
+					//renderer.render(model[i]);
 				}
-				
 				
 				//Draw players
 				Player[] User = Settings.User.clone();
@@ -115,117 +106,10 @@ public class DisplayControl implements Runnable{
 					Cubef temp1 = new Cubef(new Vector3f(User[i].getLocation().x, User[i].getLocation().y, 0.2f), new Vector3f(User[i].getLocation().x+User[i].getSize().x, User[i].getLocation().y+User[i].getSize().y, 0.2f+User[i].getSize().x));
 					RawModel player = loader.loadToVAO(temp1.getVertices(), temp1.getIndices());
 					player.setRGBA(0, 0, 0, 0);
-				
-					renderer.render(player);
-				}
-				break;
-				
-				
-				
-			case STAGE_MENU:
-				MainControl.Paused = true;
-				//Light position
-				FloatBuffer Location1 = BufferUtils.createFloatBuffer(16);
-		        Location1.put(new float[]{6.3f, -5.3f , 0f,1});
-		        Location1.flip();
-		        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location1);
-				
-				//GL11.glTranslatef(-6.3f,5.3f,-10f);
-		        //GL11.glRotatef(track+=0.3f, 1 , 0 , 0);
-				GLU.gluLookAt(0, 0, 10, 0f, 0.0f, -10.0f, 0, 1, 0);
-				Button2f.cycle();
-				
-				Button2f[] Button = new Button2f[3];
-
-				Button[0] = new Button2f(new Vector2f(0,0), new Vector2f(30,10));
-				Button[1] = new Button2f(new Vector2f(0,12), new Vector2f(30,10));
-				Button[2] = new Button2f(new Vector2f(0,24), new Vector2f(30,10));
-				
-				if(Keyboard.isKeyDown(Keyboard.KEY_W) && System.currentTimeMillis()-MenuLastInput > 100){
-					SelectedButton++;
-					MenuLastInput = System.currentTimeMillis();
-				}
-				
-				if(SelectedButton >= Button.length){
-					SelectedButton = 0;
-				}
-				
-				for(Button2f b:Button){
-					Cubef temp = b.getCubef();
 					
-					/*
-					GL11.glBegin(GL11.GL_QUADS);		
-					//This is me just testing 
-					GL13.glActiveTexture(GL13.GL_TEXTURE0);
-					GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getID());		
-					
-					//GL11.glColor4f(1, 1, 1, 1);
-					//GL11.glNormal3f(0.0f, 0.0f, 1.0f);
-
-					GL11.glTexCoord2d(0, 0);
-					GL11.glVertex3f(-3.0f, -0.2f, -0.3f);
-					
-					GL11.glTexCoord2d(0, 1);
-					GL11.glVertex3f(-3.0f, -4.2f, -0.3f);
-					
-					GL11.glTexCoord2d(1, 1);
-					GL11.glVertex3f(0.0f, -4.2f, -0.3f);
-					
-					GL11.glTexCoord2d(1, 0);
-					GL11.glVertex3f(0.0f, -0.2f, -0.3f);
-					
-					GL11.glEnd();*/
-					
-					float[] vert = {
-							1.0f, -0.2f, -0.3f,
-							1.0f, -4.2f, -0.3f,
-							4.0f, -4.2f, -0.3f,
-							4.0f, -0.2f, -0.3f
-					};
-					
-					int[] ind = {
-						0, 1, 2,
-						0, 2, 3
-					};
-					
-					float[] tex = {
-							0,0,
-							0,1,
-							1,1,
-							1,0
-					};
-					
-					float[] vert1 = {
-							-4.0f, -0.2f, -0.3f,
-							-4.0f, -4.2f, -0.3f,
-							0.0f, -4.2f, -0.3f,
-							0.0f, -0.2f, -0.3f
-					};
-
-					RawModel m1 = loader.loadToVAO(vert, tex, ind);
-					RawModel m2 = loader.loadToVAO(vert1, ind);
-					m2.setRGBA(1, 0, 0, 0);
-					TexturedModel tm = new TexturedModel(m1, texture);
-					if(SelectedButton == 0){
-						renderer.render(tm);
-						renderer.render(m2);
-						//renderer.render(m1);
-					}
-					RawModel m = loader.loadToVAO(temp.getVertices(), temp.getIndices());
-					if(SelectedButton == b.getID()){
-						//m.setRGBA(1, 0.1f, 0.1f. 0);
-						//TexturedModel texturedModel = new TexturedModel(loader.loadToVAO(vet, tex, ind), texture);
-						//renderer.render(texturedModel);
-						
-						//renderer.render(loader.loadToVAO(vet, ind));
-					}else{
-						//m.setRGBA(1, 0, 0, 0);
-						//renderer.render(m);
-					}
-				}
-				break;
-			}
-			
+					renderer.render(temp1, texture.getID());
+					//renderer.render(player);
+				}			
 
 			processCamera();
 			DisplayManager.update();
