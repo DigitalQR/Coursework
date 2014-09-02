@@ -35,6 +35,18 @@ public class Cubef{
 		return temp;
 	}
 	
+	public float[] getTextureCoords(){
+		float[] temp = {
+				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
+				0,1, 0,0, 1,0, 0,1, 1,0, 1,1,
+				0,1, 0,0, 1,0, 0,1, 1,0, 1,1,
+				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
+				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
+				0,0, 0,1, 1,1, 0,0, 1,1, 1,0 
+		};
+		return temp;
+	}
+	
 	public int[] getIndices(){
 		int[] temp = {
 				0,2,3, 0,3,1,

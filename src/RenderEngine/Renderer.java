@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL30;
 import RenderEngine.Model.RawModel;
 import RenderEngine.Model.TexturedModel;
 import RenderEngine.Shaders.StaticShader;
+import Tools.Maths.Cubef;
 
 public class Renderer{
 	
@@ -19,59 +20,22 @@ public class Renderer{
 	}
 	
 	public void render(TexturedModel texturedModel){
-		/*GL11.glBegin(GL11.GL_QUADS);		
-		
-		//This is me just testing 
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getID());		
-		
-		//GL11.glColor4f(1, 1, 1, 1);
-		//GL11.glNormal3f(0.0f, 0.0f, 1.0f);
-
-		GL11.glTexCoord2d(0, 0);
-		GL11.glVertex3f(-4.0f, -0.2f, -0.3f);
-		
-		GL11.glTexCoord2d(0, 1);
-		GL11.glVertex3f(-4.0f, -4.2f, -0.3f);
-		
-		GL11.glTexCoord2d(1, 1);
-		GL11.glVertex3f(-1.0f, -4.2f, -0.3f);
-		
-		GL11.glTexCoord2d(1, 0);
-		GL11.glVertex3f(-1.0f, -0.2f, -0.3f);
-		
-		GL11.glEnd();*/
-		
 		shader.start();
 		RawModel model = texturedModel.getRawModel();
 		GL30.glBindVertexArray(model.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		
-
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getTexture().getID());
 		
-
-
-		
-
 		GL30.glBindVertexArray(model.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
-
-		float[] rgba = model.getRGBA();
 		
-		//GL11.glColor4f(rgba[0], rgba[1], rgba[2], rgba[3]);
-		//System.out.println(rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3]);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertextCount(), GL11.GL_UNSIGNED_INT, 0);
 		
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
-		
-		
-		
-		
-		
 		
 		GL13.glActiveTexture(0);
 		GL11.glBindTexture(0, 0);
@@ -89,10 +53,31 @@ public class Renderer{
 		float[] rgba = model.getRGBA();
 
 		GL11.glColor4f(rgba[0], rgba[1], rgba[2], rgba[3]);
-		//System.out.println(rgba[0] + ", " + rgba[1] + ", " + rgba[2] + ", " + rgba[3]);
 		GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertextCount(), GL11.GL_UNSIGNED_INT, 0);
 		
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
+	}
+	
+	public void render(Cubef cube, int textureID){
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE, textureID);
+		
+		float[] vertices = cube.getVertices();
+		int[] indices = cube.getIndices();
+		float[] textureCoords = cube.getTextureCoords();
+		
+		for(int i = 0; i<indices.length; ){
+			GL11.glBegin(GL11.GL_TRIANGLES);
+			
+			for(int n = 0; n<3; n++){
+				int Current = indices[i];
+				GL11.glTexCoord2f(textureCoords[i*2], textureCoords[i*2+1]);
+				GL11.glVertex3f(vertices[Current*3], vertices[Current*3+1], vertices[Current*3+2]);
+				i++;
+			}
+			
+			GL11.glEnd();
+		}
 	}
 }
