@@ -15,7 +15,7 @@ public class DisplayManager{
 		try{
 			Display.setDisplayMode(new DisplayMode(1000, 600));
 			Display.create();
-			Display.setTitle("Untitled");
+			Display.setTitle("Coursework");
 			
 		}catch(LWJGLException e){
 			System.err.println("[ERROR]" + e.getMessage());

@@ -63,8 +63,8 @@ public class Camera {
 			}
 		}
 		Location_AIM.z = Delta;
-		if(Location_AIM.z > -8){
-			Location_AIM.z = -8;
+		if(Location_AIM.z > -6){
+			Location_AIM.z = -6;
 		}
 	}
 }

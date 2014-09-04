@@ -23,7 +23,7 @@ public class Gamepad {
 		}
 		
 
-		Pad[1].setBindings();
+		Pad[0].setBindings();
 	}
 	
 	public static Gamepad getGamepad(int GPID){

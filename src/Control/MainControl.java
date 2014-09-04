@@ -46,7 +46,7 @@ public class MainControl{
 			System.out.println(i + " end.\n");
 			
 		}
-		Settings.User[0].setControlScheme(1);
+		Settings.User[0].setControlScheme(0);
 	}
 
 }

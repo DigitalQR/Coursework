@@ -3,22 +3,17 @@ package Control;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.glu.GLU;
+import org.newdawn.slick.opengl.Texture;
 
 import Entity.Player;
 import RenderEngine.DisplayManager;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
-import RenderEngine.Menu.Button2f;
-import RenderEngine.Model.ModelTexture;
-import RenderEngine.Model.RawModel;
-import RenderEngine.Model.TexturedModel;
+import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
-import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 
 public class DisplayControl implements Runnable{
@@ -62,19 +57,18 @@ public class DisplayControl implements Runnable{
 	public void run(){
 		start();
 		Renderer renderer = new Renderer();
-		Loader loader = new Loader();
 		GLU.gluLookAt(0, 0, 0, 0.0f, 0.0f, -1.0f, 0, 1, 0);
+
+		Texture BoxTexture = Loader.loadTexture("Box");
+		Texture PlaneTexture = Loader.loadTexture("Plane");
+		Model[] hb = new Model[Settings.hb.length];
 		
-		RawModel[] model = new RawModel[Settings.hb.length];
-		
-		//Load hitboxes as models
-		for(int i = 0; i<model.length; i++){
+		//Draw hitboxes
+		for(int i = 0; i<Settings.hb.length; i++){
 			Cubef temp = new Cubef(new Vector3f(Settings.hb[i].x, Settings.hb[i].y, 0f), new Vector3f(Settings.hb[i].x+Settings.hb[i].width, Settings.hb[i].y+Settings.hb[i].height, 1f));
-			model[i] = loader.loadToVAO(temp.getVertices(), temp.getIndices());
-			//model[i].setRGBA(1f, 0.3f, 0.3f, 0f);
+			hb[i] = new Model(temp);
+			hb[i].setTexture(BoxTexture);
 		}
-		
-		ModelTexture texture = new ModelTexture(loader.loadTexture("test"));
 		
 		while(!Display.isCloseRequested()){
 			renderer.prepare();
@@ -83,7 +77,6 @@ public class DisplayControl implements Runnable{
 				MainControl.Paused = false;
 				Camera.process();
 				GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
-				GL11.glRotatef(10, Camera.getRotation().x, Camera.getRotation().y, Camera.getRotation().z);
 				
 				//Light position
 				FloatBuffer Location = BufferUtils.createFloatBuffer(16);
@@ -92,31 +85,24 @@ public class DisplayControl implements Runnable{
 		        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
 		        
 		        //Draw hitboxes
-				for(int i = 0; i<model.length; i++){
-					Cubef temp = new Cubef(new Vector3f(Settings.hb[i].x, Settings.hb[i].y, 0f), new Vector3f(Settings.hb[i].x+Settings.hb[i].width, Settings.hb[i].y+Settings.hb[i].height, 1f));
-
-					renderer.render(temp, texture.getID());
-					
-					//renderer.render(model[i]);
+				for(Model Box:hb){
+					renderer.render(Box);
 				}
 				
 				//Draw players
 				Player[] User = Settings.User.clone();
 				for(int i = 0; i<User.length; i++){
 					Cubef temp1 = new Cubef(new Vector3f(User[i].getLocation().x, User[i].getLocation().y, 0.2f), new Vector3f(User[i].getLocation().x+User[i].getSize().x, User[i].getLocation().y+User[i].getSize().y, 0.2f+User[i].getSize().x));
-					RawModel player = loader.loadToVAO(temp1.getVertices(), temp1.getIndices());
-					player.setRGBA(0, 0, 0, 0);
-					
-					renderer.render(temp1, texture.getID());
-					//renderer.render(player);
-				}			
+					Model m = new Model(temp1);
+					m.setTexture(PlaneTexture);
+					renderer.render(m);
+				}
 
 			processCamera();
 			DisplayManager.update();
 		}
 		
 		MainControl.CloseRequest = true;
-		loader.cleanUp();
 		stop();
 	}
 	
