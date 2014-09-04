@@ -1,4 +1,4 @@
-package Control;
+package Control.Visual;
 
 import java.nio.FloatBuffer;
 
@@ -6,15 +6,13 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
-import org.newdawn.slick.opengl.Texture;
 
-import Entity.Player;
+import Control.MainControl;
+import Control.Visual.Stage.MenuStage;
+import Control.Visual.Stage.Stage;
+import Control.Visual.Stage.TestStage;
 import RenderEngine.DisplayManager;
-import RenderEngine.Loader;
 import RenderEngine.Renderer;
-import RenderEngine.Model.Model;
-import Tools.Maths.Cubef;
-import Tools.Maths.Vector3f;
 
 public class DisplayControl implements Runnable{
 	
@@ -22,6 +20,7 @@ public class DisplayControl implements Runnable{
 		DisplayManager.create();
 		setupOpenGL();
 		setupLighting();
+		setupStages();
 	}
 	
 	private static void setupOpenGL(){
@@ -29,7 +28,11 @@ public class DisplayControl implements Runnable{
 		
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 		GL11.glShadeModel(GL11.GL_SMOOTH);
-		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
+		
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+		
+		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_POINT);
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
@@ -54,49 +57,33 @@ public class DisplayControl implements Runnable{
         GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
 	}
 
+	public static final int
+	STAGE_TESTSTAGE = 0,
+	STAGE_MENU = 1;
+
+	private static Stage[] stage;
+	private int STAGE_Current = STAGE_MENU;
+	
+	public static void setupStages(){
+		stage = new Stage[2];
+		
+		stage[0] = new TestStage();
+		stage[1] = new MenuStage();
+	}
+	
 	public void run(){
 		start();
-		Renderer renderer = new Renderer();
 		GLU.gluLookAt(0, 0, 0, 0.0f, 0.0f, -1.0f, 0, 1, 0);
 
-		Texture BoxTexture = Loader.loadTexture("Box");
-		Texture PlaneTexture = Loader.loadTexture("Plane");
-		Model[] hb = new Model[Settings.hb.length];
-		
-		//Draw hitboxes
-		for(int i = 0; i<Settings.hb.length; i++){
-			Cubef temp = new Cubef(new Vector3f(Settings.hb[i].x, Settings.hb[i].y, 0f), new Vector3f(Settings.hb[i].x+Settings.hb[i].width, Settings.hb[i].y+Settings.hb[i].height, 1f));
-			hb[i] = new Model(temp);
-			hb[i].setTexture(BoxTexture);
+		for(int i = 0; i < stage.length; i++){
+			stage[i].prepare();
 		}
 		
 		while(!Display.isCloseRequested()){
-			renderer.prepare();
+			Renderer.prepare();
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			
-				MainControl.Paused = false;
-				Camera.process();
-				GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
-				
-				//Light position
-				FloatBuffer Location = BufferUtils.createFloatBuffer(16);
-		        Location.put(new float[]{-Camera.getLocation().x, -Camera.getLocation().y , 3,1});
-		        Location.flip();
-		        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
-		        
-		        //Draw hitboxes
-				for(Model Box:hb){
-					renderer.render(Box);
-				}
-				
-				//Draw players
-				Player[] User = Settings.User.clone();
-				for(int i = 0; i<User.length; i++){
-					Cubef temp1 = new Cubef(new Vector3f(User[i].getLocation().x, User[i].getLocation().y, 0.2f), new Vector3f(User[i].getLocation().x+User[i].getSize().x, User[i].getLocation().y+User[i].getSize().y, 0.2f+User[i].getSize().x));
-					Model m = new Model(temp1);
-					m.setTexture(PlaneTexture);
-					renderer.render(m);
-				}
+			stage[STAGE_Current].update();
 
 			processCamera();
 			DisplayManager.update();
@@ -110,7 +97,7 @@ public class DisplayControl implements Runnable{
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 		
-		GLU.gluPerspective(70, Display.getWidth()/Display.getHeight(), 0.1f, 10000);
+		GLU.gluPerspective(80, Display.getWidth()/Display.getHeight(), 0.1f, 10000);
 		
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();

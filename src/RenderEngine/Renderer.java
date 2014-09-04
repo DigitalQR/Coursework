@@ -9,12 +9,12 @@ import Tools.Maths.Cubef;
 public class Renderer{
 	
 	
-	public void prepare(){
+	public static void prepare(){
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glClearColor(0.5f, 0.5f, 1f, 1f);
 	}
 	
-	public void render(Model model){
+	public static void render(Model model){
 		model.getTexture().bind();
 		
 		float[] vertices = model.getVertices();
@@ -36,7 +36,7 @@ public class Renderer{
 		
 	}
 	
-	public void render(Cubef cube, int textureID){
+	public static void render(Cubef cube, int textureID){
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE, textureID);
 		

@@ -1,4 +1,4 @@
-package Control.input;
+package Control.Input;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class Gamepad {
 		}
 		
 
-		Pad[0].setBindings();
+		Pad[1].setBindings();
 	}
 	
 	public static Gamepad getGamepad(int GPID){

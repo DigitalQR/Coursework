@@ -11,6 +11,10 @@ public class Cubef{
 		this.EndLocation = EndLocation;
 	}
 	
+	public Vector3f getLocation() {
+		return StartLocation;
+	}
+
 	public Vector3f getSize(){
 		return new Vector3f(
 				EndLocation.x-StartLocation.x,
