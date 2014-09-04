@@ -1,4 +1,4 @@
-package Control.input;
+package Control.Input;
 
 public class Button {
 	

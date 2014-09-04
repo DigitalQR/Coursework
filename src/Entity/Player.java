@@ -4,7 +4,7 @@ import org.lwjgl.input.Keyboard;
 
 import Collision.StaticHitbox2f;
 import Control.Settings;
-import Control.input.Gamepad;
+import Control.Input.Gamepad;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 
@@ -17,10 +17,6 @@ public class Player{
 	Vector2f AccelerationLimit = new Vector2f(0.1f, 2f);
 	boolean TouchingGround = false;
 	int TouchingWall = 0;
-	private float 
-	COLOUR_RED = (float) Math.random(),
-	COLOUR_GREEN = (float) Math.random(),
-	COLOUR_BLUE = (float) Math.random();
 	
 	public Player(float x, float y){
 		setControlScheme(TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_F, Keyboard.KEY_G);
@@ -45,25 +41,6 @@ public class Player{
 		Location = new Vector2f(x,y);
 	}
 	
-	public void setColour(float r, float g, float b){
-		COLOUR_RED = r;
-		COLOUR_GREEN = g;
-		COLOUR_BLUE = b;
-	}
-	
-	public float getRed(){
-		return COLOUR_RED;
-	}
-	
-	public float getGreen(){
-		return COLOUR_GREEN;
-	}
-	
-	public float getBlue(){
-		return COLOUR_BLUE;
-	}
-	
-	
 	public void setLocation(float x, float y){
 		Location.x = x;
 		Location.y = y;
@@ -78,18 +55,50 @@ public class Player{
 	}
 	
 	public static final int TYPE_KEYBOARD = -1, TYPE_CONTROL= 0;
-	@SuppressWarnings("unused")
-	private int TYPE, UP, DOWN, LEFT, RIGHT, PRIMARY, SECONDARY, GPID;
+	public int 
+	TYPE, KEY_UP, 
+	KEY_DOWN, 
+	KEY_LEFT, 
+	KEY_RIGHT, 
+	KEY_PRIMARY, 
+	KEY_SECONDARY, 
+	KEY_MENU_UP, 
+	KEY_MENU_DOWN, 
+	KEY_MENU_LEFT, 
+	KEY_MENU_RIGHT,
+	GPID;
 
 	public void setControlScheme(int type, int up, int down, int left, int right, int primary, int secondary){
 		TYPE = type;
-		UP = up; DOWN = down; LEFT = left; RIGHT = right; PRIMARY = primary; SECONDARY = secondary;
+		KEY_UP = up; 
+		KEY_DOWN = down; 
+		KEY_LEFT = left; 
+		KEY_RIGHT = right; 
+		
+		KEY_MENU_UP = up; 
+		KEY_MENU_DOWN = down;
+		KEY_MENU_LEFT = left;
+		KEY_MENU_RIGHT = right;
+		
+		KEY_PRIMARY = primary; 
+		KEY_SECONDARY = secondary;
 	}
 
 	public void setControlScheme(int GPID){
 		TYPE = TYPE_CONTROL;
 		this.GPID = GPID;
-		UP = Gamepad.A; DOWN = Gamepad.B; LEFT = Gamepad.LEFT_STICK_LEFT; RIGHT = Gamepad.LEFT_STICK_RIGHT; PRIMARY = Gamepad.LEFT_TRIGGER; SECONDARY = Gamepad.RIGHT_TRIGGER;
+		KEY_UP = Gamepad.A; 
+		KEY_DOWN = Gamepad.B; 
+		KEY_LEFT = Gamepad.LEFT_STICK_LEFT; 
+		KEY_RIGHT = Gamepad.LEFT_STICK_RIGHT; 
+		
+		KEY_MENU_UP = Gamepad.DPAD_UP; 
+		KEY_MENU_DOWN = Gamepad.DPAD_DOWN;
+		KEY_MENU_LEFT = Gamepad.DPAD_LEFT;
+		KEY_MENU_RIGHT = Gamepad.DPAD_RIGHT;
+		
+		KEY_PRIMARY = Gamepad.LEFT_TRIGGER; 
+		KEY_SECONDARY = Gamepad.RIGHT_TRIGGER;
 	}
 	
 	public boolean isKeyPressed(int key){
@@ -104,8 +113,8 @@ public class Player{
 		DebugHitboxPlayer();
 		//X
 			//Input
-				if(isKeyPressed(RIGHT) && Velocity.x < AccelerationLimit.x) Velocity.x+=0.02f;
-				if(isKeyPressed(LEFT) && Velocity.x > -AccelerationLimit.x) Velocity.x-=0.02f;
+				if(isKeyPressed(KEY_RIGHT) && Velocity.x < AccelerationLimit.x) Velocity.x+=0.02f;
+				if(isKeyPressed(KEY_LEFT) && Velocity.x > -AccelerationLimit.x) Velocity.x-=0.02f;
 				
 				if(Math.round(Velocity.x*100) == 0){
 					Velocity.x = 0;
@@ -136,14 +145,14 @@ public class Player{
 				
 		//Y
 			//Input
-				if(isKeyPressed(UP) && Velocity.y < AccelerationLimit.y && (TouchingGround || TouchingWall != 0)){
+				if(isKeyPressed(KEY_UP) && Velocity.y < AccelerationLimit.y && (TouchingGround || TouchingWall != 0)){
 					Velocity.y = 0.2f;
 					TouchingGround = false;
 					if(TouchingWall != 0){
 						Velocity.x+=0.3f*-TouchingWall;
 					}
 				}
-				if(isKeyPressed(DOWN)) Velocity.y = -0.5f;
+				if(isKeyPressed(KEY_DOWN)) Velocity.y = -0.5f;
 				
 				if(Toolkit.Modulus(Velocity.y) < AccelerationLimit.y){
 					Velocity.y-=0.01f;
@@ -195,6 +204,7 @@ public class Player{
 				System.err.println("Location: \n x: " + Location.x + "\n y: " + Location.y + "\n");
 				System.err.println("Velocity: \n x: " + Velocity.x + "\n y: " + Velocity.y + "\n");
 				System.err.println("Touching Ground: " + TouchingGround + "\n");
+				System.exit(0);
 			}
 		}
 	}
