@@ -17,7 +17,7 @@ import RenderEngine.Renderer;
 public class DisplayControl implements Runnable{
 	
 	private static void start(){
-		DisplayManager.create();
+		DisplayManager.create(false);
 		setupOpenGL();
 		setupLighting();
 		setupStages();
@@ -57,19 +57,25 @@ public class DisplayControl implements Runnable{
         GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
 	}
 
+	
 	public static final int
 	STAGE_TESTSTAGE = 0,
 	STAGE_MENU = 1;
 
 	private static Stage[] stage;
-	private int STAGE_Current = STAGE_MENU;
+	private static int STAGE_Current = STAGE_MENU;
 	
-	public static void setupStages(){
+	public static void setStage(int i){
+		STAGE_Current = i;
+	}
+	
+	private static void setupStages(){
 		stage = new Stage[2];
 		
 		stage[0] = new TestStage();
 		stage[1] = new MenuStage();
 	}
+
 	
 	public void run(){
 		start();
@@ -79,7 +85,7 @@ public class DisplayControl implements Runnable{
 			stage[i].prepare();
 		}
 		
-		while(!Display.isCloseRequested()){
+		while(!Display.isCloseRequested() && !MainControl.CloseRequest){
 			Renderer.prepare();
 			GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			
@@ -93,11 +99,12 @@ public class DisplayControl implements Runnable{
 		stop();
 	}
 	
-	private static void processCamera(){
+	private static void processCamera(){		
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
 		
-		GLU.gluPerspective(80, Display.getWidth()/Display.getHeight(), 0.1f, 10000);
+		float WHR = Display.getWidth()/Display.getHeight();
+		GLU.gluPerspective(80, WHR, 0.1f, 10000);
 		
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();

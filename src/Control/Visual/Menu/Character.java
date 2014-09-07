@@ -16,4 +16,5 @@ public class Character {
 		return Char[x][y];
 	}
 	
+	
 }

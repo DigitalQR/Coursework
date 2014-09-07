@@ -44,7 +44,6 @@ public class Font{
 	public Cubef[] generateString(Vector3f Location, String message, float size, float divisor){
 		message = correctString(message);
 		
-
 		int track = 0;
 		for(int i = 0; i<message.length(); i++){
 			int c = getLetter(message.charAt(i));

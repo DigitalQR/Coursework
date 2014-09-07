@@ -10,12 +10,26 @@ public class DisplayManager{
 	private static final int FPS = 120;
 	
 	
-	public static void create(){
+	public static void create(boolean fullscreen){
 		
 		try{
-			Display.setDisplayMode(new DisplayMode(1000, 600));
+			DisplayMode display = null;
+			DisplayMode[] mod = Display.getAvailableDisplayModes();
+			
+			for(DisplayMode m:mod){
+				//720, 480
+				//1280, 720
+				//1920 1080
+				if(m.getWidth() == 1280 && m.getHeight() == 720 && m.isFullscreenCapable()){
+					display = m;
+				}
+			}
+			
+			Display.setDisplayMode(display);
+			Display.setFullscreen(fullscreen);
 			Display.create();
-			Display.setTitle("Coursework");
+			
+			Display.setTitle("Untiled Game");
 			
 		}catch(LWJGLException e){
 			System.err.println("[ERROR]" + e.getMessage());

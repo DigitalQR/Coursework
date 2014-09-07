@@ -19,7 +19,7 @@ public class Player{
 	int TouchingWall = 0;
 	
 	public Player(float x, float y){
-		setControlScheme(TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_F, Keyboard.KEY_G);
+		setControlScheme(TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_F, Keyboard.KEY_G, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
 		
 		//Checking spawn
 		Main: while(true){
@@ -66,9 +66,11 @@ public class Player{
 	KEY_MENU_DOWN, 
 	KEY_MENU_LEFT, 
 	KEY_MENU_RIGHT,
+	KEY_START,
+	KEY_SELECT,
 	GPID;
 
-	public void setControlScheme(int type, int up, int down, int left, int right, int primary, int secondary){
+	public void setControlScheme(int type, int up, int down, int left, int right, int primary, int secondary, int start, int select){
 		TYPE = type;
 		KEY_UP = up; 
 		KEY_DOWN = down; 
@@ -82,6 +84,9 @@ public class Player{
 		
 		KEY_PRIMARY = primary; 
 		KEY_SECONDARY = secondary;
+		
+		KEY_START = start;
+		KEY_SELECT = select;
 	}
 
 	public void setControlScheme(int GPID){
@@ -97,8 +102,11 @@ public class Player{
 		KEY_MENU_LEFT = Gamepad.DPAD_LEFT;
 		KEY_MENU_RIGHT = Gamepad.DPAD_RIGHT;
 		
-		KEY_PRIMARY = Gamepad.LEFT_TRIGGER; 
-		KEY_SECONDARY = Gamepad.RIGHT_TRIGGER;
+		KEY_PRIMARY = Gamepad.RIGHT_TRIGGER; 
+		KEY_SECONDARY = Gamepad.LEFT_TRIGGER;
+		
+		KEY_START = Gamepad.START;
+		KEY_SELECT = Gamepad.SELECT;
 	}
 	
 	public boolean isKeyPressed(int key){

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL13;
 
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
+import Tools.Maths.Vector3f;
 
 public class Renderer{
 	
@@ -21,6 +22,9 @@ public class Renderer{
 		int[] indices = model.getIndices();
 		float[] textureCoords = model.getTextureCoords();
 		
+		Vector3f Location = model.getLocation();
+		GL11.glTranslatef(Location.x, Location.y, Location.z);
+		
 		for(int i = 0; i<indices.length; ){
 			GL11.glBegin(GL11.GL_TRIANGLES);
 			
@@ -33,7 +37,8 @@ public class Renderer{
 			
 			GL11.glEnd();
 		}
-		
+
+		GL11.glTranslatef(-Location.x, -Location.y, -Location.z);
 	}
 	
 	public static void render(Cubef cube, int textureID){

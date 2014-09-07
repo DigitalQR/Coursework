@@ -1,96 +1,169 @@
 package Control.Visual.Stage;
 
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
+import Control.MainControl;
 import Control.Settings;
+import Control.Visual.DisplayControl;
 import Control.Visual.Menu.Button2f;
 import Control.Visual.Menu.Font;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
-import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 
 public class MenuStage extends Stage{
 
-	private long lastInput;
+	private static long lastInput = 0;
 	private int selectedButton = 0;
+	private int activeButton = 1;
 	
-	private Font font;
-	private Texture buttonTexture, buttonSelectedTexture;
-	private Button2f[] button;
+	public Font font;
+	public static Texture 
+	GreyButton, GreyButtonSelected,
+	RedButton, RedButtonSelected,
+	GreenButton, GreenButtonSelected;
+	private Button2f[] MainButton;
 	
-	public void prepare(){	
-		lastInput = System.nanoTime()/1000000;
-		buttonTexture = Loader.loadTexture("Button");
-		buttonSelectedTexture = Loader.loadTexture("Button_selected");
+	GamepadSetupStage GamepadSetup;
+	
+	public void prepare(){
+		GreyButton = Loader.loadTexture("Button/Grey");
+		GreyButtonSelected = Loader.loadTexture("Button/Grey_selected");
+		
+		RedButton = Loader.loadTexture("Button/Red");
+		RedButtonSelected = Loader.loadTexture("Button/Red_selected");
+
+		GreenButton = Loader.loadTexture("Button/Green");
+		GreenButtonSelected = Loader.loadTexture("Button/Green_selected");
 		font = new Font("Font/Default",8);
 		
-		button = new Button2f[9];
-		for(int i = 0; i<button.length; i++){
-			button[i] = new Button2f(new Vector2f(0,15*i), new Vector2f(80,10), "");
-		}
+		MainPrepare();
 		
-		
-		button[8] = new Button2f(new Vector2f(0,125), new Vector2f(150,25), "Untitled Game");
-		button[7].setMessage("Start");
-		button[6].setMessage("setup controllers");
-		
-		for(Button2f b:button){
-			b.generateText(font, 7.5f, 20);
-		}
-		
-		button[8].generateText(font, 10f, 10);
+		GamepadSetup = new GamepadSetupStage();
+		GamepadSetup.prepare(font);
 	}
-
-	private boolean timePassed(){
+	
+	public static boolean timePassed(){
 		long current = System.nanoTime()/1000000;
-		if((current-lastInput) > 100){
+		if((current-lastInput) > 150){
 			return true;
 		}
 		return false;
 	}
 	
+	public static void input(){
+		lastInput = System.nanoTime()/1000000;
+	}
+	
 	public void update(){
+		//Light position
+		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
+        Location.put(new float[]{0, 0 , 3,1});
+        Location.flip();
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
+        
 		GL11.glTranslatef(-7.7f, -7.5f, -10);
 		
-		if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_UP)){
-			selectedButton++;
-			lastInput = System.nanoTime()/1000000;
+		MainDraw();
+		
+		switch(activeButton){
+			case 2:
+				GamepadSetup.update();
+			break;
 		}
 		
-		if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_DOWN)){
-			selectedButton--;
-			lastInput = System.nanoTime()/1000000;
+	}
+	
+	
+	
+	private void MainPrepare(){
+		//Initialise MainButtons
+		MainButton = new Button2f[5];
+		
+		//Set MainButton information
+		MainButton[0] = new Button2f(new Vector2f(0,125), new Vector2f(150,25), "Untitled Game");
+		MainButton[1] = new Button2f(new Vector2f(0,105), new Vector2f(50, 10), "Start");
+		MainButton[2] = new Button2f(new Vector2f(0,90), new Vector2f(50, 10), "Setup Controllers");
+		MainButton[3] = new Button2f(new Vector2f(0,75), new Vector2f(50, 10), "Settings");
+		MainButton[4] = new Button2f(new Vector2f(0,60), new Vector2f(50, 10), "Exit");
+		
+		//Finalise MainButtons
+		for(Button2f b:MainButton){
+			b.generateText(font, 7.5f, 30);
 		}
 		
-		
-		
-		
-		if(selectedButton < 0){
-			selectedButton = button.length-2;
+		MainButton[0].generateText(font, 10f, 10);
+	}
+	
+	private void MainDraw(){
+		if(activeButton == 1){
+			if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_UP)){
+				selectedButton--;
+				input();
+			}
+			if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_DOWN)){
+				selectedButton++;
+				input();
+			}
+		}
+		if(selectedButton < 1){
+			selectedButton = MainButton.length-1;
 		}		
-		if(selectedButton > button.length-2){
-			selectedButton = 0;
+		if(selectedButton > MainButton.length-1){
+			selectedButton = 1;
 		}
 		
-		
-		for(int i = 0; i<button.length; i++){
-			Model m = button[i].getModel();
-			
+		for(int i = 0; i<MainButton.length; i++){
+			Model m = MainButton[i].getModel();
 			if(i == selectedButton){
-				m.setTexture(buttonSelectedTexture);
+				m.setTexture(GreyButtonSelected);
 			}else{
-				m.setTexture(buttonTexture);
+				m.setTexture(GreyButton);
 			}
 			Renderer.render(m);
 			
-			Model[] text = button[i].getText();
+			Model[] text = MainButton[i].getText();
 			for(Model t:text){
 				Renderer.render(t);
 			}
 		}
+		
+		MainProcessMainButton();
 	}
-
+	
+	private void MainProcessMainButton(){
+		if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_UP)){
+			activeButton = selectedButton;
+			input();
+			switch(selectedButton){
+			
+			//START
+			case 1:
+					DisplayControl.setStage(DisplayControl.STAGE_TESTSTAGE);
+					MainControl.Paused = false;
+				break;
+			
+			//Setup Controllers
+			case 2:
+				break;
+			
+			//Settings
+			case 3:
+				break;
+			
+			//Exit
+			case 4:
+				MainControl.CloseRequest = true;
+				break;	
+			}
+		}else if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_DOWN)){
+			activeButton = 1;
+		}
+	}
+	
 }

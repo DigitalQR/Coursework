@@ -7,10 +7,14 @@ import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
-public class Gamepad {
+public class Gamepad{
 	
 	private static Gamepad[] Pad = new Gamepad[0];
 	private static int GPID_TRACK = 0;
+	
+	public static Gamepad[] getGamepads(){
+		return Pad;
+	}
 	
 	public static void setup(){
 		ControllerEnvironment CE = ControllerEnvironment.getDefaultEnvironment();
@@ -50,6 +54,7 @@ public class Gamepad {
 	DPAD_UP = T++, DPAD_DOWN = T++, DPAD_LEFT = T++, DPAD_RIGHT = T++, 
 	LEFT_STICK_UP = T++, LEFT_STICK_DOWN = T++, LEFT_STICK_LEFT = T++, LEFT_STICK_RIGHT = T++, 
 	RIGHT_STICK_UP = T++, RIGHT_STICK_DOWN = T++, RIGHT_STICK_LEFT = T++, RIGHT_STICK_RIGHT = T++, 
+	START = T++, SELECT = T++,
 	LEFT_TRIGGER = T++, RIGHT_TRIGGER = T++, LEFT_BUMPER = T++, RIGHT_BUMPER = T++;
 	
 	private static String[] KeyName = 
