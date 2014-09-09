@@ -15,6 +15,11 @@ public class Cubef{
 		return StartLocation;
 	}
 	
+	public void translate(Vector3f v) {
+		StartLocation = new Vector3f(StartLocation.x+v.x, StartLocation.y+v.y, StartLocation.z+v.z);
+		EndLocation = new Vector3f(EndLocation.x+v.x, EndLocation.y+v.y, EndLocation.z+v.z);
+	}
+	
 	public void setLocation(Vector3f Loc) {
 		Vector3f Size = getSize();
 		StartLocation = Loc;

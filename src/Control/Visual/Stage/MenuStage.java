@@ -14,7 +14,9 @@ import Control.Visual.Menu.Font;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
+import Tools.Maths.Cubef;
 import Tools.Maths.Vector2f;
+import Tools.Maths.Vector3f;
 
 public class MenuStage extends Stage{
 
@@ -59,7 +61,7 @@ public class MenuStage extends Stage{
 	public static void input(){
 		lastInput = System.nanoTime()/1000000;
 	}
-	
+	float s = 1;
 	public void update(){
 		//Light position
 		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
@@ -70,6 +72,11 @@ public class MenuStage extends Stage{
 		GL11.glTranslatef(-7.7f, -7.5f, -10);
 		
 		MainDraw();
+		
+		Cubef[] mo = font.getSentence("test\nssdsds", new Vector3f(0,0,0), (s-=0.001f), 7f);
+		for(Cubef m:mo){
+			Renderer.render(m, activeButton);
+		}
 		
 		switch(activeButton){
 			case 2:
