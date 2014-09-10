@@ -1,4 +1,4 @@
-package Control.Visual.Menu;
+package Control.Visual;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -8,20 +8,24 @@ import javax.imageio.ImageIO;
 
 import org.newdawn.slick.opengl.Texture;
 
+import RenderEngine.Loader;
 import RenderEngine.Renderer;
+import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 
 public class Font{
 	
 	private Character[] Letter;
-	private int size;
+	private Texture BLACK;
 	
-	public Font(String file, int size){
+	public Font(String file){
 		Letter = new Character[26];
-		this.size = size;
+		BLACK = Loader.loadTexture("Font/BLACK");
+		
 		try{
 			BufferedImage fontsheet = ImageIO.read(new File("res/" + file + ".png"));
+			int size = fontsheet.getHeight();
 			
 			for(int i = 0; i < Letter.length; i++){
 				BufferedImage temp = fontsheet.getSubimage(i*size, 0, size, size);
@@ -45,11 +49,12 @@ public class Font{
 		}
 	}
 	
-	public Cubef[] getSentence(String Message, Vector3f translation, float scale, float LetterSize){
+	private Cubef[] getSentence(String Message, Vector3f translation, float scale, float LetterSize){
 		String mes = correctString(Message);
 		Cubef[] temp = new Cubef[getCubeCount(mes)];
 		float x = translation.x;
 		int track = 0;
+		LetterSize*=scale;
 		
 		for(char s:mes.toCharArray()){
 			int Char = getLetterID(s);
@@ -74,11 +79,13 @@ public class Font{
 	
 
 	
-	public void drawText(String Message, Vector3f translation, float scale, float LetterSize, Texture texture){
+	public void drawText(String Message, Vector3f translation, float scale, float LetterSize){
 		Cubef[] mes = getSentence(Message, translation, scale, LetterSize);
 
-		for(Cubef m:mes){
-			Renderer.render(m, texture.getTextureID());
+		for(Cubef c:mes){
+			Model m = new Model(c);
+			m.setTexture(BLACK);
+			Renderer.render(m);
 		}
 	}
 	

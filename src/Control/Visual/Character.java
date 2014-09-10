@@ -1,4 +1,4 @@
-package Control.Visual.Menu;
+package Control.Visual;
 
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
@@ -61,8 +61,8 @@ public class Character {
 		
 		for(int i = 0; i<model.length; i++){
 			c[i] = new Cubef(model[i].StartLocation, model[i].EndLocation);
-			c[i].translate(translation);
 			c[i].enlarge(scale);
+			c[i].translate(translation);
 		}
 		return c;
 	}

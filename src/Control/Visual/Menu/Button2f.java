@@ -39,6 +39,10 @@ public class Button2f{
 		return cube;
 	}
 	
+	public Vector3f getTextLocation(){
+		return new Vector3f((Location.x+1)/10, (Location.y+Size.y/3)/10, Depth+0.6f);
+	}
+	
 
 }
 

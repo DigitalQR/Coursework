@@ -9,14 +9,13 @@ import org.newdawn.slick.opengl.Texture;
 import Control.MainControl;
 import Control.Settings;
 import Control.Visual.DisplayControl;
+import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
-import Control.Visual.Menu.Font;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
-import Tools.Maths.Cubef;
+
 import Tools.Maths.Vector2f;
-import Tools.Maths.Vector3f;
 
 public class MenuStage extends Stage{
 
@@ -29,11 +28,14 @@ public class MenuStage extends Stage{
 	GreyButton, GreyButtonSelected,
 	RedButton, RedButtonSelected,
 	GreenButton, GreenButtonSelected;
+	
 	private Button2f[] MainButton;
 	
 	GamepadSetupStage GamepadSetup;
 	
 	public void prepare(){
+		font = new Font("Font/Default");
+		
 		GreyButton = Loader.loadTexture("Button/Grey");
 		GreyButtonSelected = Loader.loadTexture("Button/Grey_selected");
 		
@@ -42,7 +44,6 @@ public class MenuStage extends Stage{
 
 		GreenButton = Loader.loadTexture("Button/Green");
 		GreenButtonSelected = Loader.loadTexture("Button/Green_selected");
-		font = new Font("Font/Default",8);
 		
 		MainPrepare();
 		
@@ -61,7 +62,7 @@ public class MenuStage extends Stage{
 	public static void input(){
 		lastInput = System.nanoTime()/1000000;
 	}
-	float s = 1;
+	
 	public void update(){
 		//Light position
 		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
@@ -73,10 +74,6 @@ public class MenuStage extends Stage{
 		
 		MainDraw();
 		
-		Cubef[] mo = font.getSentence("test\nssdsds", new Vector3f(0,0,0), (s-=0.001f), 7f);
-		for(Cubef m:mo){
-			Renderer.render(m, activeButton);
-		}
 		
 		switch(activeButton){
 			case 2:
@@ -98,16 +95,10 @@ public class MenuStage extends Stage{
 		MainButton[2] = new Button2f(new Vector2f(0,90), new Vector2f(50, 10), "Setup Controllers");
 		MainButton[3] = new Button2f(new Vector2f(0,75), new Vector2f(50, 10), "Settings");
 		MainButton[4] = new Button2f(new Vector2f(0,60), new Vector2f(50, 10), "Exit");
-		
-		//Finalise MainButtons
-		for(Button2f b:MainButton){
-			b.generateText(font, 7.5f, 30);
-		}
-		
-		MainButton[0].generateText(font, 10f, 10);
 	}
 	
 	private void MainDraw(){
+		//Button logic
 		if(activeButton == 1){
 			if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_UP)){
 				selectedButton--;
@@ -125,7 +116,9 @@ public class MenuStage extends Stage{
 			selectedButton = 1;
 		}
 		
+		//Draw buttons
 		for(int i = 0; i<MainButton.length; i++){
+			
 			Model m = MainButton[i].getModel();
 			if(i == selectedButton){
 				m.setTexture(GreyButtonSelected);
@@ -134,9 +127,11 @@ public class MenuStage extends Stage{
 			}
 			Renderer.render(m);
 			
-			Model[] text = MainButton[i].getText();
-			for(Model t:text){
-				Renderer.render(t);
+			//Draw text
+			if(i != 0){
+				font.drawText(MainButton[i].getMessage(), MainButton[i].getTextLocation(), 0.04f, 7f);
+			}else{
+				font.drawText(MainButton[i].getMessage(), MainButton[i].getTextLocation(), 0.15f, 7.5f);
 			}
 		}
 		

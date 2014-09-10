@@ -2,8 +2,8 @@ package Control.Visual.Stage;
 
 import Control.Settings;
 import Control.Input.Gamepad;
+import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
-import Control.Visual.Menu.Font;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
@@ -12,6 +12,7 @@ public class GamepadSetupStage extends Stage{
 	private Button2f[] ControllerButton;
 	private Button2f[] Controller;
 	private Button2f[] ControllerTask;
+	private Font font;
 	
 	private int currentTask = 0;
 	
@@ -20,18 +21,17 @@ public class GamepadSetupStage extends Stage{
 		Controller = new Button2f[pad.length];
 		ControllerTask = new Button2f[pad.length];
 		
+		this.font = font;
+		
 		for(int i = 0; i<pad.length; i++){
 			Controller[i] = new Button2f(new Vector2f(55, 90-15*i), new Vector2f(60, 10), pad[i].getName());
-			Controller[i].generateText(font, 8f, 30);
 
-			ControllerTask[i] = new Button2f(new Vector2f(120, 90-15*i), new Vector2f(30, 10), "Create Profile");
-			ControllerTask[i].generateText(font, 8f, 45);
+			ControllerTask[i] = new Button2f(new Vector2f(120, 90-15*i), new Vector2f(30, 10), "Create \nProfile");
 		}
 		
 		ControllerButton = new Button2f[1];
 		
 		ControllerButton[0] = new Button2f(new Vector2f(55,105), new Vector2f(95, 10), "Controller Setup");
-		ControllerButton[0].generateText(font, 10f, 30);
 	}
 
 	public void update(){
@@ -39,9 +39,8 @@ public class GamepadSetupStage extends Stage{
 		model.setTexture(MenuStage.GreyButton);
 		Renderer.render(model);
 		
-		for(Model m:ControllerButton[0].getText()){
-			Renderer.render(m);
-		}
+		//Text
+		font.drawText(ControllerButton[0].getMessage(), ControllerButton[0].getTextLocation(), 0.07f, 8f);
 		
 		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_UP)){
 			currentTask--;
@@ -60,15 +59,15 @@ public class GamepadSetupStage extends Stage{
 		
 		
 		for(int i = 0; i<Controller.length; i++){
+			//Controller names
 			Model control = Controller[i].getModel();
 			control.setTexture(MenuStage.GreyButton);
 			Renderer.render(control);
 			
-			Model[] controlText = Controller[i].getText();
-			for(Model m:controlText){
-				Renderer.render(m);
-			}
+			//Text
+			font.drawText(Controller[i].getMessage(), Controller[i].getTextLocation(), 0.04f, 7f);
 
+			//Task
 			Model task = ControllerTask[i].getModel();
 			if(currentTask == i){
 				task.setTexture(MenuStage.GreenButtonSelected);
@@ -77,10 +76,8 @@ public class GamepadSetupStage extends Stage{
 			}
 			Renderer.render(task);
 			
-			Model[] taskText = ControllerTask[i].getText();
-			for(Model m:taskText){
-				Renderer.render(m);
-			}
+			//Text
+			font.drawText(ControllerTask[i].getMessage(), ControllerTask[i].getTextLocation(), 0.03f, 7f);
 		}
 	}
 

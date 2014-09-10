@@ -1,10 +1,8 @@
 package RenderEngine;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 import RenderEngine.Model.Model;
-import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 
 public class Renderer{
@@ -41,25 +39,4 @@ public class Renderer{
 		GL11.glTranslatef(-Location.x, -Location.y, -Location.z);
 	}
 	
-	public static void render(Cubef cube, int textureID){
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE, textureID);
-		
-		float[] vertices = cube.getVertices();
-		int[] indices = cube.getIndices();
-		float[] textureCoords = cube.getTextureCoords();
-		
-		for(int i = 0; i<indices.length; ){
-			GL11.glBegin(GL11.GL_TRIANGLES);
-			
-			for(int n = 0; n<3; n++){
-				int Current = indices[i];
-				GL11.glTexCoord2f(textureCoords[i*2], textureCoords[i*2+1]);
-				GL11.glVertex3f(vertices[Current*3], vertices[Current*3+1], vertices[Current*3+2]);
-				i++;
-			}
-			
-			GL11.glEnd();
-		}
-	}
 }
