@@ -9,6 +9,7 @@ import org.newdawn.slick.opengl.Texture;
 import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
+import Control.Visual.DisplayControl;
 import Entity.Player;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
@@ -21,7 +22,6 @@ public class TestStage extends Stage{
 	private Model[] hb;
 	
 	public void prepare(){
-		MainControl.Paused = false;
 		//Load textures
 		BoxTexture = Loader.loadTexture("Box");
 		PlaneTexture = Loader.loadTexture("Plane");
@@ -37,6 +37,14 @@ public class TestStage extends Stage{
 	}
 	
 	public void update(){
+		for(Player p: Settings.User){
+			if(p.isKeyPressed(p.KEY_START)){
+				MainControl.Paused = true;
+				DisplayControl.setStage(DisplayControl.STAGE_MENU);
+				break;
+			}
+		}
+		
 		Camera.process();
 		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
 		

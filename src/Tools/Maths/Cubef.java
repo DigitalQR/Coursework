@@ -14,6 +14,17 @@ public class Cubef{
 	public Vector3f getLocation() {
 		return StartLocation;
 	}
+	
+	public void translate(Vector3f v) {
+		StartLocation = new Vector3f(StartLocation.x+v.x, StartLocation.y+v.y, StartLocation.z+v.z);
+		EndLocation = new Vector3f(EndLocation.x+v.x, EndLocation.y+v.y, EndLocation.z+v.z);
+	}
+	
+	public void setLocation(Vector3f Loc) {
+		Vector3f Size = getSize();
+		StartLocation = Loc;
+		EndLocation = new Vector3f(Loc.x + Size.x, Loc.y + Size.y, Loc.z + Size.z);
+	}
 
 	public Vector3f getSize(){
 		return new Vector3f(
@@ -22,6 +33,12 @@ public class Cubef{
 				EndLocation.z-StartLocation.z
 				);
 	}
+	
+	public void enlarge(float Size){
+		StartLocation = new Vector3f(StartLocation.x*Size, StartLocation.y*Size, StartLocation.z*Size);
+		EndLocation = new Vector3f(EndLocation.x*Size, EndLocation.y*Size, EndLocation.z*Size);
+	}
+	
 	
 	public float[] getVertices(){
 		float[] temp = {

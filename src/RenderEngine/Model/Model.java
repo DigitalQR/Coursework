@@ -3,13 +3,23 @@ package RenderEngine.Model;
 import org.newdawn.slick.opengl.Texture;
 
 import Tools.Maths.Cubef;
+import Tools.Maths.Vector3f;
 
 public class Model {
 	
 	private float[] vertices, texCoords;
 	private int[] indices;
 	private Texture texture;
+	private Vector3f Location = new Vector3f(0,0,0);
 	
+	public Vector3f getLocation() {
+		return Location;
+	}
+
+	public void setLocation(Vector3f location) {
+		Location = location;
+	}
+
 	public Texture getTexture() {
 		return texture;
 	}
