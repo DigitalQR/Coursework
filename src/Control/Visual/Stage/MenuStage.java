@@ -19,6 +19,7 @@ import Tools.Maths.Vector2f;
 
 public class MenuStage extends Stage{
 
+	public static boolean locked = false;
 	private static long lastInput = 0;
 	private int selectedButton = 0;
 	private int activeButton = 1;
@@ -135,16 +136,18 @@ public class MenuStage extends Stage{
 			}
 		}
 		
-		MainProcessMainButton();
+		if(!locked){
+			MainProcessMainButton();
+		}
 	}
 	
 	private void MainProcessMainButton(){
-		if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_UP)){
+		if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_SELECT)){
 			activeButton = selectedButton;
 			input();
 			switch(selectedButton){
 			
-			//START
+			//Start
 			case 1:
 					DisplayControl.setStage(DisplayControl.STAGE_TESTSTAGE);
 					MainControl.Paused = false;
@@ -163,7 +166,7 @@ public class MenuStage extends Stage{
 				MainControl.CloseRequest = true;
 				break;	
 			}
-		}else if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_DOWN)){
+		}else if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_BACK) && !locked){
 			activeButton = 1;
 		}
 	}

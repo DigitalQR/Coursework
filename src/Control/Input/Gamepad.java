@@ -3,14 +3,17 @@ package Control.Input;
 import java.util.ArrayList;
 import java.util.List;
 
+import Control.Visual.Stage.MenuStage;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
 public class Gamepad{
 	
-	private static Gamepad[] Pad = new Gamepad[0];
+	public static Gamepad[] Pad = new Gamepad[0];
 	private static int GPID_TRACK = 0;
+	
+	public boolean doesProfileExist = false;
 	
 	public static Gamepad[] getGamepads(){
 		return Pad;
@@ -21,13 +24,13 @@ public class Gamepad{
 		Controller[] Controllers = CE.getControllers();
 		
 		for(Controller pad:Controllers){
-			if(pad.getType() == Controller.Type.STICK || pad.getType() == Controller.Type.GAMEPAD){
+			if((pad.getType() == Controller.Type.STICK || pad.getType() == Controller.Type.GAMEPAD) && pad.getComponents().length >= 18){
 				add(new Gamepad(pad));
 			}
 		}
 		
 
-		Pad[1].setBindings();
+		//Pad[1].setBindings();
 	}
 	
 	public static Gamepad getGamepad(int GPID){
@@ -85,27 +88,34 @@ public class Gamepad{
 	}
 
 	List<String> BoundButtons;
-	public void setBindings(){
+	private int bindingTrack;
+	
+	public void startBinding(){
 		BoundButtons = new ArrayList<String>();
-		
-			for(int k = 0; k<KeyName.length; k++){
-				System.out.println("Press " + KeyName[k]);
-				
-				Sub: while(true){
-					poll();
-					for(int i = 0; i <Raw.length; i++){
-						if(Raw[i] != 0 && !BoundButtons.contains(i + " " + Raw[i])){
-							BoundButtons.add(i + " " + Raw[i]);
-							Key[k] = new Button(i, Raw[i]);
-							System.out.println("set.");
-							break Sub;
-						}
-					}
+		bindingTrack = 0;
+	}
+	
+	public String getCurrentBinding(){
+		poll();
+		if(MenuStage.timePassed()){
+			for(int i = 0; i <Raw.length; i++){
+				if(Raw[i] != 0 && !BoundButtons.contains(i + " " + Raw[i])){
+					BoundButtons.add(i + " " + Raw[i]);
+					Key[bindingTrack] = new Button(i, Raw[i]);
+					bindingTrack++;
+					MenuStage.input();
 				}
 			}
-		System.out.println("Done.");
+		}
+		if(bindingTrack >= KeyName.length){
+			return "DONE";
+		}else{
+			return KeyName[bindingTrack];
+		}
+		
 	}
-
+	
+	
 	public void poll(){
 		Component[] Keys = Control.getComponents();
 

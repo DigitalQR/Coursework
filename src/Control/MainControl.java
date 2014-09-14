@@ -45,7 +45,7 @@ public class MainControl{
 		for(int i = 0; i<Settings.User.length; i++){
 			Settings.User[i] = new Player(0,0);
 		}
-		Settings.User[0].setControlScheme(1);
+		//Settings.User[0].setControlScheme(1);
 	}
 
 }
