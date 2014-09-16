@@ -91,6 +91,8 @@ public class Player{
 		
 		KEY_START = start;
 		KEY_SELECT = select;
+		
+		GPID = -1;
 	}
 
 	public void setControlScheme(int GPID){
