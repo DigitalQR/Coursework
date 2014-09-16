@@ -20,7 +20,7 @@ public class Font{
 	private Texture BLACK;
 	
 	public Font(String file){
-		Letter = new Character[26];
+		Letter = new Character[42];
 		BLACK = Loader.loadTexture("Font/BLACK");
 		
 		try{
@@ -113,6 +113,9 @@ public class Font{
 			if(c == '\n'){
 				Out+='\n';
 			}
+			if(c  >= '0' && c <= '?'){
+				Out+=c;
+			}
 		}
 		return Out;
 	}
@@ -120,6 +123,8 @@ public class Font{
 	private int getLetterID(int Char){
 		if(Char <= 'z' && Char >= 'a'){
 			return Char-97;
+		}else if(Char >= '0' && Char <= '?'){
+			return Char-22;
 		}else{
 			return -Char;
 		}

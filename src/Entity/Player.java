@@ -19,7 +19,7 @@ public class Player{
 	int TouchingWall = 0;
 	
 	public Player(float x, float y){
-		setControlScheme(TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_F, Keyboard.KEY_G, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
+		setControlScheme(TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
 		
 		//Checking spawn
 		Main: while(true){
@@ -66,6 +66,8 @@ public class Player{
 	KEY_MENU_DOWN, 
 	KEY_MENU_LEFT, 
 	KEY_MENU_RIGHT,
+	KEY_MENU_SELECT,
+	KEY_MENU_BACK,
 	KEY_START,
 	KEY_SELECT,
 	GPID;
@@ -81,12 +83,16 @@ public class Player{
 		KEY_MENU_DOWN = down;
 		KEY_MENU_LEFT = left;
 		KEY_MENU_RIGHT = right;
+		KEY_MENU_SELECT = primary;
+		KEY_MENU_BACK = secondary;
 		
 		KEY_PRIMARY = primary; 
 		KEY_SECONDARY = secondary;
 		
 		KEY_START = start;
 		KEY_SELECT = select;
+		
+		GPID = -1;
 	}
 
 	public void setControlScheme(int GPID){
@@ -101,6 +107,8 @@ public class Player{
 		KEY_MENU_DOWN = Gamepad.DPAD_DOWN;
 		KEY_MENU_LEFT = Gamepad.DPAD_LEFT;
 		KEY_MENU_RIGHT = Gamepad.DPAD_RIGHT;
+		KEY_MENU_SELECT = Gamepad.A;
+		KEY_MENU_BACK = Gamepad.B;
 		
 		KEY_PRIMARY = Gamepad.RIGHT_TRIGGER; 
 		KEY_SECONDARY = Gamepad.LEFT_TRIGGER;
