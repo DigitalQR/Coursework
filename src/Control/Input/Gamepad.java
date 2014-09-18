@@ -12,7 +12,7 @@ import org.lwjgl.input.Keyboard;
 import Tools.String.Parametres;
 import Control.Settings;
 import Control.Visual.Stage.MenuStage;
-import Entity.Player;
+import Entities.Player;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
@@ -200,8 +200,8 @@ public class Gamepad{
 		new File("Res/GPProfile/" + getName() + ".GPP").delete();
 		
 		for(Player p: Settings.User){
-			if(p.GPID == GPID){
-				p.setControlScheme(Player.TYPE_KEYBOARD, Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
+			if(p.getControlScheme().GPID == GPID){
+				p.setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
 				
 			}
 		}

@@ -4,6 +4,7 @@ import Control.Settings;
 import Control.Input.Gamepad;
 import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
+import Entities.Tools.ControlScheme;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
@@ -47,11 +48,11 @@ public class GamepadSetupStage extends Stage{
 	public void update(){
 		MenuStage.locked = true;
 		
-		if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_BACK) && assign == -1){
+		if(Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_BACK) && assign == -1){
 			MenuStage.locked = false;
 		}
 		
-		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_SELECT)){
+		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_SELECT)){
 			if(assign != -2 && (!Gamepad.Pad[currentButton].getProfileStatus())){				
 				assign = currentButton;
 				MenuStage.input();
@@ -76,11 +77,11 @@ public class GamepadSetupStage extends Stage{
 			font.drawText(Header.getMessage(), Header.getTextLocation(), 0.07f, 8f);
 				
 			//Button movement
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_UP)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_UP)){
 				currentButton--;
 				MenuStage.input();
 			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_DOWN)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_DOWN)){
 				currentButton++;
 				MenuStage.input();
 			}
@@ -92,11 +93,11 @@ public class GamepadSetupStage extends Stage{
 			}
 			
 			//Task button movement
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_RIGHT)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_RIGHT)){
 				currentTask++;
 				MenuStage.input();
 			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_LEFT)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_LEFT)){
 				currentTask--;
 				MenuStage.input();
 			}
@@ -179,11 +180,11 @@ public class GamepadSetupStage extends Stage{
 			
 		//Assign controller to player
 		}else if(assign == -2){
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_LEFT)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_LEFT)){
 				currentTask--;
 				MenuStage.input();
 			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_RIGHT)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_RIGHT)){
 				currentTask++;
 				MenuStage.input();
 			}
@@ -197,7 +198,7 @@ public class GamepadSetupStage extends Stage{
 			
 			font.drawText("Assign To Player:\n" + currentTask, new Vector3f(5.5f, 9, 0), 0.04f, 8f);
 			
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_SELECT)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_SELECT)){
 				Settings.User[currentTask].setControlScheme(Gamepad.Pad[currentButton].getGPID());
 				Gamepad.Pad[currentButton].assignedPlayer = currentTask;
 				MenuStage.input();
