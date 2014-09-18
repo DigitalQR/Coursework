@@ -10,7 +10,8 @@ import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
 import Control.Visual.DisplayControl;
-import Entity.Player;
+import Entities.Player;
+import Entities.Tools.ControlScheme;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
@@ -38,7 +39,7 @@ public class TestStage extends Stage{
 	
 	public void update(){
 		for(Player p: Settings.User){
-			if(p.isKeyPressed(p.KEY_START)){
+			if(p.isKeyPressed(ControlScheme.KEY_START)){
 				MainControl.Paused = true;
 				DisplayControl.setStage(DisplayControl.STAGE_MENU);
 				break;

@@ -1,7 +1,7 @@
 package Control;
 
 import Collision.StaticHitbox2f;
-import Entity.Player;
+import Entities.Player;
 
 public class Settings{
 	//Holds global key values

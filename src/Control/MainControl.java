@@ -6,7 +6,7 @@ import Tools.Maths.Toolkit;
 import Collision.StaticHitbox2f;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
-import Entity.Player;
+import Entities.Player;
 
 
 public class MainControl{
@@ -23,7 +23,7 @@ public class MainControl{
 			long StartTime = System.nanoTime();
 			if(!Paused){
 				for(int i = 0; i<Settings.User.length; i++){
-					Settings.User[i].process();
+					Settings.User[i].update();
 				}
 				
 			}

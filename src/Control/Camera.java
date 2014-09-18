@@ -2,7 +2,7 @@ package Control;
 
 import org.lwjgl.input.Keyboard;
 
-import Entity.Player;
+import Entities.Player;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector3f;
 

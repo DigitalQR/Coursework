@@ -11,10 +11,10 @@ import Control.Settings;
 import Control.Visual.DisplayControl;
 import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
+import Entities.Tools.ControlScheme;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
-
 import Tools.Maths.Vector2f;
 
 public class MenuStage extends Stage{
@@ -101,11 +101,11 @@ public class MenuStage extends Stage{
 	private void MainDraw(){
 		//Button logic
 		if(activeButton == 1){
-			if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_UP)){
+			if(timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_UP)){
 				selectedButton--;
 				input();
 			}
-			if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_DOWN)){
+			if(timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_DOWN)){
 				selectedButton++;
 				input();
 			}
@@ -142,7 +142,7 @@ public class MenuStage extends Stage{
 	}
 	
 	private void MainProcessMainButton(){
-		if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_SELECT)){
+		if(Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_SELECT)){
 			activeButton = selectedButton;
 			input();
 			switch(selectedButton){
@@ -166,7 +166,7 @@ public class MenuStage extends Stage{
 				MainControl.CloseRequest = true;
 				break;	
 			}
-		}else if(Settings.User[0].isKeyPressed(Settings.User[0].KEY_MENU_BACK) && !locked){
+		}else if(Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_BACK) && !locked){
 			activeButton = 1;
 		}
 	}
