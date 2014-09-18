@@ -10,7 +10,7 @@ public class Movement extends Component{
 
 	private ControlScheme control;
 	private Vector2f velocity;
-	private Vector2f accelerationLimit = new Vector2f(0.1f, 2f);
+	private Vector2f accelerationLimit = new Vector2f(0.1f, 20f);
 	boolean touchingGround = false;
 	int touchingWall = 0;
 	
@@ -54,8 +54,8 @@ public class Movement extends Component{
 	
 	private void updateX(Entity e){
 		//Input
-		if(control.isKeyPressed(ControlScheme.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.02f;
-		if(control.isKeyPressed(ControlScheme.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.02f;
+		if(control.isKeyPressed(control.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.02f;
+		if(control.isKeyPressed(control.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.02f;
 		
 		//Slowdown
 		if(Math.round(velocity.x*100) == 0){
@@ -81,10 +81,10 @@ public class Movement extends Component{
 				if(insideHitbox(new Vector2f(location.x + x, location.y), new Vector2f(e.getSize().x, e.getSize().y))){
 					
 					//Can the player wall jump?
-					if(control.isKeyPressed(ControlScheme.KEY_LEFT) && Toolkit.Sign(x) == -1 && !touchingGround){
+					if(control.isKeyPressed(control.KEY_LEFT) && Toolkit.Sign(x) == -1 && !touchingGround){
 						touchingWall = -1;
 					}
-					if(control.isKeyPressed(ControlScheme.KEY_RIGHT) && Toolkit.Sign(x) == 1 && !touchingGround){
+					if(control.isKeyPressed(control.KEY_RIGHT) && Toolkit.Sign(x) == 1 && !touchingGround){
 						touchingWall = 1;
 					}
 					
@@ -102,14 +102,14 @@ public class Movement extends Component{
 	
 	private void updateY(Entity e){
 		//Input
-		if(control.isKeyPressed(ControlScheme.KEY_UP) && velocity.y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
+		if(control.isKeyPressed(control.KEY_UP) && velocity.y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
 			velocity.y = 0.2f;
 			touchingGround = false;
 			if(touchingWall != 0){
 				velocity.x+=0.3f*-touchingWall;
 			}
 		}
-		if(control.isKeyPressed(ControlScheme.KEY_DOWN)) velocity.y = -0.5f;
+		if(control.isKeyPressed(control.KEY_DOWN)) velocity.y = -0.5f;
 		
 		if(Toolkit.Modulus(velocity.y) < accelerationLimit.y){
 			velocity.y-=0.01f;

@@ -59,8 +59,8 @@ public class Cubef{
 	public float[] getTextureCoords(){
 		float[] temp = {
 				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
-				0,1, 0,0, 1,0, 0,1, 1,0, 1,1,
-				0,1, 0,0, 1,0, 0,1, 1,0, 1,1,
+				1,1, 1,0, 0,0, 1,1, 0,0, 0,1,
+				1,1, 1,0, 0,0, 1,1, 0,0, 0,1,
 				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
 				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
 				0,0, 0,1, 1,1, 0,0, 1,1, 1,0 
@@ -76,23 +76,6 @@ public class Cubef{
 				4,0,1, 4,1,5,
 				2,6,7, 2,7,3,
 				6,4,5, 6,5,7
-		};
-		return temp;
-	}
-	
-	public float[] getFrontVertices(){
-		float[] temp = {
-				StartLocation.x, StartLocation.y, StartLocation.z,//FTL 0
-				EndLocation.x, StartLocation.y, StartLocation.z,//FTR 1
-				StartLocation.x, EndLocation.y, StartLocation.z,//FBL 2 
-				EndLocation.x, EndLocation.y, StartLocation.z,//FBR 3
-		};
-		return temp;
-	}
-	
-	public int[] getFrontIndices(){
-		int[] temp = {
-				0,2,3, 0,3,1
 		};
 		return temp;
 	}

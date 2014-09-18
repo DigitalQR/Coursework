@@ -4,7 +4,6 @@ import Control.Settings;
 import Control.Input.Gamepad;
 import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
-import Entities.Tools.ControlScheme;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
@@ -48,11 +47,11 @@ public class GamepadSetupStage extends Stage{
 	public void update(){
 		MenuStage.locked = true;
 		
-		if(Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_BACK) && assign == -1){
+		if(Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_BACK) && assign == -1){
 			MenuStage.locked = false;
 		}
 		
-		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_SELECT)){
+		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_SELECT)){
 			if(assign != -2 && (!Gamepad.Pad[currentButton].getProfileStatus())){				
 				assign = currentButton;
 				MenuStage.input();
@@ -61,9 +60,12 @@ public class GamepadSetupStage extends Stage{
 			}else if(currentTask == TASK_ASSIGN){
 				assign = -2;
 				currentTask = 0;
+				MenuStage.locked = false;
 				MenuStage.input();
 			}else if(currentTask == TASK_DELETE){
+				System.out.println("Too.");
 				Gamepad.Pad[currentButton].deleteProfileStatus();
+				currentTask = 0;
 				MenuStage.input();
 			}
 		}
@@ -77,11 +79,11 @@ public class GamepadSetupStage extends Stage{
 			font.drawText(Header.getMessage(), Header.getTextLocation(), 0.07f, 8f);
 				
 			//Button movement
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_UP)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_UP)){
 				currentButton--;
 				MenuStage.input();
 			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_DOWN)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_DOWN)){
 				currentButton++;
 				MenuStage.input();
 			}
@@ -93,11 +95,11 @@ public class GamepadSetupStage extends Stage{
 			}
 			
 			//Task button movement
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_RIGHT)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_RIGHT)){
 				currentTask++;
 				MenuStage.input();
 			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_LEFT)){
+			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_LEFT)){
 				currentTask--;
 				MenuStage.input();
 			}
@@ -180,35 +182,7 @@ public class GamepadSetupStage extends Stage{
 			
 		//Assign controller to player
 		}else if(assign == -2){
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_LEFT)){
-				currentTask--;
-				MenuStage.input();
-			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_RIGHT)){
-				currentTask++;
-				MenuStage.input();
-			}
-			
-			if(currentTask < 0){
-				currentTask = Settings.User.length;
-			}
-			if(currentTask >= Settings.User.length){
-				currentTask = 0;
-			}
-			
-			font.drawText("Assign To Player:\n" + currentTask, new Vector3f(5.5f, 9, 0), 0.04f, 8f);
-			
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(ControlScheme.KEY_MENU_SELECT)){
-				Settings.User[currentTask].setControlScheme(Gamepad.Pad[currentButton].getGPID());
-				Gamepad.Pad[currentButton].assignedPlayer = currentTask;
-				MenuStage.input();
-				
-				currentTask = 0;
-				currentButton = 0;
-				
-				assign = -1;
-			}
-			
+			Assign();			
 		}else{
 			drawAssignment();
 		}
@@ -216,6 +190,39 @@ public class GamepadSetupStage extends Stage{
 	}
 	
 	public void prepare(){
+	}
+	
+	private int currentPlayer = 0;
+	private void Assign(){
+		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_LEFT)){
+			currentPlayer--;
+			MenuStage.input();
+		}
+		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_RIGHT)){
+			currentPlayer++;
+			MenuStage.input();
+		}
+		
+		if(currentPlayer < 0){
+			currentPlayer = Settings.User.length;
+		}
+		if(currentPlayer >= Settings.User.length){
+			currentPlayer = 0;
+		}
+		
+		font.drawText("Assign To Player:\n" + currentPlayer, new Vector3f(5.5f, 9, 0), 0.04f, 8f);
+		
+		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_SELECT)){
+			Settings.User[currentPlayer].setControlScheme(Gamepad.Pad[currentButton].getGPID());
+			Gamepad.Pad[currentButton].assignToPlayer(currentPlayer);
+			MenuStage.input();
+			
+			currentPlayer = 0;
+			currentTask = 0;
+			currentButton = 0;
+			
+			assign = -1;
+		}
 	}
 	
 	private void drawAssignment(){

@@ -6,7 +6,7 @@ import Control.Input.Gamepad;
 
 public class ControlScheme extends Component{
 	
-	public static int KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_PRIMARY, KEY_SECONDARY, KEY_MENU_UP, KEY_MENU_DOWN,	KEY_MENU_LEFT,	KEY_MENU_RIGHT, KEY_MENU_SELECT,	KEY_MENU_BACK, KEY_START,	KEY_SELECT;
+	public int KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_PRIMARY, KEY_SECONDARY, KEY_MENU_UP, KEY_MENU_DOWN,	KEY_MENU_LEFT,	KEY_MENU_RIGHT, KEY_MENU_SELECT,	KEY_MENU_BACK, KEY_START,	KEY_SELECT;
 	public int GPID;
 	
 	public ControlScheme(int up, int down, int left, int right, int primary, int secondary, int start, int select){

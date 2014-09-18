@@ -160,6 +160,7 @@ public class Gamepad{
 			content+=Key[i].getID() + ":" + Key[i].getState() + ";";
 		}
 		try{
+			new File("Res/GPProfile").mkdirs();
 			Formatter scribe = new Formatter("Res/GPProfile/" + getName() + ".GPP");
 			scribe.format("%s", content);
 			scribe.close();
@@ -193,16 +194,25 @@ public class Gamepad{
 			
 		}
 	}
+	
+	public void assignToPlayer(int i){
+		for(Player p: Settings.User){
+			if(p.getControlScheme().GPID == this.GPID){
+				p.setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
+			}
+		}
+		assignedPlayer = i;
+		Settings.User[i].setControlScheme(this.GPID);
+	}
 
-	public void deleteProfileStatus() {
+	public void deleteProfileStatus(){
 		this.doesProfileExist = false;
 		this.assignedPlayer = -1;
 		new File("Res/GPProfile/" + getName() + ".GPP").delete();
 		
 		for(Player p: Settings.User){
-			if(p.getControlScheme().GPID == GPID){
+			if(p.getControlScheme().GPID == this.GPID){
 				p.setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
-				
 			}
 		}
 	}
