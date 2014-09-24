@@ -23,6 +23,8 @@ public class Renderer{
 		Vector3f Location = model.getLocation();
 		GL11.glTranslatef(Location.x, Location.y, Location.z);
 		
+		GL11.glColor4f(model.getRed(), model.getGreen(), model.getBlue(), model.getAlpha());
+		
 		for(int i = 0; i<indices.length; ){
 			GL11.glBegin(GL11.GL_TRIANGLES);
 			

@@ -28,7 +28,7 @@ public class MainControl{
 				
 			}
 			
-			while(Toolkit.Differencef(StartTime, System.nanoTime())< (1000/60)*1000000){
+			while(Toolkit.Differencef(StartTime, System.nanoTime())< (1000/30)*1000000){
 				try{
 					TimeUnit.NANOSECONDS.sleep(1);
 				}catch(InterruptedException e){

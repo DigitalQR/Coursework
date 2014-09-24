@@ -1,7 +1,5 @@
 package Control;
 
-import org.lwjgl.input.Keyboard;
-
 import Entities.Player;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector3f;
@@ -30,13 +28,7 @@ public class Camera {
 		return Rotation;
 	}
 	
-	public static void process(){
-		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			Location_AIM.z+=0.1;
-		}if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			Location_AIM.z-=0.1;
-		}
-		
+	public static void process(){		
 		float x = 0, y = 0;
 		Player[] User = Settings.User.clone();
 		for(int i = 0; i<User.length; i++){

@@ -54,14 +54,14 @@ public class Movement extends Component{
 	
 	private void updateX(Entity e){
 		//Input
-		if(control.isKeyPressed(control.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.02f;
-		if(control.isKeyPressed(control.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.02f;
+		if(control.isKeyPressed(control.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.08f;
+		if(control.isKeyPressed(control.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.08f;
 		
 		//Slowdown
 		if(Math.round(velocity.x*100) == 0){
 			velocity.x = 0;
 		}else{
-			velocity.x-=0.01*Toolkit.Sign(velocity.x);
+			velocity.x-=0.04*Toolkit.Sign(velocity.x);
 		}
 
 		//Normalisation
@@ -106,7 +106,7 @@ public class Movement extends Component{
 			velocity.y = 0.2f;
 			touchingGround = false;
 			if(touchingWall != 0){
-				velocity.x+=0.3f*-touchingWall;
+				velocity.x+=0.6f*-touchingWall;
 			}
 		}
 		if(control.isKeyPressed(control.KEY_DOWN)) velocity.y = -0.5f;

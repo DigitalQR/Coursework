@@ -10,6 +10,7 @@ import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
 import Control.Visual.DisplayControl;
+import Control.Visual.Entities.PlayerTemplate;
 import Entities.Player;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
@@ -19,6 +20,7 @@ import Tools.Maths.Vector3f;
 
 public class TestStage extends Stage{
 	private Texture BoxTexture, PlaneTexture;
+	private PlayerTemplate[] Player;
 	private Model[] hb;
 	
 	public void prepare(){
@@ -33,6 +35,7 @@ public class TestStage extends Stage{
 			hb[i] = new Model(temp);
 			hb[i].setTexture(BoxTexture);
 		}
+		
 		
 	}
 	

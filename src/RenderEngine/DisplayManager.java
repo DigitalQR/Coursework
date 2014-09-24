@@ -5,22 +5,26 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import Tools.Maths.Vector2f;
+
+@SuppressWarnings("unused")
 public class DisplayManager{
 	
 	private static final int FPS = 120;
+	private static Vector2f p480 = new Vector2f(720, 480);
+	private static Vector2f p720 = new Vector2f(1280, 720);
+	private static Vector2f p1080= new Vector2f(1920, 1080);
 	
 	
 	public static void create(boolean fullscreen){
+		Vector2f Res = p720;
 		
 		try{
 			DisplayMode display = null;
 			DisplayMode[] mod = Display.getAvailableDisplayModes();
 			
 			for(DisplayMode m:mod){
-				//720, 480
-				//1280, 720
-				//1920 1080
-				if(m.getWidth() == 1280 && m.getHeight() == 720 && m.isFullscreenCapable()){
+				if(m.getWidth() == Res.x && m.getHeight() == Res.y && m.isFullscreenCapable()){
 					display = m;
 				}
 			}

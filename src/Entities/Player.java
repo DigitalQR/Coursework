@@ -22,7 +22,6 @@ public class Player extends Entity{
 		
 		control = new ControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
 		this.addComponent(new Movement(control));
-		
 	}	
 	
 	private void checkSpawn(float x, float y){
