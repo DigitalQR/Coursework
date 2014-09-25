@@ -6,9 +6,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.newdawn.slick.opengl.Texture;
-
-import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
@@ -17,11 +14,9 @@ import Tools.Maths.Vector3f;
 public class Font{
 	
 	private Character[] Letter;
-	private Texture BLACK;
 	
 	public Font(String file){
 		Letter = new Character[42];
-		BLACK = Loader.loadTexture("Font/BLACK");
 		
 		try{
 			BufferedImage fontsheet = ImageIO.read(new File("res/" + file + ".png"));
@@ -59,7 +54,7 @@ public class Font{
 		for(char s:mes.toCharArray()){
 			int Char = getLetterID(s);
 			if(Char >= 0){
-				Cubef[] t = Letter[Char].getModel(translation, scale);
+				Cubef[] t = Letter[Char].getCubeModel(translation, scale);
 				for(int i = 0; i < t.length; i++){
 					temp[track++] = t[i];
 				}
@@ -84,7 +79,7 @@ public class Font{
 
 		for(Cubef c:mes){
 			Model m = new Model(c);
-			m.setTexture(BLACK);
+			m.setRGBA(0f, 0f, 0f, 1);
 			Renderer.render(m);
 		}
 	}

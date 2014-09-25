@@ -11,6 +11,7 @@ import Control.MainControl;
 import Control.Visual.Stage.MenuStage;
 import Control.Visual.Stage.Stage;
 import Control.Visual.Stage.TestStage;
+import Entities.Player;
 import RenderEngine.DisplayManager;
 import RenderEngine.Renderer;
 
@@ -87,6 +88,8 @@ public class DisplayControl implements Runnable{
 		for(int i = 0; i < stage.length; i++){
 			stage[i].prepare();
 		}
+		
+		Player.loadTexture();
 		
 		while(!Display.isCloseRequested() && !MainControl.CloseRequest){
 			Renderer.prepare();

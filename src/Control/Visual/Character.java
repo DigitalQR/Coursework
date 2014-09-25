@@ -56,7 +56,7 @@ public class Character {
 		model = temp;
 	}
 	
-	public Cubef[] getModel(Vector3f translation, float scale){
+	public Cubef[] getCubeModel(Vector3f translation, float scale){
 		Cubef[] c = new Cubef[model.length];
 		
 		for(int i = 0; i<model.length; i++){

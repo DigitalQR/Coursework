@@ -2,7 +2,7 @@ package Entities.Tools;
 
 import Tools.Maths.Vector3f;
 
-public class Entity{
+public abstract class Entity{
 	
 	private Component[] component = new Component[0];
 	private Vector3f location;
@@ -35,11 +35,13 @@ public class Entity{
 		component = temp;
 	}
 	
-	public void update(){
+	protected void updateComponents(){
 		for(Component c: component){
 			c.update(this);
 		}
 	}
+	
+	public abstract void update();
 	
 	public Vector3f getSize() {
 		return size;

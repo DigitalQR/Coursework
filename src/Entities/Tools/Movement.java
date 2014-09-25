@@ -10,7 +10,7 @@ public class Movement extends Component{
 
 	private ControlScheme control;
 	private Vector2f velocity;
-	private Vector2f accelerationLimit = new Vector2f(0.1f, 20f);
+	private Vector2f accelerationLimit = new Vector2f(0.15f, 20f);
 	boolean touchingGround = false;
 	int touchingWall = 0;
 	
@@ -57,13 +57,6 @@ public class Movement extends Component{
 		if(control.isKeyPressed(control.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.08f;
 		if(control.isKeyPressed(control.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.08f;
 		
-		//Slowdown
-		if(Math.round(velocity.x*100) == 0){
-			velocity.x = 0;
-		}else{
-			velocity.x-=0.04*Toolkit.Sign(velocity.x);
-		}
-
 		//Normalisation
 		Vector3f location = e.getLocation();
 		location.x = Math.round(location.x*100);
@@ -71,6 +64,13 @@ public class Movement extends Component{
 
 		velocity.x = Math.round(velocity.x*100);
 		velocity.x/=100;
+		
+		//Slowdown
+		if(Math.round(velocity.x*100) == 0){
+			velocity.x = 0;
+		}else{
+			velocity.x-=0.04*Toolkit.Sign(velocity.x);
+		}
 		
 		//Hitbox detection
 		int touchingWall = 0;
@@ -103,7 +103,7 @@ public class Movement extends Component{
 	private void updateY(Entity e){
 		//Input
 		if(control.isKeyPressed(control.KEY_UP) && velocity.y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
-			velocity.y = 0.2f;
+			velocity.y = 0.3f;
 			touchingGround = false;
 			if(touchingWall != 0){
 				velocity.x+=0.6f*-touchingWall;
@@ -112,7 +112,7 @@ public class Movement extends Component{
 		if(control.isKeyPressed(control.KEY_DOWN)) velocity.y = -0.5f;
 		
 		if(Toolkit.Modulus(velocity.y) < accelerationLimit.y){
-			velocity.y-=0.01f;
+			velocity.y-=0.02f;
 		}
 		
 		//Normalise

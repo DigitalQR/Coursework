@@ -14,7 +14,12 @@ public class Renderer{
 	}
 	
 	public static void render(Model model){
-		model.getTexture().bind();
+		try{
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			model.getTexture().bind();
+		}catch(NullPointerException e){
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+		};
 		
 		float[] vertices = model.getVertices();
 		int[] indices = model.getIndices();
