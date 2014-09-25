@@ -12,6 +12,7 @@ import Entities.Player;
 public class MainControl{
 	public static boolean CloseRequest = false;
 	public static boolean Paused = true;
+	public final static int UPS = (1000/30)*1000000;
 	
 	
 	public static void main(String[] args){
@@ -28,7 +29,7 @@ public class MainControl{
 				
 			}
 			
-			while(Toolkit.Differencef(StartTime, System.nanoTime())< (1000/60)*1000000){
+			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
 				try{
 					TimeUnit.NANOSECONDS.sleep(1);
 				}catch(InterruptedException e){

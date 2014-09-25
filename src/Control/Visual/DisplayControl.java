@@ -11,6 +11,7 @@ import Control.MainControl;
 import Control.Visual.Stage.MenuStage;
 import Control.Visual.Stage.Stage;
 import Control.Visual.Stage.TestStage;
+import Entities.Player;
 import RenderEngine.DisplayManager;
 import RenderEngine.Renderer;
 
@@ -35,6 +36,9 @@ public class DisplayControl implements Runnable{
 		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_POINT);
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	private static void setupLighting(){
@@ -84,6 +88,8 @@ public class DisplayControl implements Runnable{
 		for(int i = 0; i < stage.length; i++){
 			stage[i].prepare();
 		}
+		
+		Player.loadTexture();
 		
 		while(!Display.isCloseRequested() && !MainControl.CloseRequest){
 			Renderer.prepare();

@@ -65,6 +65,11 @@ public class MenuStage extends Stage{
 	
 	public void update(){
 		//Light position
+		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
+		Ambient.put(new float[]{0f, 0f, 0f, 1f});
+        Ambient.flip();
+        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
+        
 		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
         Location.put(new float[]{0, 0 , 3,1});
         Location.flip();

@@ -14,7 +14,12 @@ public class Renderer{
 	}
 	
 	public static void render(Model model){
-		model.getTexture().bind();
+		try{
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+			model.getTexture().bind();
+		}catch(NullPointerException e){
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+		};
 		
 		float[] vertices = model.getVertices();
 		int[] indices = model.getIndices();
@@ -22,6 +27,8 @@ public class Renderer{
 		
 		Vector3f Location = model.getLocation();
 		GL11.glTranslatef(Location.x, Location.y, Location.z);
+		
+		GL11.glColor4f(model.getRed(), model.getGreen(), model.getBlue(), model.getAlpha());
 		
 		for(int i = 0; i<indices.length; ){
 			GL11.glBegin(GL11.GL_TRIANGLES);

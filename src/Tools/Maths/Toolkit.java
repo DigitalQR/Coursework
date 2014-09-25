@@ -29,16 +29,15 @@ public class Toolkit {
 		return (float)b-a;
 	}
 	
-	public static float TendTo(float In, float Aim, float Factor){
-		float Temp = 0;
-		if(In < Aim){
-			Temp = Math.round((In*(1+Factor))*100);
-			Temp/=100;
-			return Temp;
-		}else{
-			Temp = Math.round((In*(1-Factor))*100);
-			Temp/=100;
-			return Temp;
-		}
+	public static void main(String[] args){
+		Vector2f pos0 = new Vector2f(16.5f,83.2f);
+		Vector2f pos1 = new Vector2f(304,96);
+		float value = 504f;
+		
+		System.out.println(LERP(pos0, pos1, value));
+	}
+	
+	public static float LERP(Vector2f pos0, Vector2f pos1, float value){
+		return (float)(pos0.y + (pos1.y-pos0.y)*(value-pos0.x)/(pos1.x-pos0.x));
 	}
 }

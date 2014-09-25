@@ -1,7 +1,5 @@
 package Control;
 
-import org.lwjgl.input.Keyboard;
-
 import Entities.Player;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector3f;
@@ -30,18 +28,11 @@ public class Camera {
 		return Rotation;
 	}
 	
-	public static void process(){
-		if(Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			Location_AIM.z+=0.1;
-		}if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			Location_AIM.z-=0.1;
-		}
-		
+	public static void process(Player[] User){		
 		float x = 0, y = 0;
-		Player[] User = Settings.User.clone();
 		for(int i = 0; i<User.length; i++){
-			x-=User[i].getLocation().x;
-			y-=User[i].getLocation().y;
+			x-=User[i].getLERPLocation().x;
+			y-=User[i].getLERPLocation().y;
 		}
 		Location_AIM.x = x/User.length;
 		Location_AIM.y = y/User.length;
@@ -52,8 +43,8 @@ public class Camera {
 		for(int i = 0; i<User.length; i++){
 			for(int n = 0; n<User.length; n++){
 				if(n!=i){
-					float dx = (float)-Toolkit.Modulus(Toolkit.Differencef(User[i].getLocation().x, User[n].getLocation().x));
-					float dy = (float)-Toolkit.Modulus(Toolkit.Differencef(User[i].getLocation().y, User[n].getLocation().y));
+					float dx = (float)-Toolkit.Modulus(Toolkit.Differencef(User[i].getLERPLocation().x, User[n].getLERPLocation().x));
+					float dy = (float)-Toolkit.Modulus(Toolkit.Differencef(User[i].getLERPLocation().y, User[n].getLERPLocation().y));
 					if(dx < Delta){
 						Delta = dx;
 					}if(dy < Delta){

@@ -9,7 +9,6 @@ public class StaticHitbox2f{
 	public float x, y, width, height;
 	int ID;
 	
-	
 	public StaticHitbox2f(float X, float Y, float WIDTH, float HEIGHT){
 		x = X;
 		y = Y;
