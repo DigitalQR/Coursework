@@ -9,8 +9,8 @@ import org.lwjgl.util.glu.GLU;
 
 import Control.MainControl;
 import Control.Visual.Stage.MenuStage;
+import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.Stage;
-import Control.Visual.Stage.TestStage;
 import Entities.Player;
 import RenderEngine.DisplayManager;
 import RenderEngine.Renderer;
@@ -63,8 +63,9 @@ public class DisplayControl implements Runnable{
 
 	
 	public static final int
-	STAGE_TESTSTAGE = 0,
-	STAGE_MENU = 1;
+	STAGE_OVERWORLD = 0,
+	STAGE_MENU = 1,
+	STAGE_TEST = 3;
 
 	private static Stage[] stage;
 	private static int STAGE_Current = STAGE_MENU;
@@ -76,7 +77,7 @@ public class DisplayControl implements Runnable{
 	private static void setupStages(){
 		stage = new Stage[2];
 		
-		stage[0] = new TestStage();
+		stage[0] = new OverworldStage();
 		stage[1] = new MenuStage();
 	}
 

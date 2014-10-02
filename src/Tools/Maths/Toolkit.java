@@ -29,15 +29,32 @@ public class Toolkit {
 		return (float)b-a;
 	}
 	
-	public static void main(String[] args){
-		Vector2f pos0 = new Vector2f(16.5f,83.2f);
-		Vector2f pos1 = new Vector2f(304,96);
-		float value = 504f;
-		
-		System.out.println(LERP(pos0, pos1, value));
-	}
-	
 	public static float LERP(Vector2f pos0, Vector2f pos1, float value){
 		return (float)(pos0.y + (pos1.y-pos0.y)*(value-pos0.x)/(pos1.x-pos0.x));
 	}
+	
+	public static Vector3f toCartesian(Vector3f p){
+		float r = p.x;
+		float theta = p.y;
+		float psi = p.z;
+		
+		float x = (float) (r*Math.sin(Math.toRadians(theta))*Math.cos(Math.toRadians(psi)));
+		float y = (float) (r*Math.sin(Math.toRadians(theta))*Math.sin(Math.toRadians(psi)));
+		float z = (float) (r*Math.cos(Math.toRadians(theta)));
+		
+		return new Vector3f(x,y,z);
+	}
+	
+	public static Vector3f toPolar(Vector3f p){
+		float x = p.x;
+		float y = p.y;
+		float z = p.z;
+		
+		float r = (float) Math.sqrt(x*x + y*y + z*z);
+		float theta = (float) Math.acos(z/r);
+		float psi = (float) Math.atan(y/x);
+		
+		return new Vector3f(r,theta,psi);
+	}
+	
 }

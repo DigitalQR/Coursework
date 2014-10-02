@@ -153,7 +153,7 @@ public class MenuStage extends Stage{
 			
 			//Start
 			case 1:
-					DisplayControl.setStage(DisplayControl.STAGE_TESTSTAGE);
+					DisplayControl.setStage(DisplayControl.STAGE_OVERWORLD);
 					MainControl.Paused = false;
 				break;
 			
