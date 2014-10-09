@@ -53,7 +53,7 @@ public class Node {
 	
 	public Node(String name, int type, int ID){
 		this.location = new Vector3f(0,0,0);
-		this.parentID = 0-1;
+		this.parentID = -1;
 		if(trackID <= ID){
 			trackID = ID+1;
 		}
@@ -103,7 +103,15 @@ public class Node {
 		this.r = r;
 	}
 
-	public float getTheta() {
+	public float getTrueTheta(){
+		if(parentID != -1){
+			return theta + Node.getNode(parentID).getTrueTheta();
+		}else{
+			return theta;	
+		}
+	}
+	
+	public float getTheta(){
 		return theta;
 	}
 
@@ -113,7 +121,15 @@ public class Node {
 		this.theta = theta;
 	}
 
-	public float getPsi() {
+	public float getTruePsi() {
+		if(parentID != -1){
+			return psi + Node.getNode(parentID).getTruePsi();
+		}else{
+			return psi;	
+		}
+	}
+	
+	public float getPsi(){
 		return psi;
 	}
 
@@ -129,9 +145,10 @@ public class Node {
 	
 	public Vector3f getLocation(){
 		Vector3f loc = new Vector3f(location.x, location.y, location.z);
+		
 		if(parentID != -1){
 			loc = getParentLocation();
-			Vector3f trans = Toolkit.toCartesian(new Vector3f(r, theta+getNode(parentID).getTheta(), psi+getNode(parentID).getPsi()));
+			Vector3f trans = Toolkit.toCartesian(new Vector3f(r, getTrueTheta(), getTruePsi()));
 			loc.x += trans.x;
 			loc.y += trans.y;
 			loc.z += trans.z;
@@ -143,7 +160,9 @@ public class Node {
 	public Vector3f getParentLocation(){
 		Vector3f loc = new Vector3f(0,0,0);
 		if(parentID != -1){
-			loc = getNode(parentID).getLocation();
+			try{
+				loc = getNode(parentID).getLocation();
+			}catch(NullPointerException e){}
 		}
 		return loc;
 	}

@@ -6,9 +6,7 @@ import java.util.Formatter;
 import java.util.Scanner;
 
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.Texture;
 
-import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector3f;
@@ -16,12 +14,8 @@ import Tools.String.Parametres;
 
 public class Triangle{
 	public static Triangle[] triangle = new Triangle[0];
-	public static Texture texture;
 	
 	public static void addTriangle(Triangle t){
-		if(texture.equals(null)){
-			texture = Loader.loadTexture("Box_64");
-		}
 		Triangle[] temp = new Triangle[triangle.length+1];
 		
 		for(int i = 0; i<triangle.length; i++){

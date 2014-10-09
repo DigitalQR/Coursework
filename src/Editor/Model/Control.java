@@ -17,6 +17,7 @@ public class Control{
 		DisplayManager.create(false);
 		setupOpenGL();
 		Option.launch();
+		Option.setNew();
 		run();
 	}
 	

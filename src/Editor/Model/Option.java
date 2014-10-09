@@ -26,6 +26,7 @@ public class Option{
 	public static boolean floorAssist = true;
 	public static boolean drawNodes = true;
 	public static boolean drawVertices= true;
+	public static boolean drawPartOnly= false;
 	public static float nodeScale = 0.2f;
 	public static boolean drawCross = true; 
 	
@@ -145,9 +146,12 @@ public class Option{
 			});
 		master.add(vertices);
 		
-		master.add(createText("XYZ Cross:", 0, objectHeight()));
+		int label2 = objectHeight();
+		int button2 = objectHeight();
+		
+		master.add(createText("XYZ Cross:", 0, label2));
 		final JButton XYZ = new JButton("" + drawCross);
-			XYZ.setLocation(10, objectHeight());
+			XYZ.setLocation(10, button2);
 			XYZ.setSize(80, objectSize());
 			XYZ.addActionListener(new ActionListener(){
 
@@ -162,6 +166,23 @@ public class Option{
 			});
 		master.add(XYZ);
 		
+		master.add(createText("Draw part only:", 100, label2));
+		final JButton part = new JButton("" + drawPartOnly);
+			part.setLocation(110, button2);
+			part.setSize(80, objectSize());
+			part.addActionListener(new ActionListener(){
+
+				public void actionPerformed(ActionEvent arg0){
+					if(drawPartOnly){
+						drawPartOnly = false;
+					}else{
+						drawPartOnly = true;
+					}
+					part.setText("" + drawPartOnly);
+				}
+			});
+		master.add(part);
+		
 		JPanel line = new JPanel();
 		line.setLocation(5, objectHeight()+5);
 		line.setSize(frame.getWidth()-20 , 1);
@@ -172,8 +193,8 @@ public class Option{
 	}
 	
 	private static JTextArea nodeText, vertexText;
-	public static JTextField[] current = new JTextField[7];
-	public static final int FIELD_ID = 0, FIELD_PARENT_ID = 1, FIELD_NAME = 2, FIELD_SET_ID = 3, FIELD_X = 4, FIELD_Y = 5, FIELD_Z = 6;
+	public static JTextField[] current = new JTextField[8];
+	public static final int FIELD_ID = 0, FIELD_PARENT_ID = 1, FIELD_NAME = 2, FIELD_SET_ID = 3, FIELD_X = 4, FIELD_Y = 5, FIELD_Z = 6, FIELD_INTEREST_ID = 7;
 	
 	private static JPanel nodeSetup(JPanel master){
 		master.add(createText("Node Settings", frame.getWidth()/2-50, objectHeight()));
@@ -229,6 +250,28 @@ public class Option{
 		master.add(addV);
 
 		//Assignment
+		int labely = objectHeight();
+		int fieldy = objectHeight();
+		
+		master.add(createText("Select Interest ID:", 10, labely));
+		current[FIELD_INTEREST_ID] = new JTextField();
+		current[FIELD_INTEREST_ID].setLocation(10, fieldy);
+		current[FIELD_INTEREST_ID].setSize(50, objectSize());
+		current[FIELD_INTEREST_ID].setEditable(true);
+		
+		JButton interestSet = new JButton("Set");
+		interestSet.setLocation(60, fieldy);
+		interestSet.setSize(80, objectSize()-1);
+		interestSet.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0){
+				try{
+					updateVertexList();
+				}catch(NumberFormatException e){}
+			}
+		});
+		master.add(interestSet);
+		
 		int label0y = objectHeight();
 		int field0y = objectHeight();
 		
@@ -481,6 +524,16 @@ public class Option{
 		}		
 	}
 	
+	public static int getCurrentInterestNode(){
+		try{
+			return Integer.valueOf(Option.current[Option.FIELD_INTEREST_ID].getText());
+		}catch(NullPointerException | NumberFormatException e){	
+			return -1;
+		}
+	}
+	
+	
+	
 	public static void updateNodeList(){
 		String list = "";
 		
@@ -499,24 +552,40 @@ public class Option{
 		updateVertexList();
 	} 
 	
+	
 	public static void updateVertexList(){
 		String list = "";
 		
 		for(Node n: Node.node){
 			if(n.getType() == Node.TYPE_VERTEX){
-				if(n.getParentID() != -1){
-					list += Node.getNode(n.getParentID()).getName(); 
-				}
-				list += "[" + n.getID() + "](" + n.getName() + "):\n";
-				if(n.getParentID() != -1){
-					list += "   ParentID: " + n.getParentID() + "\n";
-				}else{
-					list += "   Location: (" + n.getLocation().x + ", " + n.getLocation().y + ", " + n.getLocation().z + ")\n";
+				if(getCurrentInterestNode() == -1 || getCurrentInterestNode() == n.getParentID()){
+					if(n.getParentID() != -1){
+						list += Node.getNode(n.getParentID()).getName(); 
+					}
+					list += "[" + n.getID() + "](" + n.getName() + "):\n";
+					if(n.getParentID() != -1){
+						list += "   ParentID: " + n.getParentID() + "\n";
+					}else{
+						list += "   Location: (" + n.getLocation().x + ", " + n.getLocation().y + ", " + n.getLocation().z + ")\n";
+					}
 				}
 			}
 		}
 		
 		vertexText.setText(list);
+	}
+	
+	
+	public static void setNew(){
+		Triangle.triangle = new Triangle[0];
+		Node.node = new Node[0];
+		Node.reset();
+
+		new Node("Offset", Node.TYPE_NODE);
+		new Node("Rotation", Node.TYPE_NODE).setParentID(0);
+		
+		updateNodeList();
+		updateVertexList();
 	}
 	
 	private static JMenuBar menuPopulation(){
@@ -529,12 +598,7 @@ public class Option{
 		New.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent arg0){
-				Triangle.triangle = new Triangle[0];
-				Node.node = new Node[0];
-				Node.reset();
-				
-				updateNodeList();
-				updateVertexList();
+				setNew();
 			}
 		});
 		file.add(New);
@@ -575,13 +639,16 @@ public class Option{
 		return menuBar;
 	}
 	
+	
 	private static int objectHeight(){
 		return verticalTrack+=objectSize();
 	}
 	
+	
 	private static int objectSize(){
 		return 15;
 	}
+	
 	
 	public static JLabel createText(String s, int x, int y){
 		JLabel text = new JLabel(s);
@@ -589,5 +656,4 @@ public class Option{
 		text.setSize((int) text.getPreferredSize().getWidth(), objectSize());
 		return text;
 	}
-	
 }
