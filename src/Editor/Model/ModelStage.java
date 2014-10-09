@@ -44,7 +44,7 @@ public class ModelStage extends Stage{
 				if((n.getType() == Node.TYPE_NODE && Option.drawNodes) || (n.getType() == Node.TYPE_VERTEX && Option.drawVertices)){
 					if(n.getType() == Node.TYPE_NODE){
 						drawPoint(n.getLocation(), Option.nodeScale, n.getID(), new float[]{0,0,0});
-					}else{
+					}else if(n.getParentID() == Option.getCurrentInterestNode() || !Option.drawPartOnly){
 						drawPoint(n.getLocation(), Option.nodeScale/2, n.getID(), new float[]{0,1,1});
 					}
 					if(n.getParentID() != -1){
