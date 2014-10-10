@@ -63,7 +63,6 @@ public class GamepadSetupStage extends Stage{
 				MenuStage.locked = false;
 				MenuStage.input();
 			}else if(currentTask == TASK_DELETE){
-				System.out.println("Too.");
 				Gamepad.Pad[currentButton].deleteProfileStatus();
 				currentTask = 0;
 				MenuStage.input();

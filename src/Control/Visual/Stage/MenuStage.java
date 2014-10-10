@@ -11,10 +11,12 @@ import Control.Settings;
 import Control.Visual.DisplayControl;
 import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
+import Entities.Player;
 import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
+import Tools.Maths.Vector3f;
 
 public class MenuStage extends Stage{
 
@@ -49,6 +51,10 @@ public class MenuStage extends Stage{
 		
 		GamepadSetup = new GamepadSetupStage();
 		GamepadSetup.prepare(font);
+		
+		player = new Player(0,0);
+		player.setLocation(new Vector3f(8f,10f,0));
+
 	}
 	
 	public static boolean timePassed(){
@@ -63,6 +69,8 @@ public class MenuStage extends Stage{
 		lastInput = System.nanoTime()/1000000;
 	}
 	
+	private static Player player;
+	
 	public void update(){
 		//Light position
 		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
@@ -74,8 +82,16 @@ public class MenuStage extends Stage{
         Location.put(new float[]{0, 0 , 3,1});
         Location.flip();
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
-        
+
 		GL11.glTranslatef(-7.7f, -7.5f, -10);
+		
+		GL11.glRotatef(90, 0, 1, 0);
+			Model m = player.getModel();
+			m.scaleBy(100);
+			m.setLocation(new Vector3f(50,-20,20));
+	        Renderer.render(m);
+		GL11.glRotatef(90, 0, -1, 0);
+
 		
 		MainDraw();
 		

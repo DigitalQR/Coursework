@@ -3,7 +3,6 @@ package Collision;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 
-
 public class StaticHitbox2f{
 	private static int IDTrack = 0;
 	public float x, y, width, height;

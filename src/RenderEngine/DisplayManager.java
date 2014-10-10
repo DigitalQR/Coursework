@@ -5,6 +5,7 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import Debug.ErrorPopup;
 import Tools.Maths.Vector2f;
 
 @SuppressWarnings("unused")
@@ -36,9 +37,7 @@ public class DisplayManager{
 			Display.setTitle("Untiled Game");
 			
 		}catch(LWJGLException e){
-			System.err.println("[ERROR]" + e.getMessage());
-			e.printStackTrace();
-			System.exit(0);
+			ErrorPopup.createMessage(e);
 		}
 
 	}

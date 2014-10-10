@@ -25,6 +25,8 @@ public class Player extends Entity{
 	private Vector3f LastLocation = new Vector3f(0,0,0);
 	private static Texture PlaneTexture;
 	
+	private static Model model;
+	
 	public Player(float x, float y){
 		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.6f, 0.2f));
 		checkSpawn(x,y);
@@ -55,6 +57,7 @@ public class Player extends Entity{
 	
 	public static void loadTexture(){
 		PlaneTexture = Loader.loadTexture("Plane");
+		model = Model.loadData("player2");
 	}
 	
 	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start, int select){
@@ -97,11 +100,20 @@ public class Player extends Entity{
 	}
 	
 	public Model getModel(){
-		Vector3f location = getLERPLocation();
-		Cubef temp1 = new Cubef(location, new Vector3f(location.x+this.getSize().x, location.y+this.getSize().y, 0.2f+this.getSize().x));
-		Model m = new Model(temp1);
+		Model m = new Model(model.getVertices().clone(), model.getTextureCoords().clone(), model.getIndices().clone());
+		m.setLocation(getLERPLocation());
+		m.setRGBA(1, 0, 0, 1);
 		m.setTexture(PlaneTexture);
 		
+		return m;
+	}
+	
+	public Model getHitbox(){
+		Cubef temp1 = new Cubef(new Vector3f(0,0,0), new Vector3f(this.getSize().x, this.getSize().y, 0.2f+this.getSize().x));
+		Model m = new Model(temp1);
+		m.setTexture(PlaneTexture);
+		m.setLocation(getLERPLocation());
+		m.setRGBA(1, 1, 1, 0.3f);
 		return m;
 	}
 }

@@ -12,6 +12,7 @@ import org.lwjgl.input.Keyboard;
 import Tools.String.Parametres;
 import Control.Settings;
 import Control.Visual.Stage.MenuStage;
+import Debug.ErrorPopup;
 import Entities.Player;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -132,15 +133,19 @@ public class Gamepad{
 	}
 	
 	public void poll(){
-		Component[] Keys = Control.getComponents();
-
-		Control.poll();
-		for(int i = 0; i<Keys.length; i++){
-			if(Keys[i].isAnalog()){
-				Raw[i] = Math.round(Keys[i].getPollData());
-			}else{
-				Raw[i] = (Keys[i].getPollData());
+		if(Control.poll()){
+			Component[] Keys = Control.getComponents();
+	
+			Control.poll();
+			for(int i = 0; i<Keys.length; i++){
+				if(Keys[i].isAnalog()){
+					Raw[i] = Math.round(Keys[i].getPollData());
+				}else{
+					Raw[i] = (Keys[i].getPollData());
+				}
 			}
+		}else{
+			ErrorPopup.createMessage("Controller: [" + GPID + "]" + getName() + " has been disconnect.");
 		}
 	}
 	
@@ -165,7 +170,7 @@ public class Gamepad{
 			scribe.format("%s", content);
 			scribe.close();
 		}catch(FileNotFoundException e){
-			e.printStackTrace();
+			ErrorPopup.createMessage(e);
 		}
 	}
 	
@@ -190,8 +195,8 @@ public class Gamepad{
 			doesProfileExist = true;
 			
 		}catch(FileNotFoundException e){
-			System.err.println("No complete profile for " + getName() + "\n" + e.getMessage());
-			
+			e.printStackTrace();
+			ErrorPopup.createMessage(e);
 		}
 	}
 	

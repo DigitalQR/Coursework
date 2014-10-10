@@ -60,9 +60,12 @@ public class ModelStage extends Stage{
 		if(Option.drawCross){
 			drawCross();
 		}
-		for(Triangle t: Triangle.triangle){
-			t.draw();
-		}
+		
+		Model m = Triangle.getModel();
+		
+		m.setRGBA(1, 1, 1, 0.5f);
+		Renderer.render(m);
+		
 		if(Option.KappaAssist){
 			drawCompare();
 		}

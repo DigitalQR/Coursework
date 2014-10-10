@@ -6,6 +6,7 @@ import Tools.Maths.Toolkit;
 import Collision.StaticHitbox2f;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
+import Debug.ErrorPopup;
 import Entities.Player;
 
 
@@ -19,7 +20,7 @@ public class MainControl{
 		Gamepad.setup();
 		setup();
 		new Thread(new DisplayControl()).start();
-
+		
 		while(!CloseRequest){
 			long StartTime = System.nanoTime();
 			if(!Paused){
@@ -33,12 +34,12 @@ public class MainControl{
 				try{
 					TimeUnit.NANOSECONDS.sleep(1);
 				}catch(InterruptedException e){
-					e.printStackTrace();
+					ErrorPopup.createMessage(e);
 				}
 			}
 			
 		}
-		
+		System.out.println("Closing down main thread..");
 	}
 	
 	private static void setup(){
