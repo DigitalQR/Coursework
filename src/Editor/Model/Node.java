@@ -105,7 +105,11 @@ public class Node {
 
 	public float getTrueTheta(){
 		if(parentID != -1){
-			return theta + Node.getNode(parentID).getTrueTheta();
+			try{
+				return theta + Node.getNode(parentID).getTrueTheta();
+			}catch(NullPointerException e){
+				return theta;
+			}
 		}else{
 			return theta;	
 		}

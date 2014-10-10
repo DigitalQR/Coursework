@@ -49,10 +49,15 @@ public class OverworldStage extends Stage{
 		
 		Camera.process(User);
 		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
+		Vector3f rot = Camera.getRotation();
+		GL11.glRotatef(rot.x, 1, 0, 0);
+		GL11.glRotatef(rot.y, 0, 1, 0);
+		GL11.glRotatef(rot.z, 0, 0, 1);
 		
 		//Draw players
 		for(Player p: User){
 			Renderer.render(p.getModel());
+			//Renderer.render(p.getHitbox());
 		}
 		
 		//Light position

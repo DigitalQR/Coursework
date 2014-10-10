@@ -23,8 +23,9 @@ public class Camera {
 		return Location_AIM;
 	}
 	
+	//static float track = 0;
 	public static Vector3f getRotation(){
-		Rotation.x = (float) Math.toDegrees(Location.z);
+		//Rotation.y = (float) Math.toDegrees(track+=0.01f);
 		return Rotation;
 	}
 	
@@ -54,8 +55,8 @@ public class Camera {
 			}
 		}
 		Location_AIM.z = Delta;
-		if(Location_AIM.z > -6){
-			Location_AIM.z = -6;
+		if(Location_AIM.z > -3f){
+			Location_AIM.z = -3f;
 		}
 	}
 }

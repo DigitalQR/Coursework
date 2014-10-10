@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import Tools.Maths.Toolkit;
 import Tools.Maths.Vector3f;
 
 public class Option{
@@ -182,6 +183,53 @@ public class Option{
 				}
 			});
 		master.add(part);
+
+		int label3 = objectHeight();
+		int field3 = objectHeight();
+		
+		master.add(createText("Distance amplifier:", 0, label3));
+		final JTextField amp = new JTextField();
+		amp.setLocation(10, field3);
+		amp.setSize(50, objectSize());
+		amp.setEditable(true);
+		master.add(amp);
+
+		JButton add = new JButton("Add");
+		add.setLocation(60, field3);
+		add.setSize(80, objectSize()-1);
+		add.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0){
+				try{
+					float value = Float.valueOf(amp.getText());
+					for(Node n: Node.node){
+						if(n.getParentID() != -1){
+							n.setR(n.getR()+value*Toolkit.Sign(n.getR()));
+						}
+					}
+				}catch(NumberFormatException e){}
+			}
+		});
+		master.add(add);
+
+		JButton multiply = new JButton("Multiply");
+		multiply.setLocation(140, field3);
+		multiply.setSize(80, objectSize()-1);
+		multiply.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0){
+				try{
+					float value = Float.valueOf(amp.getText());
+					for(Node n: Node.node){
+						if(n.getParentID() != -1){
+							n.setR(n.getR()*value);
+						}
+					}
+				}catch(NumberFormatException e){}
+			}
+		});
+		master.add(multiply);
+				
+		
+		
 		
 		JPanel line = new JPanel();
 		line.setLocation(5, objectHeight()+5);
@@ -532,8 +580,6 @@ public class Option{
 		}
 	}
 	
-	
-	
 	public static void updateNodeList(){
 		String list = "";
 		
@@ -552,7 +598,6 @@ public class Option{
 		updateVertexList();
 	} 
 	
-	
 	public static void updateVertexList(){
 		String list = "";
 		
@@ -563,18 +608,13 @@ public class Option{
 						list += Node.getNode(n.getParentID()).getName(); 
 					}
 					list += "[" + n.getID() + "](" + n.getName() + "):\n";
-					if(n.getParentID() != -1){
-						list += "   ParentID: " + n.getParentID() + "\n";
-					}else{
-						list += "   Location: (" + n.getLocation().x + ", " + n.getLocation().y + ", " + n.getLocation().z + ")\n";
-					}
+					list += "   Location: (" + n.getR() + ", " + n.getTheta() + ", " + n.getPsi() + ")\n";
 				}
 			}
 		}
 		
 		vertexText.setText(list);
 	}
-	
 	
 	public static void setNew(){
 		Triangle.triangle = new Triangle[0];
@@ -624,6 +664,16 @@ public class Option{
 		});
 		file.add(load);
 		
+		JMenuItem export = new JMenuItem("Export");
+		export.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent arg0){
+				String fileName = JOptionPane.showInputDialog(null, "File name",  "Export", 1);
+				Triangle.getModel().saveData(fileName);
+			}
+		});
+		file.add(export);
+		
 		JMenu panelSwitch = new JMenu("Panel");
 		menuBar.add(panelSwitch);
 		
@@ -639,16 +689,13 @@ public class Option{
 		return menuBar;
 	}
 	
-	
 	private static int objectHeight(){
 		return verticalTrack+=objectSize();
 	}
 	
-	
 	private static int objectSize(){
 		return 15;
 	}
-	
 	
 	public static JLabel createText(String s, int x, int y){
 		JLabel text = new JLabel(s);

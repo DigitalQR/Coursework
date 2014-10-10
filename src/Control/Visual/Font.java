@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import Debug.ErrorPopup;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
@@ -39,8 +40,7 @@ public class Font{
 			}
 			
 		}catch(IOException e){
-			e.printStackTrace();
-			System.exit(0);
+			ErrorPopup.createMessage(e);
 		}
 	}
 	

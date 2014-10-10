@@ -65,6 +65,56 @@ public class Triangle{
 		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 	}
 	
+	public static Model getModel(){
+		Node[] vertex = new Node[0];
+		
+		for(Node n: Node.node){
+			if(n.getType() == Node.TYPE_VERTEX){
+				Node[] v = new Node[vertex.length+1];
+				
+				for(int i = 0; i<vertex.length; i++){
+					v[i] = vertex[i];
+				}
+				v[vertex.length] = n;
+				vertex = v;
+			}
+		}
+		
+		float[] vert = new float[vertex.length*3];
+		int vertTrack = 0;
+		for(int i = 0; i<vertex.length; i++){
+			vert[vertTrack++] = vertex[i].getLocation().x;
+			vert[vertTrack++] = vertex[i].getLocation().y;
+			vert[vertTrack++] = vertex[i].getLocation().z;
+		}
+		
+		int[] ind = new int[triangle.length*3];
+		int triTrack = 0;
+		for(Triangle t: triangle){
+			for(int i = 0; i<vertex.length; i++){
+				if(vertex[i].getID() == t.ind.x){
+					ind[triTrack++] = i; 
+				}else if(vertex[i].getID() == t.ind.y){
+					ind[triTrack++] = i; 
+				}else if(vertex[i].getID() == t.ind.z){
+					ind[triTrack++] = i; 
+				}
+			}
+		}
+		
+		float[] tex = new float[ind.length*2];
+		int[] comp = {0,0, 0,1, 1,1, 0,0, 1,0, 1,1};
+		int track = 0;
+		for(int i = 0; i<tex.length; i++){
+			tex[i] = comp[track++];
+			if(track >= comp.length){
+				track = 0;
+			}
+		}
+		
+		return new Model(vert, tex, ind);
+	}
+	
 	public static void saveData(String fileName){
 		fileName = fileName.toUpperCase();
 		File path = new File("Res/Model/" + fileName);
