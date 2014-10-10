@@ -15,7 +15,7 @@ public class Loader {
 		try{
 			texture = TextureLoader.getTexture("PNG", new FileInputStream("res/" + fileName + ".png"));
 		}catch(IOException e){
-			ErrorPopup.createMessage(e);
+			ErrorPopup.createMessage(e, true);
 		}
 		return texture;
 	}

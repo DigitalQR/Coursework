@@ -55,8 +55,8 @@ public class Camera {
 			}
 		}
 		Location_AIM.z = Delta;
-		if(Location_AIM.z > -3f){
-			Location_AIM.z = -3f;
+		if(Location_AIM.z > -5f){
+			Location_AIM.z = -5f;
 		}
 	}
 }

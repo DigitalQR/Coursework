@@ -37,7 +37,7 @@ public class DisplayManager{
 			Display.setTitle("Untiled Game");
 			
 		}catch(LWJGLException e){
-			ErrorPopup.createMessage(e);
+			ErrorPopup.createMessage(e, true);
 		}
 
 	}

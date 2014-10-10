@@ -10,7 +10,7 @@ public class Movement extends Component{
 
 	private ControlScheme control;
 	private Vector2f velocity;
-	private Vector2f accelerationLimit = new Vector2f(0.15f, 20f);
+	private Vector2f accelerationLimit = new Vector2f(0.2f, 40f);
 	boolean touchingGround = false;
 	int touchingWall = 0;
 	

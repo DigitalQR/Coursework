@@ -131,7 +131,7 @@ public class Model {
 			System.out.println(indices.length + " indices data written..");
 	
 		}catch(FileNotFoundException e){
-			ErrorPopup.createMessage(e);
+			ErrorPopup.createMessage(e, true);
 		}
 	}
 
@@ -192,13 +192,13 @@ public class Model {
 				
 				return new Model(vert, tex, ind);
 			}else{
-				ErrorPopup.createMessage("Unable to import: " + fileName);
+				ErrorPopup.createMessage("Unable to import: " + fileName, true);
 			}
 		}catch(FileNotFoundException | NumberFormatException e){
-			ErrorPopup.createMessage(e);
+			ErrorPopup.createMessage(e, true);
 		}
 		
-		ErrorPopup.createMessage("Unable to import: " + fileName);
+		ErrorPopup.createMessage("Unable to import: " + fileName, true);
 		return null;
 		
 	}
