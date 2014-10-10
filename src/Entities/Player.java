@@ -28,7 +28,7 @@ public class Player extends Entity{
 	private static Model model;
 	
 	public Player(float x, float y){
-		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.6f, 0.2f));
+		super(new Vector3f(x,y,0), new Vector3f(0.4f, 1.2f, 0.4f));
 		checkSpawn(x,y);
 		
 		control = new ControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
@@ -104,6 +104,7 @@ public class Player extends Entity{
 		m.setLocation(getLERPLocation());
 		m.setRGBA(1, 0, 0, 1);
 		m.setTexture(PlaneTexture);
+		m.scaleBy(2);
 		
 		return m;
 	}

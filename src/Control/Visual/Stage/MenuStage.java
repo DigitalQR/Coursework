@@ -87,7 +87,7 @@ public class MenuStage extends Stage{
 		
 		GL11.glRotatef(90, 0, 1, 0);
 			Model m = player.getModel();
-			m.scaleBy(100);
+			m.scaleBy(50);
 			m.setLocation(new Vector3f(50,-20,20));
 	        Renderer.render(m);
 		GL11.glRotatef(90, 0, -1, 0);

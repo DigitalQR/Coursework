@@ -34,7 +34,7 @@ public class MainControl{
 				try{
 					TimeUnit.NANOSECONDS.sleep(1);
 				}catch(InterruptedException e){
-					ErrorPopup.createMessage(e);
+					ErrorPopup.createMessage(e, true);
 				}
 			}
 			

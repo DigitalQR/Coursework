@@ -40,7 +40,8 @@ public class Font{
 			}
 			
 		}catch(IOException e){
-			ErrorPopup.createMessage(e);
+			System.err.println("For " + "res/" + file + ".png");
+			ErrorPopup.createMessage(e, true);
 		}
 	}
 	

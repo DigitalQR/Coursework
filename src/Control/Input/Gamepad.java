@@ -145,7 +145,7 @@ public class Gamepad{
 				}
 			}
 		}else{
-			ErrorPopup.createMessage("Controller: [" + GPID + "]" + getName() + " has been disconnect.");
+			ErrorPopup.createMessage("Controller: [" + GPID + "]" + getName() + " has been disconnect.", true);
 		}
 	}
 	
@@ -170,7 +170,7 @@ public class Gamepad{
 			scribe.format("%s", content);
 			scribe.close();
 		}catch(FileNotFoundException e){
-			ErrorPopup.createMessage(e);
+			ErrorPopup.createMessage(e, true);
 		}
 	}
 	
@@ -195,8 +195,7 @@ public class Gamepad{
 			doesProfileExist = true;
 			
 		}catch(FileNotFoundException e){
-			e.printStackTrace();
-			ErrorPopup.createMessage(e);
+			System.out.println(getName() + " GPP doesn't exist..");
 		}
 	}
 	
