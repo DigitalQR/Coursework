@@ -8,6 +8,20 @@ public class Node {
 	private static int trackID = 0;
 	public static final int TYPE_NODE = 0, TYPE_VERTEX = 1;
 	public static Node[] node = new Node[0];
+	public static Node[][] frameNode = new Node[0][0];
+	private static int currentFrame = -1;
+	
+	public static int getCurrentFrameID(){
+		return currentFrame;
+	}
+	
+	public static void setCurrentFrameID(int i){
+		currentFrame = i;
+	}
+	
+	public static Node[] getCurrentFrame(){
+		return frameNode[currentFrame];
+	}
 	
 	public static void addNode(Node no){
 		Node[] n = new Node[node.length+1];

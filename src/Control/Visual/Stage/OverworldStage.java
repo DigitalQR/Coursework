@@ -1,11 +1,14 @@
 package Control.Visual.Stage;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
+import Collision.StaticHitbox2f;
 import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
@@ -19,18 +22,19 @@ import Tools.Maths.Vector3f;
 
 public class OverworldStage extends Stage{
 	private Texture BoxTexture;
-	private Model[] hb;
+	private List<Model> hb;
 	
 	public void prepare(){
 		//Load textures
 		BoxTexture = Loader.loadTexture("Box");
 	
 		//Setup hitbox model data
-		hb = new Model[Settings.hb.length];
-		for(int i = 0; i<Settings.hb.length; i++){
-			Cubef temp = new Cubef(new Vector3f(Settings.hb[i].x, Settings.hb[i].y, 0f), new Vector3f(Settings.hb[i].x+Settings.hb[i].width, Settings.hb[i].y+Settings.hb[i].height, 1f));
-			hb[i] = new Model(temp);
-			hb[i].setTexture(BoxTexture);
+		hb = new ArrayList<Model>();
+		for(StaticHitbox2f h: Settings.hb){
+			Cubef temp = new Cubef(new Vector3f(h.x, h.y, 0f), new Vector3f(h.x+h.width, h.y+h.height, 1f));
+			Model m = new Model(temp);
+			m.setTexture(BoxTexture);
+			hb.add(m);
 		}
 		
 		
@@ -57,7 +61,9 @@ public class OverworldStage extends Stage{
 		//Draw players
 		for(Player p: User){
 			Renderer.render(p.getModel());
-			//Renderer.render(p.getHitbox());
+			if(Settings.drawHitboxes){
+				Renderer.render(p.getHitbox());
+			}
 		}
 		
 		//Light position

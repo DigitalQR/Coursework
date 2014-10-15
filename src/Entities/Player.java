@@ -12,6 +12,7 @@ import Entities.Tools.Entity;
 import Entities.Tools.Movement;
 import RenderEngine.Loader;
 import RenderEngine.Model.Model;
+import RenderEngine.Model.OBJLoader;
 import Tools.Maths.Cubef;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
@@ -57,7 +58,8 @@ public class Player extends Entity{
 	
 	public static void loadTexture(){
 		PlaneTexture = Loader.loadTexture("Plane");
-		model = Model.loadData("player2");
+		//model = Model.loadData("player2");
+		model = OBJLoader.loadObjModel("tree");
 	}
 	
 	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start, int select){
@@ -101,7 +103,8 @@ public class Player extends Entity{
 	
 	public Model getModel(){
 		Model m = new Model(model.getVertices().clone(), model.getTextureCoords().clone(), model.getIndices().clone());
-		m.setLocation(getLERPLocation());
+		Vector3f loc = getLERPLocation();
+		m.setLocation(new Vector3f(loc.x+this.getSize().x/2, loc.y, loc.z+this.getSize().z/2));
 		m.setRGBA(1, 0, 0, 1);
 		m.setTexture(PlaneTexture);
 		m.scaleBy(2);

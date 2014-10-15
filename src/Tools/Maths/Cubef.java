@@ -65,6 +65,34 @@ public class Cubef{
 				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
 				0,0, 0,1, 1,1, 0,0, 1,1, 1,0 
 		};
+		
+		//0 = 0,0
+		//1 = 0,1
+		//2 = 1,0
+		//3 = 1,1
+		
+		for(int i = 0; i<getIndices().length; i++){
+			switch(getIndices()[i]){
+			case 0:
+				temp[i*2] = 0;
+				temp[i*2+1] = 0;
+				break;
+			case 1:
+				temp[i*2] = 1;
+				temp[i*2+1] = 0;
+				break;
+			case 2:
+				temp[i*2] = 0;
+				temp[i*2+1] = 1;
+				break;
+			case 3:
+				temp[i*2] = 1;
+				temp[i*2+1] = 1;
+				break;
+			}
+			
+		}
+		
 		return temp;
 	}
 	

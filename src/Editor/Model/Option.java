@@ -33,7 +33,7 @@ public class Option{
 	
 	public static void launch(){
 		frame = new JFrame("Tools");
-		frame.setSize(400, 700);
+		frame.setSize(400, 800);
 		frame.setResizable(false);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -659,7 +659,9 @@ public class Option{
 			public void actionPerformed(ActionEvent arg0){
 				Node.reset();
 				String fileName = JOptionPane.showInputDialog(null, "File name",  "Load", 1);
-				Triangle.loadData(fileName);
+				try{
+					Triangle.loadData(fileName);
+				}catch(NullPointerException e){}
 			}
 		});
 		file.add(load);

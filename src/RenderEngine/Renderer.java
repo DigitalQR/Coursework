@@ -35,9 +35,12 @@ public class Renderer{
 			
 			for(int n = 0; n<3; n++){
 				int Current = indices[i];
-				GL11.glTexCoord2f(textureCoords[i*2], textureCoords[i*2+1]);
-				GL11.glVertex3f(vertices[Current*3], vertices[Current*3+1], vertices[Current*3+2]);
-				i++;
+					//try{
+						GL11.glTexCoord2f(textureCoords[Current*2], textureCoords[Current*2+1]);
+						GL11.glVertex3f(vertices[Current*3], vertices[Current*3+1], vertices[Current*3+2]);
+						i++;
+					//}catch(ArrayIndexOutOfBoundsException e){}
+					//i++;
 			}
 			
 			GL11.glEnd();
