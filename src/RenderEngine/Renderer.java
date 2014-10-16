@@ -24,6 +24,7 @@ public class Renderer{
 		float[] vertices = model.getVertices();
 		int[] indices = model.getIndices();
 		float[] textureCoords = model.getTextureCoords();
+		float[] normals = model.getNormal();
 		
 		Vector3f Location = model.getLocation();
 		GL11.glTranslatef(Location.x, Location.y, Location.z);
@@ -35,12 +36,10 @@ public class Renderer{
 			
 			for(int n = 0; n<3; n++){
 				int Current = indices[i];
-					//try{
-						GL11.glTexCoord2f(textureCoords[Current*2], textureCoords[Current*2+1]);
-						GL11.glVertex3f(vertices[Current*3], vertices[Current*3+1], vertices[Current*3+2]);
-						i++;
-					//}catch(ArrayIndexOutOfBoundsException e){}
-					//i++;
+				GL11.glNormal3f(normals[Current*3], normals[Current*3+1], normals[Current*3+2]);
+				GL11.glTexCoord2f(textureCoords[Current*2], textureCoords[Current*2+1]);
+				GL11.glVertex3f(vertices[Current*3], vertices[Current*3+1], vertices[Current*3+2]);
+				i++;
 			}
 			
 			GL11.glEnd();

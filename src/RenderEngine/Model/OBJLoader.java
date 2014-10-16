@@ -96,9 +96,9 @@ public class OBJLoader{
 			indicesArray[i] = indices.get(i);
 		}
 		
-		System.out.println("[Model]" + fileName + " loaded..\n   v: " + verticesArray.length + "\n   t: " + textureArray.length + "\n   i: " + indicesArray.length);
+		System.out.println("[Model]" + fileName + " loaded..\n   v: " + verticesArray.length + "\n   t: " + textureArray.length + "\n   i: " + indicesArray.length + "\n   n: " + normalsArray.length);
 		
-		return new Model(verticesArray, textureArray, indicesArray);
+		return new Model(verticesArray, textureArray, indicesArray, normalsArray);
 	}
 	
 	private static void processVertex(String[] vertexData, List<Integer> indices, List<Vector2f> textures, List<Vector3f> normals, float[] textureArray, float[] normalsArray){

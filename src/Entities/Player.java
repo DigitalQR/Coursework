@@ -57,7 +57,8 @@ public class Player extends Entity{
 	}
 	
 	public static void loadTexture(){
-		PlaneTexture = Loader.loadTexture("Plane");
+		//PlaneTexture = Loader.loadTexture("Plane");
+		PlaneTexture = Loader.loadTexture("treeTrunk");
 		//model = Model.loadData("player2");
 		model = OBJLoader.loadObjModel("tree");
 	}
@@ -102,10 +103,10 @@ public class Player extends Entity{
 	}
 	
 	public Model getModel(){
-		Model m = new Model(model.getVertices().clone(), model.getTextureCoords().clone(), model.getIndices().clone());
+		Model m = new Model(model.getVertices().clone(), model.getTextureCoords().clone(), model.getIndices().clone(), model.getNormal().clone());
 		Vector3f loc = getLERPLocation();
 		m.setLocation(new Vector3f(loc.x+this.getSize().x/2, loc.y, loc.z+this.getSize().z/2));
-		m.setRGBA(1, 0, 0, 1);
+		m.setRGBA(1, 1, 1, 1);
 		m.setTexture(PlaneTexture);
 		m.scaleBy(2);
 		
