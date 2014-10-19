@@ -1,5 +1,8 @@
 package Collision;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 
@@ -50,15 +53,15 @@ public class StaticHitbox2f{
 		return false;
 	}
 
-	public static StaticHitbox2f[] RandomGeneration(int n, int x, int y, int Width, int Height, int MaxSize){
-		StaticHitbox2f[] Temp = new StaticHitbox2f[n];
+	public static List<StaticHitbox2f> RandomGeneration(int n, int x, int y, int Width, int Height, int MaxSize){
+		List<StaticHitbox2f> Temp = new ArrayList<StaticHitbox2f>();
 		float divisor = 20;
 		
 		if(MaxSize == 0){
 			MaxSize = 1;
 		}
 		for(int i = 0; i<n; i++){
-			 Temp[i] = new StaticHitbox2f(Toolkit.RandomInt(x, Width)/divisor, Toolkit.RandomInt(y, Height)/divisor, Toolkit.RandomInt(1, MaxSize)/divisor, Toolkit.RandomInt(1, MaxSize)/divisor);
+			 Temp.add(new StaticHitbox2f(Toolkit.RandomInt(x, Width)/divisor, Toolkit.RandomInt(y, Height)/divisor, Toolkit.RandomInt(1, MaxSize)/divisor, Toolkit.RandomInt(1, MaxSize)/divisor));
 		}
 		
 		return Temp;

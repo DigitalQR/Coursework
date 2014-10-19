@@ -58,13 +58,17 @@ public class Cubef{
 	
 	public float[] getTextureCoords(){
 		float[] temp = {
-				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
-				1,1, 1,0, 0,0, 1,1, 0,0, 0,1,
-				1,1, 1,0, 0,0, 1,1, 0,0, 0,1,
-				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
-				0,0, 0,1, 1,1, 0,0, 1,1, 1,0,
-				0,0, 0,1, 1,1, 0,0, 1,1, 1,0 
+				1,1,//FTL 0
+				0,1,//FTR 1
+				1,0,//FBL 2 
+				0,0,//FBR 3
+
+				0,1,//BTL 4
+				1,1,//BTR 5
+				0,0,//BBL 6
+				1,0,//BBR 7
 		};
+		
 		return temp;
 	}
 	
@@ -77,6 +81,22 @@ public class Cubef{
 				2,6,7, 2,7,3,
 				6,4,5, 6,5,7
 		};
+		return temp;
+	}
+	
+	public float[] getNormals(){
+		float[] temp ={
+				1,1,1,//FTL 0
+				0,1,1,//FTR 1
+				1,0,-1,//FBL 2 
+				0,0,-1,//FBR 3
+
+				0,1,1,//BTL 4
+				1,1,1,//BTR 5
+				0,0,-1,//BBL 6
+				1,0,-1,//BBR 7
+		};
+		
 		return temp;
 	}
 }
