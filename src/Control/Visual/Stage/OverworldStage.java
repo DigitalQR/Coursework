@@ -8,7 +8,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
-import Collision.StaticHitbox2f;
+import Collision.SquareHitbox;
 import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
@@ -29,18 +29,17 @@ public class OverworldStage extends Stage{
 	
 		//Setup hitbox model data
 		hb = new ArrayList<Model>();
-		for(StaticHitbox2f h: Settings.hb){
-			Cubef temp = new Cubef(new Vector3f(h.x, h.y, 0f), new Vector3f(h.x+h.width, h.y+h.height, 1f));
+		for(SquareHitbox h: Settings.hb){
+			Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
 			Model m = new Model(temp);
 			m.setTexture(BoxTexture);
 			hb.add(m);
 		}
-		
-		
 	}
 	
 	public void update(){
-		Player[] User = Settings.User.clone();
+		@SuppressWarnings("unchecked")
+		ArrayList<Player> User = (ArrayList<Player>) Settings.User.clone();
 		
 		for(Player p: User){
 			if(p.isKeyPressed(p.getControlScheme().KEY_START)){
@@ -52,10 +51,6 @@ public class OverworldStage extends Stage{
 		
 		Camera.process(User);
 		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
-		Vector3f rot = Camera.getRotation();
-		GL11.glRotatef(rot.x, 1, 0, 0);
-		GL11.glRotatef(rot.y, 0, 1, 0);
-		GL11.glRotatef(rot.z, 0, 0, 1);
 		
 		//Draw players
 		for(Player p: User){

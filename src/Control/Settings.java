@@ -5,21 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import Collision.StaticHitbox2f;
+import Collision.SquareHitbox;
 import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static Player[] User = new Player[2];
-	public static List<StaticHitbox2f> hb;
+	public static final String Version = "0.16.0";
+	public static ArrayList<Player> User = new ArrayList<Player>();
+	public static List<SquareHitbox> hb;
 	
 	public static List<String> toggleNames = new ArrayList<String>();
 	public static HashMap<String,Boolean> toggles = new HashMap<String,Boolean>();
 	
 	public static void setup(){
 		//d_? = draw ?
-		
+
 		toggleNames.add("d_hitbox");
+		toggleNames.add("d_wireframe");
 		
 		for(String s: toggleNames){
 			toggles.put(s, false);
@@ -41,6 +43,7 @@ public class Settings implements Runnable{
 			case "help":
 				System.out.println("toggle <variable>");
 				System.out.println("list <list>");
+				System.out.println("stop");
 				System.out.println("");
 				break;
 			
@@ -75,6 +78,11 @@ public class Settings implements Runnable{
 				}
 				break;
 			
+			//Force stops the JVM
+			case "stop":
+				System.exit(0);
+				break;
+				
 			default:
 				System.out.println("Command " + raw[0] + " is unknown.");
 				System.out.println("Type help for a list of commands.");

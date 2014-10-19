@@ -17,7 +17,7 @@ public class Font{
 	private Character[] Letter;
 	
 	public Font(String file){
-		Letter = new Character[42];
+		Letter = new Character[43];
 		
 		try{
 			BufferedImage fontsheet = ImageIO.read(new File("res/" + file + ".png"));
@@ -109,6 +109,9 @@ public class Font{
 			if(c == '\n'){
 				Out+='\n';
 			}
+			if(c == '.'){
+				Out+=c;
+			}
 			if(c  >= '0' && c <= '?'){
 				Out+=c;
 			}
@@ -121,6 +124,8 @@ public class Font{
 			return Char-97;
 		}else if(Char >= '0' && Char <= '?'){
 			return Char-22;
+		}else if(Char == '.'){
+			return 42;
 		}else{
 			return -Char;
 		}

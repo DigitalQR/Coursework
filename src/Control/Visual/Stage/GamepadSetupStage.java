@@ -47,11 +47,11 @@ public class GamepadSetupStage extends Stage{
 	public void update(){
 		MenuStage.locked = true;
 		
-		if(Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_BACK) && assign == -1){
+		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_BACK) && assign == -1){
 			MenuStage.locked = false;
 		}
 		
-		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_SELECT)){
+		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_SELECT)){
 			if(assign != -2 && (!Gamepad.Pad[currentButton].getProfileStatus())){				
 				assign = currentButton;
 				MenuStage.input();
@@ -73,16 +73,16 @@ public class GamepadSetupStage extends Stage{
 			
 			//Main Text
 			Model model = Header.getModel();
-			model.setTexture(MenuStage.GreyButton);
+			model.setTexture(MenuStage.Button);
 			Renderer.render(model);
 			font.drawText(Header.getMessage(), Header.getTextLocation(), 0.07f, 8f);
 				
 			//Button movement
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_UP)){
+			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_UP)){
 				currentButton--;
 				MenuStage.input();
 			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_DOWN)){
+			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_DOWN)){
 				currentButton++;
 				MenuStage.input();
 			}
@@ -94,11 +94,11 @@ public class GamepadSetupStage extends Stage{
 			}
 			
 			//Task button movement
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_RIGHT)){
+			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_RIGHT)){
 				currentTask++;
 				MenuStage.input();
 			}
-			if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_LEFT)){
+			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_LEFT)){
 				currentTask--;
 				MenuStage.input();
 			}
@@ -113,7 +113,7 @@ public class GamepadSetupStage extends Stage{
 			for(int i = 0; i<Controller.length; i++){
 				//Controller names
 				Model control = Controller[i].getModel();
-				control.setTexture(MenuStage.GreyButton);
+				control.setTexture(MenuStage.Button);
 				Renderer.render(control);
 				
 				//Text
@@ -135,22 +135,26 @@ public class GamepadSetupStage extends Stage{
 				if(currentButton == i){
 					if(Gamepad.Pad[i].getProfileStatus()){						
 						if(current ==  TASK_DELETE){
-							task.setTexture(MenuStage.RedButtonSelected);
+							task.setTexture(MenuStage.ButtonSelected);
+							task.setRGBA(1f, 0.5f, 0.5f, 1f);
 						}else{
-							task.setTexture(MenuStage.GreyButtonSelected);
+							task.setTexture(MenuStage.ButtonSelected);
 						}
 					}else{
-						task.setTexture(MenuStage.GreenButtonSelected);
+						task.setTexture(MenuStage.ButtonSelected);
+						task.setRGBA(0.5f, 1f, 0.5f, 1f);
 					}
 				}else{
 					if(Gamepad.Pad[i].getProfileStatus()){
 						if(current ==  TASK_DELETE){
-							task.setTexture(MenuStage.RedButton);
+							task.setTexture(MenuStage.Button);
+							task.setRGBA(1f, 0.5f, 0.5f, 1f);
 						}else{
-							task.setTexture(MenuStage.GreyButton);
+							task.setTexture(MenuStage.Button);
 						}
 					}else{
-						task.setTexture(MenuStage.GreenButton);
+						task.setTexture(MenuStage.Button);
+						task.setRGBA(0.5f, 1f, 0.5f, 1f);
 					}
 				}
 				Renderer.render(task);
@@ -159,7 +163,7 @@ public class GamepadSetupStage extends Stage{
 				if(Gamepad.Pad[i].getProfileStatus()){
 
 					Model leftArrow = Arrow[i][0].getModel();
-					leftArrow.setTexture(MenuStage.GreyButton);
+					leftArrow.setTexture(MenuStage.Button);
 					
 					Vector3f Lloc = Arrow[i][0].getTextLocation();
 					Lloc.z-=0.1f;
@@ -167,7 +171,7 @@ public class GamepadSetupStage extends Stage{
 					Renderer.render(leftArrow);
 
 					Model rightArrow = Arrow[i][1].getModel();
-					rightArrow.setTexture(MenuStage.GreyButton);
+					rightArrow.setTexture(MenuStage.Button);
 
 					Vector3f Rloc = Arrow[i][1].getTextLocation();
 					Rloc.z-=0.1f;
@@ -193,26 +197,26 @@ public class GamepadSetupStage extends Stage{
 	
 	private int currentPlayer = 0;
 	private void Assign(){
-		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_LEFT)){
+		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_LEFT)){
 			currentPlayer--;
 			MenuStage.input();
 		}
-		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_RIGHT)){
+		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_RIGHT)){
 			currentPlayer++;
 			MenuStage.input();
 		}
 		
 		if(currentPlayer < 0){
-			currentPlayer = Settings.User.length;
+			currentPlayer = Settings.User.size();
 		}
-		if(currentPlayer >= Settings.User.length){
+		if(currentPlayer >= Settings.User.size()){
 			currentPlayer = 0;
 		}
 		
 		font.drawText("Assign To Player:\n" + currentPlayer, new Vector3f(5.5f, 9, 0), 0.04f, 8f);
 		
-		if(MenuStage.timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_SELECT)){
-			Settings.User[currentPlayer].setControlScheme(Gamepad.Pad[currentButton].getGPID());
+		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_SELECT)){
+			Settings.User.get(currentPlayer).setControlScheme(Gamepad.Pad[currentButton].getGPID());
 			Gamepad.Pad[currentButton].assignToPlayer(currentPlayer);
 			MenuStage.input();
 			
@@ -227,7 +231,7 @@ public class GamepadSetupStage extends Stage{
 	private void drawAssignment(){
 		//Name Text
 		Model model = Header.getModel();
-		model.setTexture(MenuStage.GreyButton);
+		model.setTexture(MenuStage.Button);
 		Renderer.render(model);
 		font.drawText(Controller[assign].getMessage(), Header.getTextLocation(), 0.07f, 8f);
 		

@@ -8,7 +8,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 
 import Debug.ErrorPopup;
 
-public class Loader {
+public class textureLoader {
 	
 	public static Texture loadTexture(String fileName){
 		Texture texture = null;

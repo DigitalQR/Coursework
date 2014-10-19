@@ -3,14 +3,14 @@ package Entities;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.opengl.Texture;
 
-import Collision.StaticHitbox2f;
+import Collision.SquareHitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Input.Gamepad;
 import Entities.Tools.ControlScheme;
 import Entities.Tools.Entity;
 import Entities.Tools.Movement;
-import RenderEngine.Loader;
+import RenderEngine.textureLoader;
 import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
@@ -39,7 +39,7 @@ public class Player extends Entity{
 	private void checkSpawn(float x, float y){
 		Main: while(true){
 			boolean Escape = true;
-			Check: for(StaticHitbox2f hb:Settings.hb){
+			Check: for(SquareHitbox hb:Settings.hb){
 				if(hb.AreaIntersect(new Vector2f(x, y), new Vector2f(this.getSize().x, this.getSize().y))){
 					Escape = false;
 					break Check;
@@ -57,7 +57,7 @@ public class Player extends Entity{
 	}
 	
 	public static void loadResources(){
-		PlaneTexture = Loader.loadTexture("Model/TornTest");
+		PlaneTexture = textureLoader.loadTexture("Model/TornTest");
 		spawn = new Animation("Cube/Spawn", 100);
 	}
 	
@@ -96,7 +96,6 @@ public class Player extends Entity{
 		
 		float x = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
 		float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
-	
 		return new Vector3f(x, y, location.z);
 	}
 	

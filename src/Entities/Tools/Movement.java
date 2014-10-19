@@ -1,6 +1,6 @@
 package Entities.Tools;
 
-import Collision.StaticHitbox2f;
+import Collision.SquareHitbox;
 import Control.Settings;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
@@ -66,7 +66,7 @@ public class Movement extends Component{
 		velocity.x/=100;
 		
 		//Slowdown
-		if(Math.round(velocity.x*100) == 0){
+		if(Math.round(velocity.x*10) == 0){
 			velocity.x = 0;
 		}else{
 			velocity.x-=0.04*Toolkit.Sign(velocity.x);
@@ -150,7 +150,7 @@ public class Movement extends Component{
 	}
 	
 	private boolean insideHitbox(Vector2f location, Vector2f size){
-		for(StaticHitbox2f hb:Settings.hb){
+		for(SquareHitbox hb:Settings.hb){
 			if(hb.AreaIntersect(location, size)){
 				return true;
 			}

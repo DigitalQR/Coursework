@@ -206,7 +206,7 @@ public class Gamepad{
 			}
 		}
 		assignedPlayer = i;
-		Settings.User[i].setControlScheme(this.GPID);
+		Settings.User.get(i).setControlScheme(this.GPID);
 	}
 
 	public void deleteProfileStatus(){

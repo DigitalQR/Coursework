@@ -12,7 +12,7 @@ import Tools.Maths.Vector3f;
 
 
 public class OBJLoader{
-	private static boolean log = true;
+	private static boolean log = false;
 
 	public static Model loadObjModel(String fileName){
 		FileReader fr = null;

@@ -3,7 +3,7 @@ package Control;
 import java.util.concurrent.TimeUnit;
 
 import Tools.Maths.Toolkit;
-import Collision.StaticHitbox2f;
+import Collision.SquareHitbox;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
 import Debug.ErrorPopup;
@@ -25,10 +25,9 @@ public class MainControl{
 		while(!CloseRequest){
 			long StartTime = System.nanoTime();
 			if(!Paused){
-				for(int i = 0; i<Settings.User.length; i++){
-					Settings.User[i].update();
+				for(Player p: Settings.User){
+					p.update();
 				}
-				
 			}
 			
 			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
@@ -40,16 +39,17 @@ public class MainControl{
 			}
 			
 		}
+		
 		System.out.println("Closing down main thread.");
 		while(DisplayControl.exists){}
 		System.exit(0);
 	}
 	
 	private static void setup(){
-		Settings.hb = StaticHitbox2f.RandomGeneration(1000, -1000, -1000, 1000, 1000, 100);
-		for(int i = 0; i<Settings.User.length; i++){
-			Settings.User[i] = new Player(0,0);
-		}
+		Settings.hb = SquareHitbox.RandomGeneration(1000, -1000, -1000, 1000, 1000, 100);
+
+		Settings.User.add(new Player(0,0));
+		Settings.User.add(new Player(0,0));
 		
 	}
 
