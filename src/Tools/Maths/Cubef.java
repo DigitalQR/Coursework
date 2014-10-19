@@ -87,14 +87,14 @@ public class Cubef{
 	public float[] getNormals(){
 		float[] temp ={
 				0,0,-1,//BTL 4
-				1,0,-1,//BTR 5
-				0,1,-1,//BBL 6
-				1,1,-1,//BBR 7
+				0,0,-1,//BTR 5
+				0,0,-1,//BBL 6
+				0,0,-1,//BBR 7
 
 				0,0,1,//BTL 4
-				1,0,1,//BTR 5
-				0,1,1,//BBL 6
-				1,1,1,//BBR 7
+				0,0,1,//BTR 5
+				0,0,1,//BBL 6
+				0,0,1,//BBR 7
 		};
 		
 		return temp;

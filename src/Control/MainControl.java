@@ -40,8 +40,8 @@ public class MainControl{
 			
 		}
 		
-		System.out.println("Closing down main thread.");
 		while(DisplayControl.exists){}
+		System.out.println("Closing down main thread.");
 		System.exit(0);
 	}
 	

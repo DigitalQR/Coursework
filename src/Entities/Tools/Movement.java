@@ -36,20 +36,53 @@ public class Movement extends Component{
 	
 	public void update(Entity e){
 		velocity = new Vector2f(e.getVelocity().x, e.getVelocity().y);
-		
-		updateX(e);
-		updateY(e);
-		
+		if(!Settings.toggles.get("s_noclip")){
+			updateX(e);
+			updateY(e);
+		}else{
+			noclipProcess(e);
+		}
 		e.normaliseLocation();
 		e.setVelocity(new Vector3f(velocity.x, velocity.y, 0));
-		hitboxCheck(e);
 	}
 	
-	private void hitboxCheck(Entity e){
-		if(insideHitbox(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x,e.getSize().y))){
-			System.err.println("Player inside hitbox");
-			System.exit(-1);
+	private void noclipProcess(Entity e){
+		//Input
+		if(control.isKeyPressed(control.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.08f;
+		if(control.isKeyPressed(control.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.08f;
+		if(control.isKeyPressed(control.KEY_UP) && velocity.y < accelerationLimit.y) velocity.y+=0.08f;
+		if(control.isKeyPressed(control.KEY_DOWN) && velocity.y > -accelerationLimit.y) velocity.y-=0.08f;
+		
+		//Normalisation
+		Vector3f location = e.getLocation();
+		location.x = Math.round(location.x*100);
+		location.x/=100;
+		location.y = Math.round(location.y*100);
+		location.y/=100;
+
+		velocity.x = Math.round(velocity.x*100);
+		velocity.x/=100;
+		velocity.y = Math.round(velocity.y*100);
+		velocity.y/=100;
+
+		//Slowdown
+		if(Math.round(velocity.x*10) == 0){
+			velocity.x = 0;
+		}else{
+			velocity.x-=0.04*Toolkit.Sign(velocity.x);
 		}
+		
+		if(Math.round(velocity.y*10) == 0){
+			velocity.y = 0;
+		}else{
+			velocity.y-=0.04*Toolkit.Sign(velocity.y);
+		}
+		
+		
+
+		location.x+=velocity.x;
+		location.y+=velocity.y;
+		//e.setLocation(location);
 	}
 	
 	private void updateX(Entity e){
