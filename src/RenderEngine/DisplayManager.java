@@ -17,7 +17,7 @@ public class DisplayManager{
 	
 	
 	public static void create(boolean fullscreen){
-		Vector2f Res = p480;
+		Vector2f Res = p720;
 		
 		try{
 			DisplayMode display = null;

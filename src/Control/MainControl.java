@@ -17,6 +17,7 @@ public class MainControl{
 	
 	
 	public static void main(String[] args){
+		Settings.setup();
 		Gamepad.setup();
 		setup();
 		new Thread(new DisplayControl()).start();
@@ -39,7 +40,9 @@ public class MainControl{
 			}
 			
 		}
-		System.out.println("Closing down main thread..");
+		System.out.println("Closing down main thread.");
+		while(DisplayControl.exists){}
+		System.exit(0);
 	}
 	
 	private static void setup(){

@@ -24,7 +24,7 @@ public class Renderer{
 		float[] vertices = model.getVertices();
 		int[] indices = model.getIndices();
 		float[] textureCoords = model.getTextureCoords();
-		float[] normals = model.getNormal();
+		float[] normals = model.getNormals();
 		
 		Vector3f Location = model.getLocation();
 		GL11.glTranslatef(Location.x, Location.y, Location.z);

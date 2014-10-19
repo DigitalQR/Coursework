@@ -14,7 +14,6 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Visual.DisplayControl;
 import Entities.Player;
-import RenderEngine.Loader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
@@ -26,7 +25,7 @@ public class OverworldStage extends Stage{
 	
 	public void prepare(){
 		//Load textures
-		BoxTexture = Loader.loadTexture("Box");
+		//BoxTexture = Loader.loadTexture("Box");
 	
 		//Setup hitbox model data
 		hb = new ArrayList<Model>();
@@ -61,7 +60,7 @@ public class OverworldStage extends Stage{
 		//Draw players
 		for(Player p: User){
 			Renderer.render(p.getModel());
-			if(Settings.drawHitboxes){
+			if(Settings.toggles.get("d_hitbox")){
 				Renderer.render(p.getHitbox());
 			}
 		}

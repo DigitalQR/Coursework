@@ -12,6 +12,7 @@ import Tools.Maths.Vector3f;
 
 
 public class OBJLoader{
+	private static boolean log = true;
 
 	public static Model loadObjModel(String fileName){
 		FileReader fr = null;
@@ -87,17 +88,17 @@ public class OBJLoader{
 		
 		int vertexPointer = 0;
 		for(Vector3f v: vertices){
-			verticesArray[vertexPointer++] = v.x/20;
-			verticesArray[vertexPointer++] = v.y/20;
-			verticesArray[vertexPointer++] = v.z/20;
+			verticesArray[vertexPointer++] = v.x/25;
+			verticesArray[vertexPointer++] = v.y/15;
+			verticesArray[vertexPointer++] = v.z/25;
 		}
 		
 		for(int i = 0; i<indices.size(); i++){
 			indicesArray[i] = indices.get(i);
 		}
-		
-		System.out.println("[Model]" + fileName + " loaded..\n   v: " + verticesArray.length + "\n   t: " + textureArray.length + "\n   i: " + indicesArray.length + "\n   n: " + normalsArray.length);
-		
+		if(log){
+			System.out.println("[Model]" + fileName + " loaded..\n   v: (" + verticesArray.length + ") " + verticesArray.length/3 + "\n   t: (" + textureArray.length + ") " + textureArray.length/2 + "\n   i: " + indicesArray.length + "\n   n: (" + normalsArray.length + ") " + normalsArray.length/3);
+		}
 		return new Model(verticesArray, textureArray, indicesArray, normalsArray);
 	}
 	

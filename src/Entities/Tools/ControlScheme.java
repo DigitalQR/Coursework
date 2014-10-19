@@ -62,7 +62,11 @@ public class ControlScheme extends Component{
 	
 	public boolean isKeyPressed(int key){
 		if(GPID == -1){
-			return Keyboard.isKeyDown(key);
+			try{
+				return Keyboard.isKeyDown(key);
+			}catch(IllegalStateException e){
+				return false;
+			}
 		}else{
 			return Gamepad.getGamepad(GPID).isButtonPressed(key);
 		}

@@ -11,8 +11,8 @@ import Entities.Tools.ControlScheme;
 import Entities.Tools.Entity;
 import Entities.Tools.Movement;
 import RenderEngine.Loader;
+import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
-import RenderEngine.Model.OBJLoader;
 import Tools.Maths.Cubef;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
@@ -25,11 +25,11 @@ public class Player extends Entity{
 	private float LastUpdate = 0;
 	private Vector3f LastLocation = new Vector3f(0,0,0);
 	private static Texture PlaneTexture;
-	
-	private static Model model;
+
+	private static Animation spawn;
 	
 	public Player(float x, float y){
-		super(new Vector3f(x,y,0), new Vector3f(0.4f, 1.2f, 0.4f));
+		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.6f, 0.2f));
 		checkSpawn(x,y);
 		
 		control = new ControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
@@ -56,11 +56,9 @@ public class Player extends Entity{
 		this.setLocation(new Vector3f(x,y,0));
 	}
 	
-	public static void loadTexture(){
-		//PlaneTexture = Loader.loadTexture("Plane");
-		PlaneTexture = Loader.loadTexture("treeTrunk");
-		//model = Model.loadData("player2");
-		model = OBJLoader.loadObjModel("tree");
+	public static void loadResources(){
+		PlaneTexture = Loader.loadTexture("Model/TornTest");
+		spawn = new Animation("Cube/Spawn", 100);
 	}
 	
 	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start, int select){
@@ -102,8 +100,9 @@ public class Player extends Entity{
 		return new Vector3f(x, y, location.z);
 	}
 	
+	float track = 0;
 	public Model getModel(){
-		Model m = new Model(model.getVertices().clone(), model.getTextureCoords().clone(), model.getIndices().clone(), model.getNormal().clone());
+		Model m = spawn.getCurrentFrame();
 		Vector3f loc = getLERPLocation();
 		m.setLocation(new Vector3f(loc.x+this.getSize().x/2, loc.y, loc.z+this.getSize().z/2));
 		m.setRGBA(1, 1, 1, 1);

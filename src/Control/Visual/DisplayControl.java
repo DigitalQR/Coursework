@@ -1,5 +1,8 @@
 package Control.Visual;
 
+import java.nio.FloatBuffer;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
@@ -14,10 +17,34 @@ import RenderEngine.Renderer;
 
 public class DisplayControl implements Runnable{
 	
+	public static boolean exists = false;
+	
 	private static void start(){
 		DisplayManager.create(false);
 		setupOpenGL();
+		setupLighting();
 		setupStages();
+		exists = true;
+	}
+	
+	private static void setupLighting(){
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glEnable(GL11.GL_LIGHT0);
+		
+		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
+		Ambient.put(new float[]{0.2f, 0.2f, 0.6f, 0.7f});
+        Ambient.flip();
+        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
+        
+        FloatBuffer Location = BufferUtils.createFloatBuffer(16);
+        Location.put(new float[]{0,0,-1f,1});
+        Location.flip();
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
+        
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
 	}
 	
 	private static void setupOpenGL(){
@@ -66,7 +93,7 @@ public class DisplayControl implements Runnable{
 			stage[i].prepare();
 		}
 		
-		Player.loadTexture();
+		Player.loadResources();
 		
 		while(!Display.isCloseRequested() && !MainControl.CloseRequest){
 			Renderer.prepare();
@@ -95,6 +122,8 @@ public class DisplayControl implements Runnable{
 	
 	//Closes everything down to prepare for the game's close
 	private static void stop(){
+		System.out.println("Closing down visual thread.");
+		exists = false;
 		DisplayManager.close();
 	}
 }
