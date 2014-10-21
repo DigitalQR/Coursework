@@ -12,7 +12,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "0.16.3";
+	public static final String Version = "0.16.4";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));

@@ -19,9 +19,9 @@ public class Attack extends Component{
 
 		if(canAttack && control.isKeyPressed(control.KEY_PRIMARY)){
 			Vector2f velocity = new Vector2f(0,0);
-			Vector2f size = new Vector2f(0.2f, 0.4f);
+			Vector2f size = new Vector2f(0.25f, 0.5f);
 
-			float xVel = 0.15f;
+			float xVel = 0.25f;
 			float yVel = 0.3f;
 			if(control.isKeyPressed(control.KEY_UP)){
 				velocity.y+=yVel*1.1f;
@@ -35,7 +35,7 @@ public class Attack extends Component{
 			
 			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
 			
-			Damage d = new Damage(location, size, 200, 0.005f, e, true);
+			Damage d = new Damage(location, size, 200, 0.04f, e, true);
 			d.setVelocity(velocity);
 			Damage.add(d);
 			lastAttack = currentTime;
@@ -51,6 +51,7 @@ public class Attack extends Component{
 				velocity.y+=yVel*1.1f;
 			}if(control.isKeyPressed(control.KEY_DOWN)){
 				velocity.y-=yVel;
+				e.getVelocity().y+=0.25f;
 			}if(control.isKeyPressed(control.KEY_LEFT)){
 				velocity.x-=xVel;
 			}if(control.isKeyPressed(control.KEY_RIGHT)){
@@ -59,7 +60,7 @@ public class Attack extends Component{
 			
 			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
 			
-			Damage d = new Damage(location, size, 1000, 0.0005f, e, false);
+			Damage d = new Damage(location, size, 1000, 0.02f, e, false);
 			d.setVelocity(velocity);
 			Damage.add(d);
 			lastAttack = currentTime;

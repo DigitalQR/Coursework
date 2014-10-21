@@ -52,16 +52,20 @@ public class OverworldStage extends Stage{
 		Camera.process(User);
 		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
 		
-		String player = "";
+		//Draw HUD
+		String player = "\n\n";
 		for(int i = 0; i<User.size(); i++){
-			int factor = (int) Math.round((double)(User.get(i).getFactor()*1000));
-			player += "Player " + (i+1) + ": " + factor + "\n";
+			int factor = (int) Math.round((double)(User.get(i).getFactor()*100));
+			if(User.get(i).isDead()){
+				player += (int)Math.round(User.get(i).getRespawnTimeRemaining()/1000000000) + "<DEAD>";
+			}
+			player += "Player " + (i+1) + ": " + factor + "\nDeaths: " + User.get(i).getDeathCount() + "\n\n\n";
 		}
 
-		font.setRGBA(1, 1, 1, 1);
-		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.6f, -Camera.getLocation().y+1.5f, -Camera.getLocation().z-2f), 0.01f, 10);
+		font.setRGBA(1-DisplayControl.getRGBA()[0], 1-DisplayControl.getRGBA()[1], 1-DisplayControl.getRGBA()[2], 1);
+		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.6f, -Camera.getLocation().y+1.5f, -Camera.getLocation().z-2f), 0.01f, 9f);
 		font.setRGBA(0, 0, 0, 1);
-		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.606f, -Camera.getLocation().y+1.506f, -Camera.getLocation().z-2.0001f), 0.01f, 10);
+		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.606f, -Camera.getLocation().y+1.506f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
 		
 		
 		

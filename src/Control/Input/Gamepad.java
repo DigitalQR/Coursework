@@ -7,8 +7,6 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
 
-import org.lwjgl.input.Keyboard;
-
 import Tools.String.Parametres;
 import Control.Settings;
 import Control.Visual.Stage.MenuStage;
@@ -207,7 +205,7 @@ public class Gamepad{
 	public void assignToPlayer(int i){
 		for(Player p: Settings.User){
 			if(p.getControlScheme().GPID == this.GPID){
-				p.setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
+				p.getControlScheme().setDefaultControls();
 			}
 		}
 		assignedPlayer = i;
@@ -221,7 +219,7 @@ public class Gamepad{
 		
 		for(Player p: Settings.User){
 			if(p.getControlScheme().GPID == this.GPID){
-				p.setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
+				p.getControlScheme().setDefaultControls();
 			}
 		}
 	}

@@ -73,6 +73,13 @@ public class DisplayControl implements Runnable{
         
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
+
+        r = Toolkit.RandomInt(30, 100);
+        r /= 100;
+        g = Toolkit.RandomInt(30, 100);
+        g /= 100;
+        b = Toolkit.RandomInt(30, 100);
+        b /= 100;
 	}
 	
 	private static void setupOpenGL(){

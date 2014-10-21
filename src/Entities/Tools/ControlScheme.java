@@ -9,13 +9,21 @@ public class ControlScheme extends Component{
 	public int KEY_JUMP, KEY_UP, KEY_DOWN, KEY_DUCK, KEY_LEFT, KEY_RIGHT,  KEY_PRIMARY, KEY_SECONDARY, KEY_SELECT,	KEY_BACK, KEY_START;
 	public int GPID;
 	
-	public ControlScheme(int up, int down, int left, int right, int primary, int secondary, int start){
-		setControlScheme(up, down, left, right, primary, secondary, start);
+	public ControlScheme(){
+		setDefaultControls();
 	}
 	
-	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start){
-		KEY_JUMP = up; 
-		KEY_DUCK = down; 
+	public void setDefaultControls(){
+		setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_W, Keyboard.KEY_G, Keyboard.KEY_F, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
+	}
+	
+	public ControlScheme(int up, int down, int left, int right, int jump, int duck, int primary, int secondary, int start){
+		setControlScheme(up, down, left, right, jump, duck, primary, secondary, start);
+	}
+	
+	public void setControlScheme(int up, int down, int left, int right, int jump, int duck, int primary, int secondary, int start){
+		KEY_JUMP = jump; 
+		KEY_DUCK = duck; 
 		KEY_LEFT = left; 
 		KEY_RIGHT = right; 
 		

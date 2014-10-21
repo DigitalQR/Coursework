@@ -39,7 +39,7 @@ public class Player extends Entity{
 		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.3f, 0.2f));
 		spawn();
 		
-		control = new ControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
+		control = new ControlScheme();
 		this.addComponent(new Movement(control));
 		this.addComponent(new Attack(control));
 		health = new Health();
@@ -86,8 +86,8 @@ public class Player extends Entity{
 		spawn = new Animation("Cube/Spin", 100);
 	}
 	
-	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start){
-		control.setControlScheme(up, down, left, right, primary, secondary, start);
+	public void setControlScheme(int up, int down, int left, int right, int jump, int duck, int primary, int secondary, int start){
+		control.setControlScheme(up, down, left, right, jump, duck, primary, secondary, start);
 	}
 	
 	public void setControlScheme(int GPID){
@@ -162,5 +162,13 @@ public class Player extends Entity{
 		}catch(NullPointerException e){
 			return true;
 		}
+	}
+	
+	public float getRespawnTimeRemaining(){
+		return health.getTimeRemaining();
+	}
+	
+	public int getDeathCount(){
+		return health.getDeathCount();
 	}
 }
