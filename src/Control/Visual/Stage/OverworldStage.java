@@ -52,31 +52,30 @@ public class OverworldStage extends Stage{
 		Camera.process(User);
 		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
 		
-		font.setRGBA(1, 1, 1, 1);
 		String player = "";
 		for(int i = 0; i<User.size(); i++){
 			int factor = (int) Math.round((double)(User.get(i).getFactor()*1000));
 			player += "Player " + (i+1) + ": " + factor + "\n";
 		}
-		
+
+		font.setRGBA(1, 1, 1, 1);
 		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.6f, -Camera.getLocation().y+1.5f, -Camera.getLocation().z-2f), 0.01f, 10);
+		font.setRGBA(0, 0, 0, 1);
+		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.606f, -Camera.getLocation().y+1.506f, -Camera.getLocation().z-2.0001f), 0.01f, 10);
 		
 		
 		
 		//Draw players
 		for(Player p: User){
-			Renderer.render(p.getModel());
-			if(Settings.toggles.get("d_hitbox")){
-				Renderer.render(p.getHitbox());
+			if(!p.isDead()){
+				Renderer.render(p.getModel());
+				if(Settings.toggles.get("d_hitbox")){
+					Renderer.render(p.getHitbox());
+				}
 			}
 		}
 		
 		//Light position
-		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
-		Ambient.put(new float[]{0.2f, 0.2f, 0.6f, 0.7f});
-        Ambient.flip();
-        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
-        
 		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
         Location.put(new float[]{-Camera.getLocation().x, -Camera.getLocation().y , 3,1});
         Location.flip();
@@ -91,13 +90,30 @@ public class OverworldStage extends Stage{
 		if(Settings.toggles.get("d_damage")){
 			try{
 				for(Damage d: Damage.getDamageInfo()){
-						Cubef temp = new Cubef(new Vector3f(d.getLocation().x, d.getLocation().y, 0f), new Vector3f(d.getLocation().x+d.getSize().x, d.getLocation().y+d.getSize().y, 1f));
-						Model m = new Model(temp);
-						m.setRGBA(1, 0, 0, 0.7f);
-						Renderer.render(m);
+						Renderer.render(d.getModel());
+						if(Settings.toggles.get("d_hitbox")){
+							Cubef temp = new Cubef(new Vector3f(d.getLocation().x, d.getLocation().y, 0f), new Vector3f(d.getLocation().x+d.getSize().x, d.getLocation().y+d.getSize().y, 1f));
+							Model m = new Model(temp);
+							m.setRGBA(1, 0, 0, 0.7f);
+							Renderer.render(m);
+						}
 				}
 			}catch(NullPointerException | ConcurrentModificationException e){
 				e.printStackTrace();
+			}
+			
+			//Draw boundary
+			Cubef[] sides = {
+					new Cubef(new Vector3f(-1000,-1000,1.3f), new Vector3f(Settings.boundary.getLocation().x,1000,1.3f)),
+					new Cubef(new Vector3f(-1000,-1000,1.2f), new Vector3f(1000,Settings.boundary.getLocation().y,1.2f)),
+					new Cubef(new Vector3f(Settings.boundary.getLocation().x+Settings.boundary.getSize().x, -1000, 1.1f), new Vector3f(1000,1000,1.1f)),
+					new Cubef(new Vector3f(-1000,Settings.boundary.getLocation().y+Settings.boundary.getSize().y,1f), new Vector3f(1000,1000,1f))
+			};
+			
+			for(Cubef c: sides){
+				Model m = new Model(c);
+				m.setRGBA(0, 0, 0, 0.6f);
+				Renderer.render(m);
 			}
 		}
 		

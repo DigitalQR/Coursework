@@ -1,5 +1,9 @@
 package Entities;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.opengl.Texture;
 
@@ -33,7 +37,7 @@ public class Player extends Entity{
 	
 	public Player(float x, float y){
 		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.3f, 0.2f));
-		checkSpawn(x,y);
+		spawn();
 		
 		control = new ControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
 		this.addComponent(new Movement(control));
@@ -46,29 +50,40 @@ public class Player extends Entity{
 		return health.factor;
 	}
 	
-	private void checkSpawn(float x, float y){
-		Main: while(true){
-			boolean Escape = true;
-			Check: for(SquareHitbox hb:Settings.hb){
-				if(hb.AreaIntersect(new Vector2f(x, y), new Vector2f(this.getSize().x, this.getSize().y))){
-					Escape = false;
-					break Check;
+	private void spawn(){
+		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
+		List<SquareHitbox> hitbox = new ArrayList<SquareHitbox>();
+		for(SquareHitbox hb: Settings.hb){
+			hitbox.add(hb);
+		}
+		Collections.shuffle(hitbox);
+		
+		Main : for(SquareHitbox hb: hitbox){
+			float x = hb.getLocation().x+hb.getSize().x/2;
+			float y = hb.getLocation().y+this.getSize().y;
+			for(;;y+=0.1f){
+				if(!bound.AreaIntersect(new Vector2f(x,y), new Vector2f(this.getSize().x, this.getSize().y))){
+					continue Main;
+				}else{
+					boolean intersects = false;
+					for(SquareHitbox h: hitbox){
+						if(h.AreaIntersect(new Vector2f(x,y), new Vector2f(this.getSize().x, this.getSize().y))){
+							intersects = true;
+						}
+					}
+					if(!intersects){
+						this.setLocation(new Vector3f(x,y,0));
+						this.setVelocity(new Vector3f(0,0,0));
+						break Main;
+					}
 				}
 			}
-			
-			if(Escape){
-				break Main;
-			}else{
-				x+=Toolkit.RandomInt(-1,1)/1;
-				y+=Toolkit.RandomInt(-1,1)/1;
-			}
 		}
-		this.setLocation(new Vector3f(x,y,0));
 	}
 	
 	public static void loadResources(){
 		PlaneTexture = textureLoader.loadTexture("Model/TornTest");
-		spawn = new Animation("Cube/Spawn", 100);
+		spawn = new Animation("Cube/Spin", 100);
 	}
 	
 	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start){
@@ -96,7 +111,19 @@ public class Player extends Entity{
 		LastLocation = new Vector3f(location.x, location.y, location.z);
 		LastUpdate = System.nanoTime()-MainControl.UPS;
 		
-		this.updateComponents();
+		if(!health.isDead){
+			this.updateComponents();
+		}else if(health.canRespawn()){
+			spawn();
+			LastLocation.x = this.getLocation().x;
+			LastLocation.y = this.getLocation().y;
+			health.reset();
+		}
+		
+		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
+		if(!bound.AreaIntersect(new Vector2f(this.getLocation().x, this.getLocation().y),  new Vector2f(this.getSize().x, this.getSize().y))){
+			health.kill();
+		}
 	}
 	
 	public Vector3f getLERPLocation(){
@@ -113,10 +140,9 @@ public class Player extends Entity{
 	public Model getModel(){
 		Model m = spawn.getCurrentFrame();
 		Vector3f loc = getLERPLocation();
-		m.setLocation(new Vector3f(loc.x+this.getSize().x/2, loc.y, loc.z+this.getSize().z/2));
+		m.setLocation(new Vector3f(loc.x+this.getSize().x/2, loc.y-0.25f, loc.z+this.getSize().z/2));
 		m.setRGBA(1, 1, 1, 1);
-		m.setTexture(PlaneTexture);
-		m.scaleBy(2);
+		m.scaleBy(6);
 		
 		return m;
 	}
@@ -128,5 +154,13 @@ public class Player extends Entity{
 		m.setLocation(getLERPLocation());
 		m.setRGBA(1, 1, 1, 0.3f);
 		return m;
+	}
+	
+	public boolean isDead(){
+		try{
+			return health.isDead;
+		}catch(NullPointerException e){
+			return true;
+		}
 	}
 }

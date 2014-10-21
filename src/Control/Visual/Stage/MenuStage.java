@@ -1,8 +1,5 @@
 package Control.Visual.Stage;
 
-import java.nio.FloatBuffer;
-
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
@@ -44,7 +41,6 @@ public class MenuStage extends Stage{
 		GamepadSetup.prepare(font);
 		
 		player = new Player(0,0);
-		player.setLocation(new Vector3f(8f,10f,0));
 
 	}
 	
@@ -63,27 +59,15 @@ public class MenuStage extends Stage{
 	private static Player player;
 	
 	public void update(){
-		//Light position
-		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
-		Ambient.put(new float[]{0f, 0f, 0f, 0f});
-        Ambient.flip();
-        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
-        
-		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
-        Location.put(new float[]{0, 0, 1, 0});
-        Location.flip();
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
-
 		Model m = player.getModel();
 		m.scaleBy(20);
-		m.setLocation(new Vector3f(4, 0, -15));
+		m.setLocation(new Vector3f(4, -7, -15));
+		m.setTexture(Button);
         Renderer.render(m);
         
 		GL11.glTranslatef(-7.7f, -7.5f, -10);
 
-		
 		MainDraw();
-		
 		
 		switch(activeButton){
 			case 2:

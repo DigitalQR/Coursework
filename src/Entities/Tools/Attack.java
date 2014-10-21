@@ -1,7 +1,6 @@
 package Entities.Tools;
 
 import Entities.Assets.Damage;
-import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 
 public class Attack extends Component{
@@ -17,26 +16,21 @@ public class Attack extends Component{
 	public void update(Entity e){
 		float currentTime = System.nanoTime();
 		boolean canAttack = currentTime - lastAttack >= coolDown*1000000;
-		
-		basic: if(canAttack && control.isKeyPressed(control.KEY_PRIMARY)){
-			Vector2f velocity = new Vector2f(0,0);
-			Vector2f size = new Vector2f(0.3f, 0.3f);
 
-			float xVel = 0.1f;
-			float yVel = 0.2f;
+		if(canAttack && control.isKeyPressed(control.KEY_PRIMARY)){
+			Vector2f velocity = new Vector2f(0,0);
+			Vector2f size = new Vector2f(0.2f, 0.4f);
+
+			float xVel = 0.15f;
+			float yVel = 0.3f;
 			if(control.isKeyPressed(control.KEY_UP)){
 				velocity.y+=yVel*1.1f;
-			}else if(control.isKeyPressed(control.KEY_DOWN)){
-				velocity.x=xVel*Toolkit.RandomInt(-1, 1);
+			}if(control.isKeyPressed(control.KEY_DOWN)){
 				velocity.y-=yVel;
-			}else if(control.isKeyPressed(control.KEY_LEFT)){
+			}if(control.isKeyPressed(control.KEY_LEFT)){
 				velocity.x-=xVel;
-				velocity.y+=yVel;
-			}else if(control.isKeyPressed(control.KEY_RIGHT)){
+			}if(control.isKeyPressed(control.KEY_RIGHT)){
 				velocity.x+=xVel;
-				velocity.y+=yVel;
-			}else{
-				break basic;
 			}
 			
 			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
@@ -46,6 +40,31 @@ public class Attack extends Component{
 			Damage.add(d);
 			lastAttack = currentTime;
 		}
+
+		if(canAttack && control.isKeyPressed(control.KEY_SECONDARY)){
+			Vector2f velocity = new Vector2f(0,0);
+			Vector2f size = new Vector2f(0.2f, 0.4f);
+
+			float xVel = 0.2f;
+			float yVel = 0.2f;
+			if(control.isKeyPressed(control.KEY_UP)){
+				velocity.y+=yVel*1.1f;
+			}if(control.isKeyPressed(control.KEY_DOWN)){
+				velocity.y-=yVel;
+			}if(control.isKeyPressed(control.KEY_LEFT)){
+				velocity.x-=xVel;
+			}if(control.isKeyPressed(control.KEY_RIGHT)){
+				velocity.x+=xVel;
+			}
+			
+			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
+			
+			Damage d = new Damage(location, size, 1000, 0.0005f, e, false);
+			d.setVelocity(velocity);
+			Damage.add(d);
+			lastAttack = currentTime;
+		}
 	}
+	
 
 }

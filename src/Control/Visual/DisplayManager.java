@@ -1,4 +1,4 @@
-package RenderEngine;
+package Control.Visual;
 
 
 import org.lwjgl.LWJGLException;
@@ -34,7 +34,6 @@ public class DisplayManager{
 			Display.create();
 			
 			Display.setTitle("Untiled Game");
-			
 		}catch(LWJGLException e){
 			ErrorPopup.createMessage(e, true);
 		}

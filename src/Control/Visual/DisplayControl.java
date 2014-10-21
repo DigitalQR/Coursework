@@ -14,8 +14,8 @@ import Control.Visual.Stage.MenuStage;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.Stage;
 import Entities.Player;
-import RenderEngine.DisplayManager;
 import RenderEngine.Renderer;
+import Tools.Maths.Toolkit;
 
 public class DisplayControl implements Runnable{
 	
@@ -28,12 +28,41 @@ public class DisplayControl implements Runnable{
 		setupStages();
 	}
 	
+	private static float r = 0.1f, g = 0.1f, b = 0.3f;
+	private static float[] RGBA = {0f,0f,0f,1f};
+	
+	public static float[] getRGBA(){
+		return RGBA;
+	}
+	
+	private static void incrementRandomLighting(){
+		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
+		float speed = Settings.floats.get("s_light_deviation");
+		r+=0.01f*speed;
+		g+=0.015f*speed;
+		b+=0.02f*speed;
+
+		RGBA[0] = Toolkit.Modulus((float)Math.sin(r));
+		RGBA[1] = Toolkit.Modulus((float)Math.sin(g));
+		RGBA[2] = Toolkit.Modulus((float)Math.sin(b));
+		
+		for(int i = 0; i<3; i++){
+			if(RGBA[i] > 0.8f){
+				RGBA[i] = 0.8f;
+			}
+		}
+		
+		Ambient.put(new float[]{RGBA[0], RGBA[1], RGBA[2], RGBA[3]});
+        Ambient.flip();
+        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
+	}
+	
 	private static void setupLighting(){
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_LIGHT0);
 		
 		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
-		Ambient.put(new float[]{0.3f, 0.3f, 0.7f, 1f});
+		Ambient.put(new float[]{0.1f, 0.1f, 0.3f, 1f});
         Ambient.flip();
         GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
         
@@ -79,6 +108,10 @@ public class DisplayControl implements Runnable{
 		STAGE_Current = i;
 	}
 	
+	public static boolean isCurrentStage(int i){
+		return STAGE_Current == i;
+	}
+	
 	private static void setupStages(){
 		stage = new Stage[2];
 		
@@ -114,8 +147,10 @@ public class DisplayControl implements Runnable{
 			}else{
 				GL11.glDisable(GL11.GL_LIGHTING);
 			}
+			
 			stage[STAGE_Current].update();
-
+			incrementRandomLighting();
+			
 			processCamera();
 			DisplayManager.update();
 		}

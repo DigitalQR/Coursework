@@ -22,27 +22,38 @@ public class Camera {
 	
 	public static void process(List<Player> User){		
 		float x = 0, y = 0;
+		int playerCount = 0;
 		for(Player p: User){
-			x-= p.getLERPLocation().x;
-			y-= p.getLERPLocation().y;
+			if(!p.isDead()){
+				x-= p.getLERPLocation().x;
+				y-= p.getLERPLocation().y;
+				playerCount++;
+			}
 		}
-		Location.x = x/User.size();
-		Location.y = y/User.size();
-		
+		if(playerCount != 0){
+			Location.x = x/playerCount;
+			Location.y = y/playerCount;
+		}
 		
 		
 		float Delta = 0;
 		for(Player a :User){
-			for(Player b :User){
-				if(!a.equals(b)){
-					float dx = (float)-Toolkit.Modulus(Toolkit.Differencef(a.getLERPLocation().x, b.getLERPLocation().x));
-					float dy = (float)-Toolkit.Modulus(Toolkit.Differencef(a.getLERPLocation().y, b.getLERPLocation().y));
-					if(dx < Delta){
-						Delta = dx;
-					}if(dy < Delta){
-						Delta = dy;
+			if(!a.isDead()){
+				
+				for(Player b :User){
+					if(!a.equals(b) && !b.isDead()){
+						
+						float dx = (float)-Toolkit.Modulus(Toolkit.Differencef(a.getLERPLocation().x, b.getLERPLocation().x));
+						float dy = (float)-Toolkit.Modulus(Toolkit.Differencef(a.getLERPLocation().y, b.getLERPLocation().y));
+						if(dx < Delta){
+							Delta = dx;
+						}if(dy < Delta){
+							Delta = dy;
+						}
 					}
+					
 				}
+				
 			}
 		}
 		Location.z = Delta;

@@ -57,15 +57,23 @@ public class SquareHitbox{
 		return false;
 	}
 
-	public static List<SquareHitbox> RandomGeneration(int n, int x, int y, int Width, int Height, int MaxSize){
+	public static List<SquareHitbox> RandomGeneration(int n, int x, int y, int Width, int Height, int MinSize, int MaxSize){
 		List<SquareHitbox> Temp = new ArrayList<SquareHitbox>();
-		float divisor = 20;
+		float divisor = 10;
 		
 		if(MaxSize == 0){
 			MaxSize = 1;
 		}
 		for(int i = 0; i<n; i++){
-			 Temp.add(new SquareHitbox(new Vector2f(Toolkit.RandomInt(x, Width)/divisor, Toolkit.RandomInt(y, Height)/divisor), new Vector2f(Toolkit.RandomInt(1, MaxSize)/divisor, Toolkit.RandomInt(1, MaxSize)/divisor)));
+			Vector2f size = new Vector2f(Toolkit.RandomInt(MinSize, MaxSize), Toolkit.RandomInt(MinSize, MaxSize));
+			Vector2f location = new Vector2f(x+Toolkit.RandomInt(0, (int)((Width-size.x))), y+Toolkit.RandomInt(0, (int)((Height-size.y))));
+
+			size.x/=divisor;
+			size.y/=divisor;
+			location.x/=divisor;
+			location.y/=divisor;
+			
+			 Temp.add(new SquareHitbox(location, size));
 		}
 		
 		return Temp;

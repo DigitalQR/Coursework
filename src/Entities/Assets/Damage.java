@@ -3,11 +3,15 @@ package Entities.Assets;
 import java.util.ArrayList;
 
 import Entities.Tools.Entity;
+import RenderEngine.Model.Animation;
+import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
+import Tools.Maths.Vector3f;
 
 public class Damage extends Asset{
 
 	private static ArrayList<Damage> damage = new ArrayList<Damage>();
+	private static Animation cube = new Animation("Cube/Spin", 10);
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Damage> getDamageInfo(){
@@ -70,7 +74,7 @@ public class Damage extends Asset{
 		}
 		return false;
 	}
-		
+	
 	private Entity parent;
 	private Vector2f location;
 	private Vector2f size;
@@ -88,6 +92,15 @@ public class Damage extends Asset{
 		this.life = life;
 		this.damageValue = damageValue;
 		this.stuckToParent = stuckToParent;
+	}
+	
+	public Model getModel(){
+		Model m = cube.getCurrentFrame();
+		m.setLocation(new Vector3f(velocity.x+location.x+size.x/2, velocity.y+location.y-size.y, 0));
+		m.setRGBA(1, 0, 0, 1);
+		m.scaleBy(10);
+		
+		return m;
 	}
 	
 	public float getDamageValue(){
