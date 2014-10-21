@@ -7,8 +7,10 @@ import Collision.SquareHitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Input.Gamepad;
+import Entities.Tools.Attack;
 import Entities.Tools.ControlScheme;
 import Entities.Tools.Entity;
+import Entities.Tools.Health;
 import Entities.Tools.Movement;
 import RenderEngine.textureLoader;
 import RenderEngine.Model.Animation;
@@ -25,16 +27,24 @@ public class Player extends Entity{
 	private float LastUpdate = 0;
 	private Vector3f LastLocation = new Vector3f(0,0,0);
 	private static Texture PlaneTexture;
+	private Health health;
 
 	private static Animation spawn;
 	
 	public Player(float x, float y){
-		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.6f, 0.2f));
+		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.3f, 0.2f));
 		checkSpawn(x,y);
 		
-		control = new ControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
+		control = new ControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
 		this.addComponent(new Movement(control));
+		this.addComponent(new Attack(control));
+		health = new Health();
+		this.addComponent(health);
 	}	
+	
+	public float getFactor(){
+		return health.factor;
+	}
 	
 	private void checkSpawn(float x, float y){
 		Main: while(true){
@@ -61,8 +71,8 @@ public class Player extends Entity{
 		spawn = new Animation("Cube/Spawn", 100);
 	}
 	
-	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start, int select){
-		control.setControlScheme(up, down, left, right, primary, secondary, start, select);
+	public void setControlScheme(int up, int down, int left, int right, int primary, int secondary, int start){
+		control.setControlScheme(up, down, left, right, primary, secondary, start);
 	}
 	
 	public void setControlScheme(int GPID){

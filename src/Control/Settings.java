@@ -10,7 +10,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "0.16.1";
+	public static final String Version = "0.16.2";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	
@@ -23,11 +23,14 @@ public class Settings implements Runnable{
 
 		toggleNames.add("d_hitbox");
 		toggleNames.add("d_wireframe");
+		toggleNames.add("d_damage");
 		toggleNames.add("s_noclip");
 		
 		for(String s: toggleNames){
 			toggles.put(s, false);
 		}
+		toggles.put("d_damage", true);
+		toggles.put("d_hitbox", true);
 		
 		new Thread(new Settings()).start();
 	}

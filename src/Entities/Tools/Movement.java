@@ -9,21 +9,12 @@ import Tools.Maths.Vector3f;
 public class Movement extends Component{
 
 	private ControlScheme control;
-	private Vector2f velocity;
 	private Vector2f accelerationLimit = new Vector2f(0.2f, 40f);
 	boolean touchingGround = false;
 	int touchingWall = 0;
 	
 	public Movement(ControlScheme controlScheme){
 		control = controlScheme;
-	}
-	
-	public void setVelocity(Vector2f m){
-		velocity = m;
-	}
-	
-	public void addVelocity(Vector2f m){
-		velocity = velocity.add(m);
 	}
 	
 	public int getTouchingWall(){
@@ -35,7 +26,6 @@ public class Movement extends Component{
 	}
 	
 	public void update(Entity e){
-		velocity = new Vector2f(e.getVelocity().x, e.getVelocity().y);
 		if(!Settings.toggles.get("s_noclip")){
 			updateX(e);
 			updateY(e);
@@ -43,15 +33,15 @@ public class Movement extends Component{
 			noclipProcess(e);
 		}
 		e.normaliseLocation();
-		e.setVelocity(new Vector3f(velocity.x, velocity.y, 0));
+		e.setVelocity(new Vector3f(e.getVelocity().x, e.getVelocity().y, 0));
 	}
 	
 	private void noclipProcess(Entity e){
 		//Input
-		if(control.isKeyPressed(control.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.08f;
-		if(control.isKeyPressed(control.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.08f;
-		if(control.isKeyPressed(control.KEY_UP) && velocity.y < accelerationLimit.y) velocity.y+=0.08f;
-		if(control.isKeyPressed(control.KEY_DOWN) && velocity.y > -accelerationLimit.y) velocity.y-=0.08f;
+		if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.08f;
+		if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.08f;
+		if(control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y) e.getVelocity().y+=0.08f;
+		if(control.isKeyPressed(control.KEY_DUCK) && e.getVelocity().y > -accelerationLimit.y) e.getVelocity().y-=0.08f;
 		
 		//Normalisation
 		Vector3f location = e.getLocation();
@@ -60,55 +50,55 @@ public class Movement extends Component{
 		location.y = Math.round(location.y*100);
 		location.y/=100;
 
-		velocity.x = Math.round(velocity.x*100);
-		velocity.x/=100;
-		velocity.y = Math.round(velocity.y*100);
-		velocity.y/=100;
+		e.getVelocity().x = Math.round(e.getVelocity().x*100);
+		e.getVelocity().x/=100;
+		e.getVelocity().y = Math.round(e.getVelocity().y*100);
+		e.getVelocity().y/=100;
 
 		//Slowdown
-		if(Math.round(velocity.x*10) == 0){
-			velocity.x = 0;
+		if(Math.round(e.getVelocity().x*10) == 0){
+			e.getVelocity().x = 0;
 		}else{
-			velocity.x-=0.04*Toolkit.Sign(velocity.x);
+			e.getVelocity().x-=0.04*Toolkit.Sign(e.getVelocity().x);
 		}
 		
-		if(Math.round(velocity.y*10) == 0){
-			velocity.y = 0;
+		if(Math.round(e.getVelocity().y*10) == 0){
+			e.getVelocity().y = 0;
 		}else{
-			velocity.y-=0.04*Toolkit.Sign(velocity.y);
+			e.getVelocity().y-=0.04*Toolkit.Sign(e.getVelocity().y);
 		}
 		
 		
 
-		location.x+=velocity.x;
-		location.y+=velocity.y;
+		location.x+=e.getVelocity().x;
+		location.y+=e.getVelocity().y;
 		//e.setLocation(location);
 	}
 	
 	private void updateX(Entity e){
 		//Input
-		if(control.isKeyPressed(control.KEY_RIGHT) && velocity.x < accelerationLimit.x) velocity.x+=0.08f;
-		if(control.isKeyPressed(control.KEY_LEFT) && velocity.x > -accelerationLimit.x) velocity.x-=0.08f;
+		if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.08f;
+		if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.08f;
 		
 		//Normalisation
 		Vector3f location = e.getLocation();
 		location.x = Math.round(location.x*100);
 		location.x/=100;
 
-		velocity.x = Math.round(velocity.x*100);
-		velocity.x/=100;
+		e.getVelocity().x = Math.round(e.getVelocity().x*100);
+		e.getVelocity().x/=100;
 		
 		//Slowdown
-		if(Math.round(velocity.x*10) == 0){
-			velocity.x = 0;
+		if(Math.round(e.getVelocity().x*10) == 0){
+			e.getVelocity().x = 0;
 		}else{
-			velocity.x-=0.04*Toolkit.Sign(velocity.x);
+			e.getVelocity().x-=0.04*Toolkit.Sign(e.getVelocity().x);
 		}
 		
 		//Hitbox detection
 		int touchingWall = 0;
-		if(velocity.x != 0){
-			float initialVelx = velocity.x;
+		if(e.getVelocity().x != 0){
+			float initialVelx = e.getVelocity().x;
 			
 			for(float x = 0; Toolkit.Modulus(x) <= Toolkit.Modulus(initialVelx); x+= Toolkit.Sign(initialVelx)*0.01f){
 				if(insideHitbox(new Vector2f(location.x + x, location.y), new Vector2f(e.getSize().x, e.getSize().y))){
@@ -123,29 +113,29 @@ public class Movement extends Component{
 					
 					break;
 				}else{
-					velocity.x = x;
+					e.getVelocity().x = x;
 				}
 			}
 		}
 		
-		location.x+=velocity.x;
+		location.x+=e.getVelocity().x;
 		this.touchingWall = touchingWall;
 		e.setLocation(location);
 	}
 	
 	private void updateY(Entity e){
 		//Input
-		if(control.isKeyPressed(control.KEY_UP) && velocity.y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
-			velocity.y = 0.3f;
+		if(control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
+			e.getVelocity().y = 0.3f;
 			touchingGround = false;
 			if(touchingWall != 0){
-				velocity.x+=0.6f*-touchingWall;
+				e.getVelocity().x+=0.6f*-touchingWall;
 			}
 		}
-		if(control.isKeyPressed(control.KEY_DOWN)) velocity.y = -0.5f;
+		if(control.isKeyPressed(control.KEY_DUCK)) e.getVelocity().y = -0.5f;
 		
-		if(Toolkit.Modulus(velocity.y) < accelerationLimit.y){
-			velocity.y-=0.02f;
+		if(Toolkit.Modulus(e.getVelocity().y) < accelerationLimit.y){
+			e.getVelocity().y-=0.02f;
 		}
 		
 		//Normalise
@@ -153,32 +143,32 @@ public class Movement extends Component{
 		location.y = Math.round(location.y*100);
 		location.y/=100;
 
-		velocity.y = Math.round(velocity.y*100);
-		velocity.y/=100;
+		e.getVelocity().y = Math.round(e.getVelocity().y*100);
+		e.getVelocity().y/=100;
 		
-		if(Math.round(velocity.y*100) == 0){
-			velocity.y = 0;
+		if(Math.round(e.getVelocity().y*100) == 0){
+			e.getVelocity().y = 0;
 		}
 		
 		//Is the player grounded
-		if(Toolkit.Sign(velocity.y) == -1 && insideHitbox(new Vector2f(location.x, location.y + velocity.y-0.03f), new Vector2f(e.getSize().x, e.getSize().y))){
+		if(Toolkit.Sign(e.getVelocity().y) == -1 && insideHitbox(new Vector2f(location.x, location.y + e.getVelocity().y-0.03f), new Vector2f(e.getSize().x, e.getSize().y))){
 			touchingGround = true;
 		}
 		
 		//Hitbox detection
-		if(velocity.y != 0){
-			float initialVely = velocity.y;
+		if(e.getVelocity().y != 0){
+			float initialVely = e.getVelocity().y;
 			
 			for(float y = 0; Toolkit.Modulus(y) <= Toolkit.Modulus(initialVely); y+= Toolkit.Sign(initialVely)*0.01f){
 				if(insideHitbox(new Vector2f(location.x, location.y + y), new Vector2f(e.getSize().x, e.getSize().y))){
 					break;
 				}else{
-					velocity.y = y;
+					e.getVelocity().y = y;
 				}
 			}
 		}
 		
-		location.y+=velocity.y;
+		location.y+=e.getVelocity().y;
 		e.setLocation(location);
 	}
 	

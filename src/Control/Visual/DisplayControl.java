@@ -137,8 +137,9 @@ public class DisplayControl implements Runnable{
 	
 	//Closes everything down to prepare for the game's close
 	private static void stop(){
-		exists = false;
-		System.out.println("Closing down visual thread.");
 		DisplayManager.close();
+		System.out.println("Closing down visual thread.");
+		exists = false;
+		System.out.println("exist: " + exists);
 	}
 }

@@ -8,6 +8,7 @@ import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
 import Debug.ErrorPopup;
 import Entities.Player;
+import Entities.Assets.Damage;
 
 
 public class MainControl{
@@ -29,6 +30,7 @@ public class MainControl{
 					p.update();
 				}
 			}
+			Damage.updateDamage();
 			
 			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
 				try{
@@ -40,7 +42,13 @@ public class MainControl{
 			
 		}
 		
-		while(DisplayControl.exists){}
+		while(DisplayControl.exists){
+			try{
+				TimeUnit.NANOSECONDS.sleep(1000);
+			}catch(InterruptedException e){
+				ErrorPopup.createMessage(e, true);
+			}
+		}
 		System.out.println("Closing down main thread.");
 		System.exit(0);
 	}

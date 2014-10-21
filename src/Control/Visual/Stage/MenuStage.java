@@ -113,11 +113,11 @@ public class MenuStage extends Stage{
 		
 		//Button logic
 		if(activeButton == 1){
-			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_UP)){
+			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_UP)){
 				selectedButton--;
 				input();
 			}
-			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_DOWN)){
+			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_DOWN)){
 				selectedButton++;
 				input();
 			}
@@ -154,7 +154,7 @@ public class MenuStage extends Stage{
 	}
 	
 	private void MainProcessMainButton(){
-		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_SELECT)){
+		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_SELECT)){
 			activeButton = selectedButton;
 			input();
 			switch(selectedButton){
@@ -178,7 +178,7 @@ public class MenuStage extends Stage{
 				MainControl.CloseRequest = true;
 				break;	
 			}
-		}else if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_MENU_BACK) && !locked){
+		}else if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_BACK) && !locked){
 			activeButton = 1;
 		}
 	}

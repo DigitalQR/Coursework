@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.opengl.GL11;
+
 import Debug.ErrorPopup;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
@@ -15,6 +17,14 @@ import Tools.Maths.Vector3f;
 public class Font{
 	
 	private Character[] Letter;
+	private float[] RGBA = {0f,0f,0f,1f};
+	
+	public void setRGBA(float r, float g, float b, float a){
+		RGBA[0] = r;
+		RGBA[1] = g;
+		RGBA[2] = b;
+		RGBA[3] = a;
+	}
 	
 	public Font(String file){
 		Letter = new Character[43];
@@ -76,12 +86,20 @@ public class Font{
 
 	
 	public void drawText(String Message, Vector3f translation, float scale, float LetterSize){
+		boolean light = GL11.glGetBoolean(GL11.GL_LIGHTING);
+		if(light){
+			GL11.glDisable(GL11.GL_LIGHTING);	
+		}
 		Cubef[] mes = getSentence(Message, translation, scale, LetterSize);
 
 		for(Cubef c:mes){
 			Model m = new Model(c);
-			m.setRGBA(0f, 0f, 0f, 1);
+			m.setRGBA(RGBA[0],RGBA[1],RGBA[2],RGBA[3]);
 			Renderer.render(m);
+		}
+		
+		if(light){
+			GL11.glEnable(GL11.GL_LIGHTING);	
 		}
 	}
 	
