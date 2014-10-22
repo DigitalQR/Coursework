@@ -169,6 +169,10 @@ public class Player extends Entity{
 		}
 	}
 	
+	public void kill(){
+		health.kill();
+	}
+	
 	public float getRespawnTimeRemaining(){
 		return health.getTimeRemaining();
 	}

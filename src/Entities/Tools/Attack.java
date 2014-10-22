@@ -7,7 +7,7 @@ public class Attack extends Component{
 
 	ControlScheme control;
 	private float lastAttack = 0;
-	private int coolDown = 500;
+	private int coolDown = 600;
 	
 	public Attack(ControlScheme control){
 		this.control = control;
@@ -35,7 +35,7 @@ public class Attack extends Component{
 			
 			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
 			
-			Damage d = new Damage(location, size, 200, 0.4f, e, true);
+			Damage d = new Damage(location, size, 400, 0.4f, e, true);
 			d.setVelocity(velocity);
 			Damage.add(d);
 			lastAttack = currentTime;

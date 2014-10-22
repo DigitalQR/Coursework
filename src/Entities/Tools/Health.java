@@ -8,25 +8,28 @@ public class Health extends Component{
 
 	public Vector2f scale = new Vector2f(0.3f, 0.4f);
 	public float factor = 0.0f;
-	private float lastHit = 0;
+	private float lastHitTime = 0;
+	private Entity lastHit = null;
 	private  float immuneTime = 100;
 	
 	public void reset(){
 		factor = 0.0f;
-		lastHit = 0;
+		lastHitTime = 0;
 		immuneTime = 100;
 		isDead = false;
+		lastHit = null;
 	}
 	
 	public void update(Entity e) {
 		float currentTime = System.nanoTime();
 		
-		if(currentTime - lastHit >= immuneTime*1000000){
+		if(currentTime - lastHitTime >= immuneTime*1000000){
 			Damage damage = Damage.damageTouching(e);
 			
 			if(damage != null){				
 				factor+=damage.getDamageValue();
-				lastHit = currentTime;
+				lastHitTime = currentTime;
+				lastHit = damage.getParent();
 				Damage.remove(damage);
 
 				float x = damage.getVelocity().x*(5f+factor)*scale.x;
@@ -48,6 +51,9 @@ public class Health extends Component{
 			isDead = true;
 			deathCount++;
 			deathTime = System.nanoTime();
+			if(lastHit != null){
+				lastHit.killCount++;
+			}
 		}
 	}
 	

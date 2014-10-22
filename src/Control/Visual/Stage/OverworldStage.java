@@ -25,9 +25,16 @@ import Tools.Maths.Vector3f;
 public class OverworldStage extends Stage{
 	private List<Model> hb;
 	private Font font;
+	private int winner = -1;
+	private int resetTime = 10;
+	private float endTime = 0;
+	
+	private int winKillCount = 10;
 	
 	public void prepare(){	
 		font = new Font("Font/Default");
+		winner = -1;
+		endTime = 0;
 		
 		//Setup hitbox model data
 		hb = new ArrayList<Model>();
@@ -55,20 +62,54 @@ public class OverworldStage extends Stage{
 		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
 		
 		//Draw HUD
-		String player = "\n\n";
-		for(int i = 0; i<User.size(); i++){
-			int factor = (int) Math.round((double)(User.get(i).getFactor()*100));
-			if(User.get(i).isDead()){
-				player += (int)Math.round(User.get(i).getRespawnTimeRemaining()/1000000000) + "<DEAD>";
+		if(winner == -1){
+			String player = "\n\n";
+			
+			for(int i = 0; i<User.size(); i++){
+				int factor = (int) Math.round((double)(User.get(i).getFactor()*100));
+				
+				if(User.get(i).isDead()){
+					player += (int)Math.round(User.get(i).getRespawnTimeRemaining()/1000000000) + "<DEAD>";
+				}
+				player += "Player " + (i+1) + ": " + factor + "\nKills: " + User.get(i).killCount + "\n\n\n";
+				
+				if(User.get(i).killCount >= winKillCount){
+					winner = i+1;
+					endTime = System.nanoTime();
+					 
+				}
 			}
-			player += "Player " + (i+1) + ": " + factor + "\nDeaths: " + User.get(i).getDeathCount() + "\n\n\n";
-		}
+			
+			font.setRGBA(1-DisplayControl.getRGBA()[0], 1-DisplayControl.getRGBA()[1], 1-DisplayControl.getRGBA()[2], 1);
+			font.drawText(player, new Vector3f(-Camera.getLocation().x-1.6f, -Camera.getLocation().y+1.5f, -Camera.getLocation().z-2f), 0.01f, 9f);
+			font.setRGBA(0, 0, 0, 1);
+			font.drawText(player, new Vector3f(-Camera.getLocation().x-1.606f, -Camera.getLocation().y+1.506f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
+			
+		}else{
+			int reset = resetTime-Math.round((System.nanoTime()-endTime)/1000000000);
+			
+			font.setRGBA(1-DisplayControl.getRGBA()[0], 1-DisplayControl.getRGBA()[1], 1-DisplayControl.getRGBA()[2], 1);
+			font.drawText("Player " + winner + " Wins!\nReset in " + reset, new Vector3f(-Camera.getLocation().x-0.6f, -Camera.getLocation().y, -Camera.getLocation().z-2f), 0.01f, 9f);
+			font.setRGBA(0, 0, 0, 1);
+			font.drawText("Player " + winner + " Wins!\nReset in " + reset, new Vector3f(-Camera.getLocation().x-0.606f, -Camera.getLocation().y+0.006f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
+			
+			for(int i = 0; i<Settings.User.size(); i++){
+				if(i+1 != winner){
+					Settings.User.get(i).kill();
+					Settings.User.get(i).killCount = 0;
+				}
+			}
+			
+			if(reset == 0){
+				DisplayControl.setStage(DisplayControl.STAGE_MENU);
+				int scale = 8;
+				Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
 
-		font.setRGBA(1-DisplayControl.getRGBA()[0], 1-DisplayControl.getRGBA()[1], 1-DisplayControl.getRGBA()[2], 1);
-		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.6f, -Camera.getLocation().y+1.5f, -Camera.getLocation().z-2f), 0.01f, 9f);
-		font.setRGBA(0, 0, 0, 1);
-		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.606f, -Camera.getLocation().y+1.506f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
-		
+				Settings.User.get(winner-1).kill();
+				Settings.User.get(winner-1).killCount = 0;
+				prepare();
+			}
+		}
 		//Light position
 		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
         Location.put(new float[]{-Camera.getLocation().x, -Camera.getLocation().y , 3,1});
@@ -125,17 +166,18 @@ public class OverworldStage extends Stage{
 	
 		//Draw player outline
 		Stencil.cylce();
-		int playerTrack = 1;
+		int playerTrack = 0;
 		for(Player p: User){
+			playerTrack++;
 				if(!p.isDead()){
 					Vector3f location = new Vector3f(p.getLERPLocation().x-0.35f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z);
 					Vector3f location2 = new Vector3f(location.x-0.006f, location.y-0.006f, location.z-0.0001f);
 					float[] colour = DisplayControl.getInverseRGBA();
 					font.setRGBA(colour[0], colour[1], colour[2], 1f);
-					font.drawText("PLAYER " + playerTrack++, location, 0.02f, 8f);
+					font.drawText("PLAYER " + playerTrack, location, 0.02f, 8f);
 
 					font.setRGBA(0, 0, 0, 1f);
-					font.drawText("PLAYER " + (playerTrack-1), location2, 0.02f, 8f);
+					font.drawText("PLAYER " + playerTrack, location2, 0.02f, 8f);
 			}
 		}
 		Stencil.disable();

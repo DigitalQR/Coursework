@@ -7,6 +7,7 @@ public abstract class Entity{
 	private Component[] component = new Component[0];
 	private Vector3f location;
 	private Vector3f velocity;
+	public int killCount = 0;
 	
 	public Vector3f getVelocity(){
 		return velocity;
