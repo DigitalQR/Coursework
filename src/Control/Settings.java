@@ -5,25 +5,47 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import Collision.StaticHitbox2f;
+import Tools.Maths.Cubef;
+import Tools.Maths.Vector3f;
+import Collision.SquareHitbox;
 import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static Player[] User = new Player[2];
-	public static List<StaticHitbox2f> hb;
-	
+	public static final String Version = "1.0.0";
+	public static ArrayList<Player> User = new ArrayList<Player>();
+	public static List<SquareHitbox> hb;
+	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
+
 	public static List<String> toggleNames = new ArrayList<String>();
 	public static HashMap<String,Boolean> toggles = new HashMap<String,Boolean>();
+
+	public static List<String> floatNames = new ArrayList<String>();
+	public static HashMap<String,Float> floats = new HashMap<String,Float>();
 	
 	public static void setup(){
 		//d_? = draw ?
-		
+		//s_? = setting ?
+
+		//Toggles
 		toggleNames.add("d_hitbox");
+		toggleNames.add("d_wireframe");
+		toggleNames.add("d_damage");
+		toggleNames.add("s_noclip");
 		
 		for(String s: toggleNames){
 			toggles.put(s, false);
 		}
+		toggles.put("d_damage", true);
+		
+		//Floats
+		floatNames.add("s_light_deviation");
+		
+		for(String s: floatNames){
+			floats.put(s, 0f);
+		}
+		
+		floats.put("s_light_deviation", 0.25f);
 		
 		new Thread(new Settings()).start();
 	}
@@ -41,6 +63,8 @@ public class Settings implements Runnable{
 			case "help":
 				System.out.println("toggle <variable>");
 				System.out.println("list <list>");
+				System.out.println("set <variable> <value>");
+				System.out.println("stop");
 				System.out.println("");
 				break;
 			
@@ -66,6 +90,11 @@ public class Settings implements Runnable{
 							System.out.println(" " + s);
 						}
 						break;
+					case "floats":
+						for(String s: floatNames){
+							System.out.println(" " + s);
+						}
+						break;
 					default:
 						System.out.println("Invalid list name.");
 						break;
@@ -74,7 +103,30 @@ public class Settings implements Runnable{
 					System.out.println("Usage: list <list>");
 				}
 				break;
-			
+				
+			//Sets a certain value
+			case	"set":
+				if(raw.length == 3){
+					if(floats.containsKey(raw[1])){
+						try{
+							float val = Float.valueOf(raw[2]);
+							floats.put(raw[1], val);
+						}catch(NumberFormatException e){
+							System.out.println(raw[2] + " is not a float.");
+						}
+					}else{
+						System.out.println("Variable " + raw[1] + " does not exist.");
+					}
+				}else{
+					System.out.println("Usage: set <variable> <value>");
+				}
+				break;
+				
+			//Force stops the JVM
+			case "stop":
+				System.exit(0);
+				break;
+				
 			default:
 				System.out.println("Command " + raw[0] + " is unknown.");
 				System.out.println("Type help for a list of commands.");

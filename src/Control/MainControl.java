@@ -3,11 +3,12 @@ package Control;
 import java.util.concurrent.TimeUnit;
 
 import Tools.Maths.Toolkit;
-import Collision.StaticHitbox2f;
+import Collision.SquareHitbox;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
 import Debug.ErrorPopup;
 import Entities.Player;
+import Entities.Assets.Damage;
 
 
 public class MainControl{
@@ -25,11 +26,11 @@ public class MainControl{
 		while(!CloseRequest){
 			long StartTime = System.nanoTime();
 			if(!Paused){
-				for(int i = 0; i<Settings.User.length; i++){
-					Settings.User[i].update();
+				for(Player p: Settings.User){
+					p.update();
 				}
-				
 			}
+			Damage.updateDamage();
 			
 			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
 				try{
@@ -40,16 +41,24 @@ public class MainControl{
 			}
 			
 		}
+		
+		while(DisplayControl.exists){
+			try{
+				TimeUnit.NANOSECONDS.sleep(1000);
+			}catch(InterruptedException e){
+				ErrorPopup.createMessage(e, true);
+			}
+		}
 		System.out.println("Closing down main thread.");
-		while(DisplayControl.exists){}
 		System.exit(0);
 	}
 	
 	private static void setup(){
-		Settings.hb = StaticHitbox2f.RandomGeneration(1000, -1000, -1000, 1000, 1000, 100);
-		for(int i = 0; i<Settings.User.length; i++){
-			Settings.User[i] = new Player(0,0);
-		}
+		int scale = 8;
+		Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
+
+		Settings.User.add(new Player(0,0));
+		Settings.User.add(new Player(0,0));
 		
 	}
 

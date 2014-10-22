@@ -7,8 +7,6 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Scanner;
 
-import org.lwjgl.input.Keyboard;
-
 import Tools.String.Parametres;
 import Control.Settings;
 import Control.Visual.Stage.MenuStage;
@@ -60,20 +58,23 @@ public class Gamepad{
 	}
 	private static int T = 0;
 	public static final int 
-		A = T++, B = T++, X = T++ ,Y = T++, 
-		DPAD_UP = T++, DPAD_DOWN = T++, DPAD_LEFT = T++, DPAD_RIGHT = T++, 
-		LEFT_STICK_UP = T++, LEFT_STICK_DOWN = T++, LEFT_STICK_LEFT = T++, LEFT_STICK_RIGHT = T++, 
-		RIGHT_STICK_UP = T++, RIGHT_STICK_DOWN = T++, RIGHT_STICK_LEFT = T++, RIGHT_STICK_RIGHT = T++, 
-		START = T++, SELECT = T++,
-		LEFT_TRIGGER = T++, RIGHT_TRIGGER = T++, LEFT_BUMPER = T++, RIGHT_BUMPER = T++;
+	BUTTON_JUMP = T++,
+	BUTTON_DUCK = T++,
+	BUTTON_BLOCK = T++,
+	BUTTON_GRAB = T++,
+	
+	BUTTON_UP = T++,
+	BUTTON_DOWN = T++,
+	BUTTON_LEFT = T++,
+	BUTTON_RIGHT = T++,
+	
+	BUTTON_PRIMARY = T++,
+	BUTTON_SECONDARY = T++,
+	
+	BUTTON_PAUSE = T++;
 		
 	private static String[] KeyName = 
-		{"A", "B", "X", "Y",
-		 "DPAD> UP", "DPAD> DOWN", "DPAD> LEFT", "DPAD> RIGHT",
-		 "LEFT STICK> UP", "LEFT STICK> DOWN", "LEFT STICK> LEFT", "LEFT STICK> RIGHT", 
-		 "RIGHT STICK> UP", "RIGHT STICK> DOWN", "RIGHT STICK> LEFT", "RIGHT STICK> RIGHT", 
-		 "START", "SELECT",
-		 "LEFT TRIGGRER", "RIGHT TRIGGER", "LEFT BUMPER", "RIGHT BUMPER"};
+		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary attack", "Secondary attack", "Pause"};
 	
 	private Button[] Key = new Button[KeyName.length];
 	private float[] Raw;
@@ -196,17 +197,19 @@ public class Gamepad{
 			
 		}catch(FileNotFoundException e){
 			System.out.println(getName() + " GPP doesn't exist..");
+		}catch(ArrayIndexOutOfBoundsException e){
+			deleteProfileStatus();
 		}
 	}
 	
 	public void assignToPlayer(int i){
 		for(Player p: Settings.User){
 			if(p.getControlScheme().GPID == this.GPID){
-				p.setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
+				p.getControlScheme().setDefaultControls();
 			}
 		}
 		assignedPlayer = i;
-		Settings.User[i].setControlScheme(this.GPID);
+		Settings.User.get(i).setControlScheme(this.GPID);
 	}
 
 	public void deleteProfileStatus(){
@@ -216,7 +219,7 @@ public class Gamepad{
 		
 		for(Player p: Settings.User){
 			if(p.getControlScheme().GPID == this.GPID){
-				p.setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_G, Keyboard.KEY_H, Keyboard.KEY_ESCAPE, Keyboard.KEY_L);
+				p.getControlScheme().setDefaultControls();
 			}
 		}
 	}

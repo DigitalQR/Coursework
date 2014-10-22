@@ -1,8 +1,5 @@
 package Control.Visual.Stage;
 
-import java.nio.FloatBuffer;
-
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
@@ -12,7 +9,7 @@ import Control.Visual.DisplayControl;
 import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
 import Entities.Player;
-import RenderEngine.Loader;
+import RenderEngine.textureLoader;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
@@ -26,10 +23,7 @@ public class MenuStage extends Stage{
 	private int activeButton = 1;
 	
 	public Font font;
-	public static Texture 
-	GreyButton, GreyButtonSelected,
-	RedButton, RedButtonSelected,
-	GreenButton, GreenButtonSelected;
+	public static Texture Button, ButtonSelected;
 	
 	private Button2f[] MainButton;
 	
@@ -38,14 +32,8 @@ public class MenuStage extends Stage{
 	public void prepare(){
 		font = new Font("Font/Default");
 		
-		GreyButton = Loader.loadTexture("Button/Grey");
-		GreyButtonSelected = Loader.loadTexture("Button/Grey_selected");
-		
-		RedButton = Loader.loadTexture("Button/Red");
-		RedButtonSelected = Loader.loadTexture("Button/Red_selected");
-
-		GreenButton = Loader.loadTexture("Button/Green");
-		GreenButtonSelected = Loader.loadTexture("Button/Green_selected");
+		Button = textureLoader.loadTexture("Button/Grey");
+		ButtonSelected = textureLoader.loadTexture("Button/Grey_selected");
 		
 		MainPrepare();
 		
@@ -53,7 +41,6 @@ public class MenuStage extends Stage{
 		GamepadSetup.prepare(font);
 		
 		player = new Player(0,0);
-		player.setLocation(new Vector3f(8f,10f,0));
 
 	}
 	
@@ -72,27 +59,15 @@ public class MenuStage extends Stage{
 	private static Player player;
 	
 	public void update(){
-		//Light position
-		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
-		Ambient.put(new float[]{0f, 0f, 0f, 0f});
-        Ambient.flip();
-        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
-        
-		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
-        Location.put(new float[]{0, 0, 1, 0});
-        Location.flip();
-        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
-
 		Model m = player.getModel();
 		m.scaleBy(20);
-		m.setLocation(new Vector3f(4, 0, -15));
+		m.setLocation(new Vector3f(4, -7, -15));
+		m.setTexture(Button);
         Renderer.render(m);
         
 		GL11.glTranslatef(-7.7f, -7.5f, -10);
 
-		
 		MainDraw();
-		
 		
 		switch(activeButton){
 			case 2:
@@ -117,13 +92,16 @@ public class MenuStage extends Stage{
 	}
 	
 	private void MainDraw(){
+		//Version number
+		font.drawText("Version: " + Settings.Version, new Vector3f(-0.5f,-0.3f,0), 0.04f, 7f);
+		
 		//Button logic
 		if(activeButton == 1){
-			if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_UP)){
+			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_UP)){
 				selectedButton--;
 				input();
 			}
-			if(timePassed() && Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_DOWN)){
+			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_DOWN)){
 				selectedButton++;
 				input();
 			}
@@ -140,9 +118,9 @@ public class MenuStage extends Stage{
 			
 			Model m = MainButton[i].getModel();
 			if(i == selectedButton){
-				m.setTexture(GreyButtonSelected);
+				m.setTexture(ButtonSelected);
 			}else{
-				m.setTexture(GreyButton);
+				m.setTexture(Button);
 			}
 			Renderer.render(m);
 			
@@ -160,7 +138,7 @@ public class MenuStage extends Stage{
 	}
 	
 	private void MainProcessMainButton(){
-		if(Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_SELECT)){
+		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_SELECT)){
 			activeButton = selectedButton;
 			input();
 			switch(selectedButton){
@@ -184,7 +162,7 @@ public class MenuStage extends Stage{
 				MainControl.CloseRequest = true;
 				break;	
 			}
-		}else if(Settings.User[0].isKeyPressed(Settings.User[0].getControlScheme().KEY_MENU_BACK) && !locked){
+		}else if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_BACK) && !locked){
 			activeButton = 1;
 		}
 	}
