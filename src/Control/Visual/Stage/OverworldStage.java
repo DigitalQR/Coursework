@@ -114,9 +114,8 @@ public class OverworldStage extends Stage{
 			}
 			
 			if(reset == 0){
-				int scale = 8;
-				Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
-
+				Settings.randomHitboxGen();
+				
 				for(int i = 0; i<Settings.User.size(); i++){
 					Settings.User.get(i).health.lastHit = null;
 					Settings.User.get(i).kill();

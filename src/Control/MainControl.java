@@ -3,7 +3,6 @@ package Control;
 import java.util.concurrent.TimeUnit;
 
 import Tools.Maths.Toolkit;
-import Collision.SquareHitbox;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
 import Debug.ErrorPopup;
@@ -54,9 +53,8 @@ public class MainControl{
 	}
 	
 	private static void setup(){
-		int scale = 8;
-		Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
-
+		Settings.randomHitboxGen();
+		
 		Settings.User.add(new Player(0,0));
 		Settings.User.add(new Player(0,0));
 		

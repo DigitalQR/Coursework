@@ -118,7 +118,7 @@ public class DisplayControl implements Runnable{
 	STAGE_MENU = 1,
 	STAGE_TEST = 3;
 
-	private static Stage[] stage;
+	public static Stage[] stage;
 	private static int STAGE_Current = STAGE_MENU;
 	
 	public static void setStage(int i){

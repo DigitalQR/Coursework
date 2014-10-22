@@ -8,11 +8,12 @@ import java.util.Scanner;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 import Collision.SquareHitbox;
+import Control.Visual.DisplayControl;
 import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.0.2";
+	public static final String Version = "1.0.3";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -132,6 +133,15 @@ public class Settings implements Runnable{
 				}
 				break;
 				
+			case "reset_stage":
+				if(raw.length == 1){
+					randomHitboxGen();
+					DisplayControl.stage[DisplayControl.STAGE_OVERWORLD].prepare();
+				}else{
+					System.out.println("Usage: reset_stage");
+				}
+				break;
+				
 			//Force stops the JVM
 			case "stop":
 				System.exit(0);
@@ -145,5 +155,10 @@ public class Settings implements Runnable{
 		}
 		
 		console.close();
+	}
+	
+	public static void randomHitboxGen(){
+		int scale = 8;
+		Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
 	}
 }
