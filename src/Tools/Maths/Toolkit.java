@@ -33,6 +33,10 @@ public class Toolkit {
 		return (float)(pos0.y + (pos1.y-pos0.y)*(value-pos0.x)/(pos1.x-pos0.x));
 	}
 	
+	public static float LERPValue(Vector2f pos0, Vector2f pos1, float value){
+		return (float)(pos0.y + (pos1.y-pos0.y)*(value-pos0.x)/(pos1.x-pos0.x));
+	}
+	
 	public static Vector3f toCartesian(Vector3f p){
 		float r = p.x;
 		float theta = p.y;

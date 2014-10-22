@@ -19,7 +19,7 @@ public class Attack extends Component{
 
 		if(canAttack && control.isKeyPressed(control.KEY_PRIMARY)){
 			Vector2f velocity = new Vector2f(0,0);
-			Vector2f size = new Vector2f(0.25f, 0.5f);
+			Vector2f size = new Vector2f(0.3f, 0.6f);
 
 			float xVel = 0.25f;
 			float yVel = 0.3f;
@@ -35,7 +35,7 @@ public class Attack extends Component{
 			
 			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
 			
-			Damage d = new Damage(location, size, 200, 0.04f, e, true);
+			Damage d = new Damage(location, size, 200, 0.4f, e, true);
 			d.setVelocity(velocity);
 			Damage.add(d);
 			lastAttack = currentTime;
@@ -43,7 +43,7 @@ public class Attack extends Component{
 
 		if(canAttack && control.isKeyPressed(control.KEY_SECONDARY)){
 			Vector2f velocity = new Vector2f(0,0);
-			Vector2f size = new Vector2f(0.2f, 0.4f);
+			Vector2f size = new Vector2f(0.25f, 0.5f);
 
 			float xVel = 0.2f;
 			float yVel = 0.2f;
@@ -60,7 +60,7 @@ public class Attack extends Component{
 			
 			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
 			
-			Damage d = new Damage(location, size, 1000, 0.02f, e, false);
+			Damage d = new Damage(location, size, 1000, 0.05f, e, false);
 			d.setVelocity(velocity);
 			Damage.add(d);
 			lastAttack = currentTime;

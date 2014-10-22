@@ -17,6 +17,7 @@ import Control.Visual.Font;
 import Entities.Player;
 import Entities.Assets.Damage;
 import RenderEngine.Renderer;
+import RenderEngine.Stencil;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
@@ -42,6 +43,7 @@ public class OverworldStage extends Stage{
 		ArrayList<Player> User = (ArrayList<Player>) Settings.User.clone();
 		
 		for(Player p: User){
+			p.processLERPLocation();
 			if(p.isKeyPressed(p.getControlScheme().KEY_START)){
 				MainControl.Paused = true;
 				DisplayControl.setStage(DisplayControl.STAGE_MENU);
@@ -67,34 +69,18 @@ public class OverworldStage extends Stage{
 		font.setRGBA(0, 0, 0, 1);
 		font.drawText(player, new Vector3f(-Camera.getLocation().x-1.606f, -Camera.getLocation().y+1.506f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
 		
-		
-		
-		//Draw players
-		for(Player p: User){
-			if(!p.isDead()){
-				Renderer.render(p.getModel());
-				if(Settings.toggles.get("d_hitbox")){
-					Renderer.render(p.getHitbox());
-				}
-			}
-		}
-		
 		//Light position
 		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
         Location.put(new float[]{-Camera.getLocation().x, -Camera.getLocation().y , 3,1});
         Location.flip();
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
-        
-        //Draw hitboxes
-		for(Model Box:hb){
-			Renderer.render(Box);
-		}
 		
 		//Draw damage
 		if(Settings.toggles.get("d_damage")){
 			try{
 				for(Damage d: Damage.getDamageInfo()){
 						Renderer.render(d.getModel());
+						
 						if(Settings.toggles.get("d_hitbox")){
 							Cubef temp = new Cubef(new Vector3f(d.getLocation().x, d.getLocation().y, 0f), new Vector3f(d.getLocation().x+d.getSize().x, d.getLocation().y+d.getSize().y, 1f));
 							Model m = new Model(temp);
@@ -105,7 +91,7 @@ public class OverworldStage extends Stage{
 			}catch(NullPointerException | ConcurrentModificationException e){
 				e.printStackTrace();
 			}
-			
+		    
 			//Draw boundary
 			Cubef[] sides = {
 					new Cubef(new Vector3f(-1000,-1000,1.3f), new Vector3f(Settings.boundary.getLocation().x,1000,1.3f)),
@@ -120,7 +106,42 @@ public class OverworldStage extends Stage{
 				Renderer.render(m);
 			}
 		}
+
 		
+		//Draw player
+		for(Player p: User){
+			if(!p.isDead()){
+				Renderer.render(p.getModel());
+				if(Settings.toggles.get("d_hitbox")){
+					Renderer.render(p.getHitbox());
+				}
+			}
+		}
+	     Stencil.enable();
+        //Draw hitboxes
+		for(Model Box:hb){
+			Renderer.render(Box);
+		}
+	
+		//Draw player outline
+		Stencil.cylce();
+		int playerTrack = 1;
+		for(Player p: User){
+				if(!p.isDead()){
+					Vector3f location = new Vector3f(p.getLERPLocation().x-0.35f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z);
+					Vector3f location2 = new Vector3f(location.x-0.006f, location.y-0.006f, location.z-0.0001f);
+					float[] colour = DisplayControl.getInverseRGBA();
+					font.setRGBA(colour[0], colour[1], colour[2], 1f);
+					font.drawText("PLAYER " + playerTrack++, location, 0.02f, 8f);
+
+					font.setRGBA(0, 0, 0, 1f);
+					font.drawText("PLAYER " + (playerTrack-1), location2, 0.02f, 8f);
+			}
+		}
+		Stencil.disable();
+		
+		
+	
 	}
 
 }

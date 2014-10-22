@@ -34,6 +34,15 @@ public class DisplayControl implements Runnable{
 	public static float[] getRGBA(){
 		return RGBA;
 	}
+
+	public static float[] getInverseRGBA(){
+		float[] RGBA = getRGBA().clone();
+		for(int i = 0; i<3; i++){
+			RGBA[i] = 1f - RGBA[i];
+
+		}
+		return RGBA;
+	}
 	
 	private static void incrementRandomLighting(){
 		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
@@ -41,14 +50,15 @@ public class DisplayControl implements Runnable{
 		r+=0.01f*speed;
 		g+=0.015f*speed;
 		b+=0.02f*speed;
-
+		
+		
 		RGBA[0] = Toolkit.Modulus((float)Math.sin(r));
 		RGBA[1] = Toolkit.Modulus((float)Math.sin(g));
 		RGBA[2] = Toolkit.Modulus((float)Math.sin(b));
 		
 		for(int i = 0; i<3; i++){
-			if(RGBA[i] > 0.8f){
-				RGBA[i] = 0.8f;
+			if(RGBA[i] > 0.7f){
+				RGBA[i] = 0.7f;
 			}
 		}
 		
@@ -140,11 +150,13 @@ public class DisplayControl implements Runnable{
 		
 		while(!Display.isCloseRequested() && !MainControl.CloseRequest){
 			Renderer.prepare();
+			
 			if(!Settings.toggles.get("d_wireframe")){
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			}else{
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 			}
+			
 			if(STAGE_Current == STAGE_OVERWORLD){
 				GL11.glEnable(GL11.GL_LIGHTING);
 				FloatBuffer Location = BufferUtils.createFloatBuffer(16);

@@ -36,7 +36,7 @@ public class Player extends Entity{
 	private static Animation spawn;
 	
 	public Player(float x, float y){
-		super(new Vector3f(x,y,0), new Vector3f(0.2f, 0.3f, 0.2f));
+		super(new Vector3f(x,y,0f), new Vector3f(0.2f, 0.3f, 0.2f));
 		spawn();
 		
 		control = new ControlScheme();
@@ -72,7 +72,7 @@ public class Player extends Entity{
 						}
 					}
 					if(!intersects){
-						this.setLocation(new Vector3f(x,y,0));
+						this.setLocation(new Vector3f(x,y,this.getLocation().z));
 						this.setVelocity(new Vector3f(0,0,0));
 						break Main;
 					}
@@ -126,17 +126,22 @@ public class Player extends Entity{
 		}
 	}
 	
-	public Vector3f getLERPLocation(){
+	private Vector3f LERPLocation = this.getLocation();
+	
+	public void processLERPLocation(){
 		float LookupTime = System.nanoTime()-MainControl.UPS;
 		float CurrentTime = System.nanoTime();
 		Vector3f location = this.getLocation();
 		
-		float x = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
+		float x = Toolkit.LERPValue(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
 		float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
-		return new Vector3f(x, y, location.z);
+		LERPLocation = new Vector3f(x, y, location.z);
 	}
 	
-	float track = 0;
+	public Vector3f getLERPLocation(){
+		return LERPLocation;
+	}
+
 	public Model getModel(){
 		Model m = spawn.getCurrentFrame();
 		Vector3f loc = getLERPLocation();

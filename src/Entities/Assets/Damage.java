@@ -97,10 +97,15 @@ public class Damage extends Asset{
 	public Model getModel(){
 		Model m = cube.getCurrentFrame();
 		m.setLocation(new Vector3f(velocity.x+location.x+size.x/2, velocity.y+location.y-size.y, 0));
-		m.setRGBA(1, 0, 0, 1);
+		float[] colour = {0,1,0};
+		m.setRGBA(colour[0], colour[1], colour[2], 1);
 		m.scaleBy(10);
 		
 		return m;
+	}
+	
+	public Entity getParent(){
+		return parent;
 	}
 	
 	public float getDamageValue(){

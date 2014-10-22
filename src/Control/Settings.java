@@ -45,7 +45,7 @@ public class Settings implements Runnable{
 			floats.put(s, 0f);
 		}
 		
-		floats.put("s_light_deviation", 0.1f);
+		floats.put("s_light_deviation", 0.25f);
 		
 		new Thread(new Settings()).start();
 	}
