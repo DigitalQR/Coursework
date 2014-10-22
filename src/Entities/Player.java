@@ -31,7 +31,7 @@ public class Player extends Entity{
 	private float LastUpdate = 0;
 	private Vector3f LastLocation = new Vector3f(0,0,0);
 	private static Texture PlaneTexture;
-	private Health health;
+	public Health health;
 
 	private static Animation spawn;
 	

@@ -9,7 +9,7 @@ public class Health extends Component{
 	public Vector2f scale = new Vector2f(0.3f, 0.4f);
 	public float factor = 0.0f;
 	private float lastHitTime = 0;
-	private Entity lastHit = null;
+	public Entity lastHit = null;
 	private  float immuneTime = 100;
 	
 	public void reset(){

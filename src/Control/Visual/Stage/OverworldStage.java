@@ -23,13 +23,13 @@ import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 
 public class OverworldStage extends Stage{
-	private List<Model> hb;
+	private List<Model> hbBack, hbFront;
 	private Font font;
 	private int winner = -1;
 	private int resetTime = 10;
 	private float endTime = 0;
 	
-	private int winKillCount = 10;
+	private int winKillCount = 3;
 	
 	public void prepare(){	
 		font = new Font("Font/Default");
@@ -37,11 +37,17 @@ public class OverworldStage extends Stage{
 		endTime = 0;
 		
 		//Setup hitbox model data
-		hb = new ArrayList<Model>();
+		hbBack = new ArrayList<Model>();
+		hbFront = new ArrayList<Model>();
+		
 		for(SquareHitbox h: Settings.hb){
 			Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
 			Model m = new Model(temp);
-			hb.add(m);
+			hbBack.add(m);
+			
+			Cubef temp1 = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0.999f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
+			Model m1 = new Model(temp1);
+			hbFront.add(m1);
 		}
 	}
 	
@@ -95,6 +101,7 @@ public class OverworldStage extends Stage{
 			
 			for(int i = 0; i<Settings.User.size(); i++){
 				if(i+1 != winner){
+					Settings.User.get(i).health.lastHit = null;
 					Settings.User.get(i).kill();
 					Settings.User.get(i).killCount = 0;
 				}
@@ -105,8 +112,11 @@ public class OverworldStage extends Stage{
 				int scale = 8;
 				Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
 
-				Settings.User.get(winner-1).kill();
-				Settings.User.get(winner-1).killCount = 0;
+				for(int i = 0; i<Settings.User.size(); i++){
+					Settings.User.get(i).health.lastHit = null;
+					Settings.User.get(i).kill();
+					Settings.User.get(i).killCount = 0;
+				}
 				prepare();
 			}
 		}
@@ -158,12 +168,18 @@ public class OverworldStage extends Stage{
 				}
 			}
 		}
-	     Stencil.enable();
-        //Draw hitboxes
-		for(Model Box:hb){
+
+	    //Draw hitboxes
+		for(Model Box:hbBack){
 			Renderer.render(Box);
 		}
-	
+		
+		 Stencil.enable();
+	     //Draw hitboxes
+		for(Model Box:hbFront){
+			Renderer.render(Box);
+		}
+
 		//Draw player outline
 		Stencil.cylce();
 		int playerTrack = 0;
