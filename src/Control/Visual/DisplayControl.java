@@ -28,7 +28,7 @@ public class DisplayControl implements Runnable{
 		setupStages();
 	}
 	
-	private static float r = 0.1f, g = 0.1f, b = 0.3f;
+	public static float r = 0.1f, g = 0.1f, b = 0.3f;
 	private static float[] RGBA = {0f,0f,0f,1f};
 	
 	public static float[] getRGBA(){

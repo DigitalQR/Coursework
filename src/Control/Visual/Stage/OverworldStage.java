@@ -23,7 +23,7 @@ import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 
 public class OverworldStage extends Stage{
-	private List<Model> hbBack, hbFront;
+	private List<Model> hb;
 	private Font font;
 	private int winner = -1;
 	private int resetTime = 10;
@@ -37,17 +37,11 @@ public class OverworldStage extends Stage{
 		endTime = 0;
 		
 		//Setup hitbox model data
-		hbBack = new ArrayList<Model>();
-		hbFront = new ArrayList<Model>();
-		
+		hb = new ArrayList<Model>();
 		for(SquareHitbox h: Settings.hb){
 			Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
 			Model m = new Model(temp);
-			hbBack.add(m);
-			
-			Cubef temp1 = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0.999f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
-			Model m1 = new Model(temp1);
-			hbFront.add(m1);
+			hb.add(m);
 		}
 	}
 	
@@ -82,6 +76,14 @@ public class OverworldStage extends Stage{
 				if(User.get(i).killCount >= winKillCount){
 					winner = i+1;
 					endTime = System.nanoTime();
+					
+					for(int n = 0; n<Settings.User.size(); n++){
+						if(n+1 != winner){
+							Settings.User.get(n).health.lastHit = null;
+							Settings.User.get(n).kill();
+							Settings.User.get(n).killCount = 0;
+						}
+					}
 					 
 				}
 			}
@@ -100,15 +102,18 @@ public class OverworldStage extends Stage{
 			font.drawText("Player " + winner + " Wins!\nReset in " + reset, new Vector3f(-Camera.getLocation().x-0.606f, -Camera.getLocation().y+0.006f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
 			
 			for(int i = 0; i<Settings.User.size(); i++){
-				if(i+1 != winner){
+				if(i != winner-1){
 					Settings.User.get(i).health.lastHit = null;
 					Settings.User.get(i).kill();
 					Settings.User.get(i).killCount = 0;
+				}else{
+					DisplayControl.r = Settings.User.get(i).getRGBA()[0];
+					DisplayControl.g = Settings.User.get(i).getRGBA()[1];
+					DisplayControl.b = Settings.User.get(i).getRGBA()[2];
 				}
 			}
 			
 			if(reset == 0){
-				DisplayControl.setStage(DisplayControl.STAGE_MENU);
 				int scale = 8;
 				Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
 
@@ -158,8 +163,30 @@ public class OverworldStage extends Stage{
 			}
 		}
 
+
+		//Player outline
+		Stencil.enable();
+		GL11.glDisable(GL11.GL_LIGHTING);
+		for(Player p: User){
+			if(!p.isDead()){
+				Model m = p.getModel();
+				m.getLocation().y-=0.24f;
+				m.scaleBy(1.6f);
+				m.setRGBA(0, 0, 0, 1);
+				Renderer.render(m);
+
+				float[] RGBA = p.getRGBA();
+				Model m1 = p.getModel();
+				m1.getLocation().y-=0.2f;
+				m1.scaleBy(1.5f);
+				m1.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+				Renderer.render(m1);
+			}
+		}
+		GL11.glEnable(GL11.GL_LIGHTING);
 		
 		//Draw player
+		Stencil.cylce();
 		for(Player p: User){
 			if(!p.isDead()){
 				Renderer.render(p.getModel());
@@ -168,35 +195,28 @@ public class OverworldStage extends Stage{
 				}
 			}
 		}
+		Stencil.disable();
 
 	    //Draw hitboxes
-		for(Model Box:hbBack){
-			Renderer.render(Box);
-		}
-		
-		 Stencil.enable();
-	     //Draw hitboxes
-		for(Model Box:hbFront){
+		for(Model Box:hb){
 			Renderer.render(Box);
 		}
 
-		//Draw player outline
-		Stencil.cylce();
+		//Draw IDLE player name
 		int playerTrack = 0;
 		for(Player p: User){
 			playerTrack++;
-				if(!p.isDead()){
-					Vector3f location = new Vector3f(p.getLERPLocation().x-0.35f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z);
+				if(!p.isDead() && p.isPlayerIDLE()){
+					Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z+1f);
 					Vector3f location2 = new Vector3f(location.x-0.006f, location.y-0.006f, location.z-0.0001f);
 					float[] colour = DisplayControl.getInverseRGBA();
 					font.setRGBA(colour[0], colour[1], colour[2], 1f);
-					font.drawText("PLAYER " + playerTrack, location, 0.02f, 8f);
+					font.drawText("PLAYER " + playerTrack, location, 0.04f, 8f);
 
 					font.setRGBA(0, 0, 0, 1f);
-					font.drawText("PLAYER " + playerTrack, location2, 0.02f, 8f);
+					font.drawText("PLAYER " + playerTrack, location2, 0.04f, 8f);
 			}
 		}
-		Stencil.disable();
 		
 		
 	

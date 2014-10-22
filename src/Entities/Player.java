@@ -32,12 +32,22 @@ public class Player extends Entity{
 	private Vector3f LastLocation = new Vector3f(0,0,0);
 	private static Texture PlaneTexture;
 	public Health health;
+	
+	private float[] RGBA = new float[4];
 
 	private static Animation spawn;
 	
 	public Player(float x, float y){
 		super(new Vector3f(x,y,0f), new Vector3f(0.2f, 0.3f, 0.2f));
 		spawn();
+		
+		Collections.shuffle(Settings.playerColourProfiles);
+		Vector3f colour = Settings.playerColourProfiles.get(0);
+		RGBA[0] = colour.x;
+		RGBA[1] = colour.y;
+		RGBA[2] = colour.z;
+		RGBA[3] = 1;
+		Settings.playerColourProfiles.remove(colour);
 		
 		control = new ControlScheme();
 		this.addComponent(new Movement(control));
@@ -46,8 +56,33 @@ public class Player extends Entity{
 		this.addComponent(health);
 	}	
 	
+	public float[] getRGBA(){
+		return RGBA.clone();
+	}
+	
 	public float getFactor(){
 		return health.factor;
+	}
+	
+	private float IDLETime = -1;
+	public boolean isPlayerIDLE(){
+		boolean x = LastLocation.x == this.getLocation().x;
+		boolean y = LastLocation.y == this.getLocation().y;
+		
+		
+		
+		if(IDLETime == -1){
+			if(x && y){
+				IDLETime = System.nanoTime();
+			}
+		}else if(!x || !y){
+			IDLETime = -1;
+		}else{
+			if((System.nanoTime()-IDLETime)/1000000 >= 3000){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private void spawn(){

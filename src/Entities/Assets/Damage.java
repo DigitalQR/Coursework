@@ -99,7 +99,7 @@ public class Damage extends Asset{
 		m.setLocation(new Vector3f(velocity.x+location.x+size.x/2, velocity.y+location.y-size.y, 0));
 		float[] colour = {0,1,0};
 		m.setRGBA(colour[0], colour[1], colour[2], 1);
-		m.scaleBy(10);
+		m.scaleBy(12);
 		
 		return m;
 	}

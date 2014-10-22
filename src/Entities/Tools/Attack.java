@@ -19,7 +19,7 @@ public class Attack extends Component{
 
 		if(canAttack && control.isKeyPressed(control.KEY_PRIMARY)){
 			Vector2f velocity = new Vector2f(0,0);
-			Vector2f size = new Vector2f(0.3f, 0.6f);
+			Vector2f size = new Vector2f(0.25f, 0.5f);
 
 			float xVel = 0.25f;
 			float yVel = 0.3f;
@@ -33,15 +33,13 @@ public class Attack extends Component{
 				velocity.x+=xVel;
 			}
 			
-			Vector2f location = new Vector2f(e.getLocation().x-e.getVelocity().x,e.getLocation().y-e.getVelocity().y);
-			
-			Damage d = new Damage(location, size, 400, 0.4f, e, true);
+			Damage d = new Damage(new Vector2f(0,0), size, 400, 0.2f, e, true);
 			d.setVelocity(velocity);
 			Damage.add(d);
 			lastAttack = currentTime;
-		}
-
-		if(canAttack && control.isKeyPressed(control.KEY_SECONDARY)){
+		
+		
+		}else if(canAttack && control.isKeyPressed(control.KEY_SECONDARY)){
 			Vector2f velocity = new Vector2f(0,0);
 			Vector2f size = new Vector2f(0.25f, 0.5f);
 
