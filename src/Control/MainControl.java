@@ -8,6 +8,7 @@ import Control.Visual.DisplayControl;
 import Debug.ErrorPopup;
 import Entities.Player;
 import Entities.Assets.Damage;
+import Entities.Assets.Shield;
 
 
 public class MainControl{
@@ -25,10 +26,12 @@ public class MainControl{
 		while(!CloseRequest){
 			long StartTime = System.nanoTime();
 			if(!Paused){
+				Damage.updateDamage();
+				Shield.updateShields();
+				
 				for(Player p: Settings.User){
 					p.update();
 				}
-				Damage.updateDamage();
 				
 			}
 
@@ -55,7 +58,7 @@ public class MainControl{
 	
 	private static void setup(){
 		Settings.randomHitboxGen();
-		
+
 		Settings.User.add(new Player(0,0));
 		Settings.User.add(new Player(0,0));
 		

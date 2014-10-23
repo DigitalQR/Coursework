@@ -97,6 +97,14 @@ public class Damage extends Asset{
 		this.animation = animation;
 	}
 	
+	public void resetLife(){
+		this.birth = System.nanoTime();
+	}
+	
+	public void setParent(Entity e){
+		this.parent = e;
+	}
+	
 	public Model getModel(){
 		Model m = animation.getCurrentFrame();
 		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y, 0));

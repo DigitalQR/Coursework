@@ -16,6 +16,7 @@ import Control.Visual.DisplayControl;
 import Control.Visual.Font;
 import Entities.Player;
 import Entities.Assets.Damage;
+import Entities.Assets.Shield;
 import RenderEngine.Renderer;
 import RenderEngine.Stencil;
 import RenderEngine.Model.Model;
@@ -68,16 +69,17 @@ public class OverworldStage extends Stage{
 				}
 			}
 			
-			String player = "\n\n";
+			String[] playerInfo = new String[Settings.User.size()];
 			
 			for(int i = 0; i<User.size(); i++){
 				int factor = (int) Math.round((double)(User.get(i).getFactor()*100));
-				
+				playerInfo[i] = "";
 				if(User.get(i).isDead()){
-					player += (int)Math.round(User.get(i).getRespawnTimeRemaining()/1000000000) + "<DEAD>";
+					playerInfo[i] += (int)Math.round(User.get(i).getRespawnTimeRemaining()/1000000000) + "<DEAD>";
 				}
-				player += "Player " + (i+1) + ": " + factor + "\nKills: " + User.get(i).killCount + "\n\n\n";
+				playerInfo[i] += "Player " + (i+1) + ": " + factor + "\nKills: " + User.get(i).killCount;
 				
+				//Detecting winner
 				if(User.get(i).killCount >= winKillCount){
 					winner = i+1;
 					endTime = System.nanoTime();
@@ -93,11 +95,58 @@ public class OverworldStage extends Stage{
 				}
 			}
 			
-			font.setRGBA(1-DisplayControl.getRGBA()[0], 1-DisplayControl.getRGBA()[1], 1-DisplayControl.getRGBA()[2], 1);
-			font.drawText(player, new Vector3f(-Camera.getLocation().x-1.6f, -Camera.getLocation().y+1.5f, -Camera.getLocation().z-2f), 0.01f, 9f);
-			font.setRGBA(0, 0, 0, 1);
-			font.drawText(player, new Vector3f(-Camera.getLocation().x-1.606f, -Camera.getLocation().y+1.506f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
-			
+			int loops = 0;
+			float xOffset = 0;
+			float yOffset = 0;
+
+			for(int i = 0; i<Settings.User.size(); i++){
+				switch(loops){
+				case 1:
+					xOffset = 2.2f;
+					yOffset = 0;
+					break;
+				case 2:
+					xOffset = 2.2f;
+					yOffset = -3;
+					break;
+				case 3:
+					xOffset = 0;
+					yOffset = -3;
+					break;
+				case 4:
+					xOffset = 0;
+					yOffset = -0.2f;
+					break;
+				case 5:
+					xOffset = 2.2f;
+					yOffset = -0.2f;
+					break;
+				case 6:
+					xOffset = 2.2f;
+					yOffset = -2.8f;
+					break;
+				case 7:
+					xOffset = 0;
+					yOffset = -2.8f;
+					break;
+				default:
+					xOffset = 0;
+					yOffset = 0;
+					break;
+				}
+				
+				Vector3f location = new Vector3f(-Camera.getLocation().x-1.6f+xOffset, -Camera.getLocation().y+1.5f+yOffset, -Camera.getLocation().z-2f);
+				Vector3f shadowLocation = new Vector3f(-Camera.getLocation().x-1.606f+xOffset, -Camera.getLocation().y+1.506f+yOffset, -Camera.getLocation().z-2.0001f);
+				
+				
+				float[] RGBA = Settings.User.get(i).getRGBA();
+				font.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
+				font.drawText(playerInfo[i], location, 0.008f, 9f);
+				
+				font.setRGBA(1-DisplayControl.getRGBA()[0], 1-DisplayControl.getRGBA()[1], 1-DisplayControl.getRGBA()[2], 1);
+				font.drawText(playerInfo[i], shadowLocation, 0.008f, 9f);
+				loops++;
+			}
 		}else{
 			int reset = resetTime-Math.round((System.nanoTime()-endTime)/1000000000);
 			
@@ -135,8 +184,9 @@ public class OverworldStage extends Stage{
         Location.flip();
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
 		
-		//Draw damage
+
     	try{
+    		//Draw damage
 			for(Damage d: Damage.getDamageInfo()){
 					Renderer.render(d.getModel());
 					
@@ -146,6 +196,17 @@ public class OverworldStage extends Stage{
 						m.setRGBA(1, 0, 0, 0.7f);
 						Renderer.render(m);
 					}
+			}
+			
+			//Draw shield
+			for(Shield s: Shield.getShieldInfo()){
+				Renderer.render(s.getModel());
+				if(Settings.toggles.get("d_hitbox")){
+					Cubef temp = new Cubef(new Vector3f(s.getLocation().x, s.getLocation().y, 0f), new Vector3f(s.getLocation().x+s.getSize().x, s.getLocation().y+s.getSize().y, 1f));
+					Model m = new Model(temp);
+					m.setRGBA(1, 0, 0, 0.7f);
+					Renderer.render(m);
+				}
 			}
 		}catch(NullPointerException | ConcurrentModificationException e){
 			e.printStackTrace();

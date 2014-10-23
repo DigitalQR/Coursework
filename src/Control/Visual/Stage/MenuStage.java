@@ -40,7 +40,7 @@ public class MenuStage extends Stage{
 		GamepadSetup = new GamepadSetupStage();
 		GamepadSetup.prepare(font);
 		
-		player = new Player(0,0);
+		player = Settings.User.get(0);
 
 	}
 	

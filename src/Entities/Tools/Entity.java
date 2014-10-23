@@ -1,12 +1,18 @@
 package Entities.Tools;
 
+import Control.MainControl;
+import Tools.Maths.Toolkit;
+import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 
 public abstract class Entity{
 	
 	private Component[] component = new Component[0];
 	private Vector3f location;
+	protected float LastUpdate = 0;
+	protected Vector3f LastLocation = new Vector3f(0,0,0);
 	private Vector3f velocity;
+	
 	public int killCount = 0;
 	private float stunTime = 0;
 	private static float stunDuration;
@@ -83,5 +89,21 @@ public abstract class Entity{
 		loc.y/=100;
 		loc.z = Math.round(loc.z*100);
 		loc.z/=100;
+	}
+
+	private Vector3f LERPLocation = new Vector3f(0,0,0);
+	
+	public void processLERPLocation(){
+		float LookupTime = System.nanoTime()-MainControl.UPS;
+		float CurrentTime = System.nanoTime();
+		Vector3f location = this.getLocation();
+		
+		float x = Toolkit.LERPValue(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
+		float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
+		LERPLocation = new Vector3f(x, y, location.z);
+	}
+	
+	public Vector3f getLERPLocation(){
+		return LERPLocation;
 	}
 }

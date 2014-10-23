@@ -1,6 +1,7 @@
 package Entities.Tools;
 
 import Entities.Assets.Damage;
+import Entities.Assets.Shield;
 import Tools.Maths.Vector2f;
 
 public class Attack extends Component{
@@ -8,7 +9,7 @@ public class Attack extends Component{
 	ControlScheme control;
 	private float lastAttack = 0;
 	private int attackCoolDown = 800;
-	private int blockCoolDown = 1600;
+	private int blockCoolDown = 2000;
 	
 	public Attack(ControlScheme control){
 		this.control = control;
@@ -70,6 +71,7 @@ public class Attack extends Component{
 			
 			}else if(canBlock && control.isKeyPressed(control.KEY_BLOCK)){
 				
+				Shield.add(new Shield(600, new float[]{0,1,0,1f}, e));
 				
 				lastAttack = currentTime;
 			}

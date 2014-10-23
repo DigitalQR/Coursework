@@ -13,7 +13,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.0.5";
+	public static final String Version = "1.0.6";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -32,8 +32,11 @@ public class Settings implements Runnable{
 		playerColourProfiles.add(new Vector3f(0,1,0));
 		playerColourProfiles.add(new Vector3f(0,0,1));
 		playerColourProfiles.add(new Vector3f(1f,0.9f,0.2f));
+		
 		playerColourProfiles.add(new Vector3f(0.2f,1f,1));
 		playerColourProfiles.add(new Vector3f(1f,0f,0.5f));
+		playerColourProfiles.add(new Vector3f(0f,0.4f,0.2f));
+		playerColourProfiles.add(new Vector3f(0.8f,0.6f,1f));
 		
 		//d_? = draw ?
 		//s_? = setting ?

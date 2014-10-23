@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.opengl.Texture;
 
 import Collision.SquareHitbox;
 import Control.MainControl;
@@ -16,21 +15,15 @@ import Entities.Tools.ControlScheme;
 import Entities.Tools.Entity;
 import Entities.Tools.Health;
 import Entities.Tools.Movement;
-import RenderEngine.textureLoader;
 import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
-import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 
 public class Player extends Entity{
 	
 	private ControlScheme control;
-	
-	private float LastUpdate = 0;
-	private Vector3f LastLocation = new Vector3f(0,0,0);
-	private static Texture PlaneTexture;
 	public Health health;
 	
 	private float[] RGBA = new float[4];
@@ -66,8 +59,8 @@ public class Player extends Entity{
 	
 	private float IDLETime = -1;
 	public boolean isPlayerIDLE(){
-		boolean x = LastLocation.x == this.getLocation().x;
-		boolean y = LastLocation.y == this.getLocation().y;
+		boolean x = this.LastLocation.x == this.getLocation().x;
+		boolean y = this.LastLocation.y == this.getLocation().y;
 		
 		
 		
@@ -117,7 +110,6 @@ public class Player extends Entity{
 	}
 	
 	public static void loadResources(){
-		PlaneTexture = textureLoader.loadTexture("Model/TornTest");
 		spawn = new Animation("Cube/Spin", 100);
 	}
 	
@@ -140,7 +132,7 @@ public class Player extends Entity{
 	public void update(){
 		Vector3f location = this.getLocation();
 		LastLocation = new Vector3f(location.x, location.y, location.z);
-		LastUpdate = System.nanoTime()-MainControl.UPS;
+		this.LastUpdate = System.nanoTime()-MainControl.UPS;
 		
 		if(!health.isDead){
 			this.updateComponents();
@@ -156,22 +148,6 @@ public class Player extends Entity{
 			health.kill();
 		}
 	}
-	
-	private Vector3f LERPLocation = this.getLocation();
-	
-	public void processLERPLocation(){
-		float LookupTime = System.nanoTime()-MainControl.UPS;
-		float CurrentTime = System.nanoTime();
-		Vector3f location = this.getLocation();
-		
-		float x = Toolkit.LERPValue(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
-		float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
-		LERPLocation = new Vector3f(x, y, location.z);
-	}
-	
-	public Vector3f getLERPLocation(){
-		return LERPLocation;
-	}
 
 	public Model getModel(){
 		Model m = spawn.getCurrentFrame();
@@ -186,7 +162,6 @@ public class Player extends Entity{
 	public Model getHitbox(){
 		Cubef temp1 = new Cubef(new Vector3f(0,0,0), new Vector3f(this.getSize().x, this.getSize().y, 0.2f+this.getSize().x));
 		Model m = new Model(temp1);
-		m.setTexture(PlaneTexture);
 		m.setLocation(getLERPLocation());
 		m.setRGBA(1, 1, 1, 0.3f);
 		return m;
