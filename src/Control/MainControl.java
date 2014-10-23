@@ -28,9 +28,10 @@ public class MainControl{
 				for(Player p: Settings.User){
 					p.update();
 				}
+				Damage.updateDamage();
+				
 			}
-			Damage.updateDamage();
-			
+
 			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
 				try{
 					TimeUnit.NANOSECONDS.sleep(1);

@@ -44,12 +44,25 @@ public class Animation{
 		}
 	}
 	
+	public Animation(float[][] vertices, float[] textureCoords, int[] indices, float[][] normals){
+		this.vertices = vertices;
+		this.textureCoords = textureCoords;
+		this.indices = indices;
+		this.normals = normals;
+	}
+	
 	public void scaleBy(float scale){
 		this.scale = scale;
 	}
 	
 	public void setLocation(Vector3f loc){
 		this.location = loc;
+	}
+	
+	public void translate(Vector3f loc){
+		this.location.x += loc.x;
+		this.location.y += loc.y;
+		this.location.z += loc.z;
 	}
 	
 	public void setDelay(int i){

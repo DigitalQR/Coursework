@@ -32,9 +32,10 @@ public class Health extends Component{
 				lastHit = damage.getParent();
 				Damage.remove(damage);
 
-				float x = damage.getVelocity().x*(5f+factor)*scale.x;
-				float y = damage.getVelocity().y*(2f+factor)*scale.y;
+				float x = damage.getDamageVelocity().x*(5f+factor)*scale.x;
+				float y = damage.getDamageVelocity().y*(2f+factor)*scale.y;
 				
+				e.stun(500+Math.round(factor*75));
 				e.setVelocity(new Vector3f(x, y, 0));
 			}
 		}

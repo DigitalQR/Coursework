@@ -17,13 +17,16 @@ public class DisplayManager{
 	
 	
 	public static void create(boolean fullscreen){
-		Vector2f Res = p720;
+		Vector2f Res = p720; //new Vector2f(1280, 1024)
 		
 		try{
 			DisplayMode display = null;
 			DisplayMode[] mod = Display.getAvailableDisplayModes();
 			
 			for(DisplayMode m:mod){
+				if(m.isFullscreenCapable()){
+					System.out.println("Resolution: " + m.getWidth() + ", " + m.getHeight());
+				}
 				if(m.getWidth() == Res.x && m.getHeight() == Res.y && m.isFullscreenCapable()){
 					display = m;
 				}

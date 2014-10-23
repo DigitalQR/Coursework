@@ -79,6 +79,7 @@ public class Damage extends Asset{
 	private Vector2f location;
 	private Vector2f size;
 	private Vector2f velocity = new Vector2f(0,0);
+	private Vector2f damageVelocity = new Vector2f(0,0);
 	private float birth;
 	private float life;
 	private float damageValue;
@@ -98,7 +99,7 @@ public class Damage extends Asset{
 	
 	public Model getModel(){
 		Model m = animation.getCurrentFrame();
-		m.setLocation(new Vector3f(velocity.x+location.x+size.x/2, velocity.y+location.y-size.y, 0));
+		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y, 0));
 		float[] colour = {0,1,0};
 		m.setRGBA(colour[0], colour[1], colour[2], 1);
 		m.scaleBy(12);
@@ -112,6 +113,14 @@ public class Damage extends Asset{
 	
 	public float getDamageValue(){
 		return damageValue;
+	}
+	
+	public Vector2f getDamageVelocity() {
+		return damageVelocity;
+	}
+
+	public void setDamageVelocity(Vector2f velocity) {
+		this.damageVelocity = velocity;
 	}
 	
 	public Vector2f getVelocity() {

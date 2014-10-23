@@ -8,6 +8,21 @@ public abstract class Entity{
 	private Vector3f location;
 	private Vector3f velocity;
 	public int killCount = 0;
+	private float stunTime = 0;
+	private static float stunDuration;
+	
+	public boolean stunned(){
+		if(System.nanoTime() - stunTime >= stunDuration*1000000){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	public void stun(int duration){
+		stunDuration = duration;
+		stunTime = System.nanoTime();
+	}
 	
 	public Vector3f getVelocity(){
 		return velocity;

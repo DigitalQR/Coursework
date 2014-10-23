@@ -121,10 +121,6 @@ public class Player extends Entity{
 		spawn = new Animation("Cube/Spin", 100);
 	}
 	
-	public void setControlScheme(int up, int down, int left, int right, int jump, int duck, int primary, int secondary, int start){
-		control.setControlScheme(up, down, left, right, jump, duck, primary, secondary, start);
-	}
-	
 	public void setControlScheme(int GPID){
 		control.setControlScheme(GPID);
 	}

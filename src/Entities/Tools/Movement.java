@@ -40,8 +40,8 @@ public class Movement extends Component{
 		//Input
 		if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.08f;
 		if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.08f;
-		if(control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y) e.getVelocity().y+=0.08f;
-		if(control.isKeyPressed(control.KEY_DUCK) && e.getVelocity().y > -accelerationLimit.y) e.getVelocity().y-=0.08f;
+		if(control.isKeyPressed(control.KEY_UP) && e.getVelocity().y < accelerationLimit.y) e.getVelocity().y+=0.08f;
+		if(control.isKeyPressed(control.KEY_DOWN) && e.getVelocity().y > -accelerationLimit.y) e.getVelocity().y-=0.08f;
 		
 		//Normalisation
 		Vector3f location = e.getLocation();
@@ -77,9 +77,10 @@ public class Movement extends Component{
 	
 	private void updateX(Entity e){
 		//Input
-		if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.08f;
-		if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.08f;
-		
+		if(!e.stunned()){
+			if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.08f;
+			if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.08f;
+		}
 		//Normalisation
 		Vector3f location = e.getLocation();
 		location.x = Math.round(location.x*100);
@@ -104,13 +105,14 @@ public class Movement extends Component{
 				if(insideHitbox(new Vector2f(location.x + x, location.y), new Vector2f(e.getSize().x, e.getSize().y))){
 					
 					//Can the player wall jump?
-					if(control.isKeyPressed(control.KEY_LEFT) && Toolkit.Sign(x) == -1 && !touchingGround){
-						touchingWall = -1;
+					if(!e.stunned()){
+						if(control.isKeyPressed(control.KEY_LEFT) && Toolkit.Sign(x) == -1 && !touchingGround){
+							touchingWall = -1;
+						}
+						if(control.isKeyPressed(control.KEY_RIGHT) && Toolkit.Sign(x) == 1 && !touchingGround){
+							touchingWall = 1;
+						}
 					}
-					if(control.isKeyPressed(control.KEY_RIGHT) && Toolkit.Sign(x) == 1 && !touchingGround){
-						touchingWall = 1;
-					}
-					
 					break;
 				}else{
 					e.getVelocity().x = x;
@@ -125,13 +127,14 @@ public class Movement extends Component{
 	
 	private void updateY(Entity e){
 		//Input
-		if(control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
+		if(!e.stunned() && control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
 			e.getVelocity().y = 0.3f;
 			touchingGround = false;
 			if(touchingWall != 0){
 				e.getVelocity().x+=0.6f*-touchingWall;
 			}
 		}
+
 		if(control.isKeyPressed(control.KEY_DUCK)) e.getVelocity().y = -0.5f;
 		
 		if(Toolkit.Modulus(e.getVelocity().y) < accelerationLimit.y){

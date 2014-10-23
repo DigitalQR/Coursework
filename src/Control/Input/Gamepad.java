@@ -12,6 +12,7 @@ import Control.Settings;
 import Control.Visual.Stage.MenuStage;
 import Debug.ErrorPopup;
 import Entities.Player;
+import Entities.Tools.ControlScheme;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
@@ -32,7 +33,7 @@ public class Gamepad{
 		Controller[] Controllers = CE.getControllers();
 		
 		for(Controller pad:Controllers){
-			if((pad.getType() == Controller.Type.STICK || pad.getType() == Controller.Type.GAMEPAD) && pad.getComponents().length >= 18){
+			if((pad.getType() == Controller.Type.STICK || pad.getType() == Controller.Type.GAMEPAD) && pad.getComponents().length >= ControlScheme.KEY_COUNT-3){
 				add(new Gamepad(pad));
 			}
 		}

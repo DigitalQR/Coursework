@@ -6,7 +6,8 @@ import Control.Input.Gamepad;
 
 public class ControlScheme extends Component{
 	
-	public int KEY_JUMP, KEY_UP, KEY_DOWN, KEY_DUCK, KEY_LEFT, KEY_RIGHT,  KEY_PRIMARY, KEY_SECONDARY, KEY_SELECT,	KEY_BACK, KEY_START;
+	public int KEY_JUMP, KEY_DUCK, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,  KEY_PRIMARY, KEY_SECONDARY, KEY_SELECT, KEY_BACK, KEY_START, KEY_BLOCK;
+	public static final int KEY_COUNT = 12;
 	public int GPID;
 	
 	public ControlScheme(){
@@ -14,16 +15,17 @@ public class ControlScheme extends Component{
 	}
 	
 	public void setDefaultControls(){
-		setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_W, Keyboard.KEY_G, Keyboard.KEY_F, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
+		setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_W, Keyboard.KEY_G, Keyboard.KEY_T, Keyboard.KEY_F, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
 	}
 	
-	public ControlScheme(int up, int down, int left, int right, int jump, int duck, int primary, int secondary, int start){
-		setControlScheme(up, down, left, right, jump, duck, primary, secondary, start);
+	public ControlScheme(int up, int down, int left, int right, int jump, int duck, int block, int primary, int secondary, int start){
+		setControlScheme(up, down, left, right, jump, duck, block, primary, secondary, start);
 	}
 	
-	public void setControlScheme(int up, int down, int left, int right, int jump, int duck, int primary, int secondary, int start){
+	public void setControlScheme(int up, int down, int left, int right, int jump, int duck, int block, int primary, int secondary, int start){
 		KEY_JUMP = jump; 
-		KEY_DUCK = duck; 
+		KEY_DUCK = duck;
+		KEY_BLOCK = block; 
 		KEY_LEFT = left; 
 		KEY_RIGHT = right; 
 		
@@ -49,7 +51,8 @@ public class ControlScheme extends Component{
 	public void setControlScheme(int GPID){
 		this.GPID = GPID;
 		KEY_JUMP = Gamepad.BUTTON_JUMP; 
-		KEY_DUCK = Gamepad.BUTTON_DUCK; 
+		KEY_DUCK = Gamepad.BUTTON_DUCK;
+		KEY_BLOCK = Gamepad.BUTTON_BLOCK; 
 		KEY_LEFT = Gamepad.BUTTON_LEFT; 
 		KEY_RIGHT = Gamepad.BUTTON_RIGHT; 
 		

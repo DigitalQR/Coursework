@@ -175,7 +175,11 @@ public class OverworldStage extends Stage{
 				Model m = p.getModel();
 				m.getLocation().y-=0.24f;
 				m.scaleBy(1.6f);
-				m.setRGBA(0, 0, 0, 1);
+				if(p.stunned()){
+					m.setRGBA(1, 1, 1, 1);
+				}else{
+					m.setRGBA(0, 0, 0, 1);
+				}
 				Renderer.render(m);
 
 				float[] RGBA = p.getRGBA();

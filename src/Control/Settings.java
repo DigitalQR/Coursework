@@ -13,7 +13,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.0.4";
+	public static final String Version = "1.0.5";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -46,7 +46,6 @@ public class Settings implements Runnable{
 		for(String s: toggleNames){
 			toggles.put(s, false);
 		}
-		toggles.put("d_hitbox", true);
 		
 		//Floats
 		floatNames.add("s_light_deviation");
