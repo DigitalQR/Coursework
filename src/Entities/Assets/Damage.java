@@ -11,7 +11,7 @@ import Tools.Maths.Vector3f;
 public class Damage extends Asset{
 
 	private static ArrayList<Damage> damage = new ArrayList<Damage>();
-	private static Animation cube = new Animation("Cube/Spin", 10);
+	public final static Animation CUBE = new Animation("Cube/Spin", 10);
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Damage> getDamageInfo(){
@@ -83,8 +83,9 @@ public class Damage extends Asset{
 	private float life;
 	private float damageValue;
 	private boolean stuckToParent;
+	private Animation animation;
 	
-	public Damage(Vector2f location, Vector2f size, int life, float damageValue, Entity e, boolean stuckToParent){
+	public Damage(Vector2f location, Vector2f size, int life, float damageValue, Entity e, boolean stuckToParent, Animation animation){
 		this.location = location;
 		this.size = size;
 		this.parent = e;
@@ -92,10 +93,11 @@ public class Damage extends Asset{
 		this.life = life;
 		this.damageValue = damageValue;
 		this.stuckToParent = stuckToParent;
+		this.animation = animation;
 	}
 	
 	public Model getModel(){
-		Model m = cube.getCurrentFrame();
+		Model m = animation.getCurrentFrame();
 		m.setLocation(new Vector3f(velocity.x+location.x+size.x/2, velocity.y+location.y-size.y, 0));
 		float[] colour = {0,1,0};
 		m.setRGBA(colour[0], colour[1], colour[2], 1);

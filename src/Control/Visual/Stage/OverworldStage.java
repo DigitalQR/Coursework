@@ -48,14 +48,10 @@ public class OverworldStage extends Stage{
 	public void update(){
 		@SuppressWarnings("unchecked")
 		ArrayList<Player> User = (ArrayList<Player>) Settings.User.clone();
-		
+
+
 		for(Player p: User){
 			p.processLERPLocation();
-			if(p.isKeyPressed(p.getControlScheme().KEY_START)){
-				MainControl.Paused = true;
-				DisplayControl.setStage(DisplayControl.STAGE_MENU);
-				break;
-			}
 		}
 		
 		Camera.process(User);
@@ -63,6 +59,15 @@ public class OverworldStage extends Stage{
 		
 		//Draw HUD
 		if(winner == -1){
+			//Exit to menu
+			for(Player p: User){
+				if(p.isKeyPressed(p.getControlScheme().KEY_START)){
+					MainControl.Paused = true;
+					DisplayControl.setStage(DisplayControl.STAGE_MENU);
+					break;
+				}
+			}
+			
 			String player = "\n\n";
 			
 			for(int i = 0; i<User.size(); i++){
@@ -131,36 +136,35 @@ public class OverworldStage extends Stage{
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
 		
 		//Draw damage
-		if(Settings.toggles.get("d_damage")){
-			try{
-				for(Damage d: Damage.getDamageInfo()){
-						Renderer.render(d.getModel());
-						
-						if(Settings.toggles.get("d_hitbox")){
-							Cubef temp = new Cubef(new Vector3f(d.getLocation().x, d.getLocation().y, 0f), new Vector3f(d.getLocation().x+d.getSize().x, d.getLocation().y+d.getSize().y, 1f));
-							Model m = new Model(temp);
-							m.setRGBA(1, 0, 0, 0.7f);
-							Renderer.render(m);
-						}
-				}
-			}catch(NullPointerException | ConcurrentModificationException e){
-				e.printStackTrace();
+    	try{
+			for(Damage d: Damage.getDamageInfo()){
+					Renderer.render(d.getModel());
+					
+					if(Settings.toggles.get("d_hitbox")){
+						Cubef temp = new Cubef(new Vector3f(d.getLocation().x, d.getLocation().y, 0f), new Vector3f(d.getLocation().x+d.getSize().x, d.getLocation().y+d.getSize().y, 1f));
+						Model m = new Model(temp);
+						m.setRGBA(1, 0, 0, 0.7f);
+						Renderer.render(m);
+					}
 			}
-		    
-			//Draw boundary
-			Cubef[] sides = {
-					new Cubef(new Vector3f(-1000,-1000,1.3f), new Vector3f(Settings.boundary.getLocation().x,1000,1.3f)),
-					new Cubef(new Vector3f(-1000,-1000,1.2f), new Vector3f(1000,Settings.boundary.getLocation().y,1.2f)),
-					new Cubef(new Vector3f(Settings.boundary.getLocation().x+Settings.boundary.getSize().x, -1000, 1.1f), new Vector3f(1000,1000,1.1f)),
-					new Cubef(new Vector3f(-1000,Settings.boundary.getLocation().y+Settings.boundary.getSize().y,1f), new Vector3f(1000,1000,1f))
-			};
-			
-			for(Cubef c: sides){
-				Model m = new Model(c);
-				m.setRGBA(0, 0, 0, 0.6f);
-				Renderer.render(m);
-			}
+		}catch(NullPointerException | ConcurrentModificationException e){
+			e.printStackTrace();
 		}
+	    
+		//Draw boundary
+		Cubef[] sides = {
+				new Cubef(new Vector3f(-1000,-1000,1.3f), new Vector3f(Settings.boundary.getLocation().x,1000,1.3f)),
+				new Cubef(new Vector3f(-1000,-1000,1.2f), new Vector3f(1000,Settings.boundary.getLocation().y,1.2f)),
+				new Cubef(new Vector3f(Settings.boundary.getLocation().x+Settings.boundary.getSize().x, -1000, 1.1f), new Vector3f(1000,1000,1.1f)),
+				new Cubef(new Vector3f(-1000,Settings.boundary.getLocation().y+Settings.boundary.getSize().y,1f), new Vector3f(1000,1000,1f))
+		};
+		
+		for(Cubef c: sides){
+			Model m = new Model(c);
+			m.setRGBA(0, 0, 0, 0.6f);
+			Renderer.render(m);
+		}
+		
 
 
 		//Player outline
@@ -207,7 +211,7 @@ public class OverworldStage extends Stage{
 			playerTrack++;
 				if(!p.isDead() && p.isPlayerIDLE()){
 					Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z+1f);
-					Vector3f location2 = new Vector3f(location.x-0.006f, location.y-0.006f, location.z-0.0001f);
+					Vector3f location2 = new Vector3f(location.x-0.006f, location.y-0.006f, location.z-0.001f);
 					float[] colour = DisplayControl.getInverseRGBA();
 					font.setRGBA(colour[0], colour[1], colour[2], 1f);
 					font.drawText("PLAYER " + playerTrack, location, 0.04f, 8f);

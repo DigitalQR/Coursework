@@ -13,7 +13,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.0.3";
+	public static final String Version = "1.0.4";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -41,13 +41,12 @@ public class Settings implements Runnable{
 		//Toggles
 		toggleNames.add("d_hitbox");
 		toggleNames.add("d_wireframe");
-		toggleNames.add("d_damage");
 		toggleNames.add("s_noclip");
 		
 		for(String s: toggleNames){
 			toggles.put(s, false);
 		}
-		toggles.put("d_damage", true);
+		toggles.put("d_hitbox", true);
 		
 		//Floats
 		floatNames.add("s_light_deviation");
