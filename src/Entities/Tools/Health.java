@@ -2,6 +2,8 @@ package Entities.Tools;
 
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
+import Control.Audio.Sound;
+import Entities.Entity;
 import Entities.Assets.Damage;
 
 public class Health extends Component{
@@ -32,6 +34,9 @@ public class Health extends Component{
 				lastHit = damage.getParent();
 				Damage.remove(damage);
 
+				Sound hitSound = new Sound("Effects/Hit");
+				hitSound.play();
+				
 				float x = damage.getDamageVelocity().x*(5f+factor)*scale.x;
 				float y = damage.getDamageVelocity().y*(2f+factor)*scale.y;
 				

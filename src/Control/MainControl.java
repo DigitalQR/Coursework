@@ -3,6 +3,7 @@ package Control;
 import java.util.concurrent.TimeUnit;
 
 import Tools.Maths.Toolkit;
+import Control.Audio.Sound;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
 import Debug.ErrorPopup;
@@ -20,6 +21,7 @@ public class MainControl{
 	public static void main(String[] args){
 		Settings.setup();
 		Gamepad.setup();
+		Sound.setup();
 		setup();
 		new Thread(new DisplayControl()).start();
 		
@@ -37,7 +39,7 @@ public class MainControl{
 
 			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
 				try{
-					TimeUnit.NANOSECONDS.sleep(1);
+					TimeUnit.NANOSECONDS.sleep(100000);
 				}catch(InterruptedException e){
 					ErrorPopup.createMessage(e, true);
 				}

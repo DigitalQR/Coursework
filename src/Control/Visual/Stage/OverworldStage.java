@@ -12,6 +12,7 @@ import Collision.SquareHitbox;
 import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
+import Control.Audio.Sound;
 import Control.Visual.DisplayControl;
 import Control.Visual.Font;
 import Entities.Player;
@@ -32,10 +33,17 @@ public class OverworldStage extends Stage{
 	
 	private int winKillCount = 3;
 	
+	private Sound music;
+	
 	public void prepare(){	
 		font = new Font("Font/Default");
 		winner = -1;
 		endTime = 0;
+		
+		music = new Sound("Music/Open Hexagon - Starship Showdown");
+		music.setLoop(true);
+		music.setGain(0);
+		music.doNotDestroyOnFinish();
 		
 		//Setup hitbox model data
 		hb = new ArrayList<Model>();
@@ -46,11 +54,14 @@ public class OverworldStage extends Stage{
 		}
 	}
 	
+	
+	
 	public void update(){
+		
 		@SuppressWarnings("unchecked")
 		ArrayList<Player> User = (ArrayList<Player>) Settings.User.clone();
 
-
+		
 		for(Player p: User){
 			p.processLERPLocation();
 		}
@@ -99,6 +110,7 @@ public class OverworldStage extends Stage{
 			float xOffset = 0;
 			float yOffset = 0;
 
+			//Position of info on screen
 			for(int i = 0; i<Settings.User.size(); i++){
 				switch(loops){
 				case 1:
@@ -147,6 +159,8 @@ public class OverworldStage extends Stage{
 				font.drawText(playerInfo[i], shadowLocation, 0.008f, 9f);
 				loops++;
 			}
+		
+		//If there is a winner
 		}else{
 			int reset = resetTime-Math.round((System.nanoTime()-endTime)/1000000000);
 			
@@ -288,6 +302,12 @@ public class OverworldStage extends Stage{
 		
 		
 	
+	}
+
+	public void switchToUpdate(){
+	}
+	
+	public void switchFromUpdate(){
 	}
 
 }

@@ -245,4 +245,10 @@ public class GamepadSetupStage extends Stage{
 		
 	}
 
+	public void switchToUpdate(){
+	}
+
+	public void switchFromUpdate(){
+	}
+
 }

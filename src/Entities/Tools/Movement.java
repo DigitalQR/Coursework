@@ -2,6 +2,7 @@ package Entities.Tools;
 
 import Collision.SquareHitbox;
 import Control.Settings;
+import Entities.Entity;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;

@@ -122,7 +122,9 @@ public class DisplayControl implements Runnable{
 	private static int STAGE_Current = STAGE_MENU;
 	
 	public static void setStage(int i){
+		stage[STAGE_Current].switchFromUpdate();
 		STAGE_Current = i;
+		stage[STAGE_Current].switchToUpdate();
 	}
 	
 	public static boolean isCurrentStage(int i){

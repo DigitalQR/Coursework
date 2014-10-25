@@ -166,5 +166,11 @@ public class MenuStage extends Stage{
 			activeButton = 1;
 		}
 	}
+
+	public void switchToUpdate(){
+	}
+	
+	public void switchFromUpdate(){
+	}
 	
 }

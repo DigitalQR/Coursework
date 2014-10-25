@@ -3,6 +3,7 @@ package Entities.Tools;
 import org.lwjgl.input.Keyboard;
 
 import Control.Input.Gamepad;
+import Entities.Entity;
 
 public class ControlScheme extends Component{
 	

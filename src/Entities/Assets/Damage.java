@@ -2,7 +2,8 @@ package Entities.Assets;
 
 import java.util.ArrayList;
 
-import Entities.Tools.Entity;
+import Control.Audio.Sound;
+import Entities.Entity;
 import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
@@ -86,7 +87,7 @@ public class Damage extends Asset{
 	private boolean stuckToParent;
 	private Animation animation;
 	
-	public Damage(Vector2f location, Vector2f size, int life, float damageValue, Entity e, boolean stuckToParent, Animation animation){
+	public Damage(Vector2f location, Vector2f size, int life, float damageValue, Entity e, boolean stuckToParent, Animation animation, Sound sound){
 		this.location = location;
 		this.size = size;
 		this.parent = e;
@@ -95,6 +96,8 @@ public class Damage extends Asset{
 		this.damageValue = damageValue;
 		this.stuckToParent = stuckToParent;
 		this.animation = animation;
+		sound.play();
+		update();
 	}
 	
 	public void resetLife(){
@@ -161,11 +164,12 @@ public class Damage extends Asset{
 
 	public void update(){
 		if(stuckToParent){
-			location.x = parent.getLocation().x;
-			location.y = parent.getLocation().y;
+			location.x = parent.getLocation().x+velocity.x;
+			location.y = parent.getLocation().y+velocity.y;
+		}else{
+			location.x+=velocity.x;
+			location.y+=velocity.y;
 		}
-		location.x+=velocity.x;
-		location.y+=velocity.y;
 	}
 
 	public boolean touching(Vector2f point){

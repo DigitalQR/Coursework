@@ -12,7 +12,6 @@ import Control.Settings;
 import Control.Input.Gamepad;
 import Entities.Tools.Attack;
 import Entities.Tools.ControlScheme;
-import Entities.Tools.Entity;
 import Entities.Tools.Health;
 import Entities.Tools.Movement;
 import RenderEngine.Model.Animation;

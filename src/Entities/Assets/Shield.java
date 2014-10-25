@@ -3,16 +3,16 @@ package Entities.Assets;
 import java.util.ArrayList;
 
 import Collision.SquareHitbox;
-import Entities.Tools.Entity;
+import Entities.Entity;
+import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
-import RenderEngine.Model.OBJLoader;
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 
 public class Shield extends Asset{
 
 	private static ArrayList<Shield> shields = new ArrayList<Shield>();
-	public final static Model SHIELD = OBJLoader.loadObjModel("shield");
+	public final static Animation SHIELD = new Animation("Shield/Spin",30);
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Shield> getShieldInfo(){
@@ -72,7 +72,7 @@ public class Shield extends Asset{
 			SquareHitbox hb = new SquareHitbox(new Vector2f(x,y), SIZE);
 			
 			for(Damage d: Damage.getDamageInfo()){
-				if(hb.AreaIntersect(d.getLocation(), d.getSize())){
+				if(hb.AreaIntersect(d.getLocation(), d.getSize()) && !d.getParent().equals(parent)){
 					d.setParent(parent);
 	
 					Vector2f vel = d.getVelocity();
@@ -89,9 +89,9 @@ public class Shield extends Asset{
 	}
 	
 	public Model getModel(){
-		Model m = new Model(SHIELD.getVertices().clone(), SHIELD.getTextureCoords().clone(), SHIELD.getIndices().clone(), SHIELD.getNormals().clone());
+		Model m = SHIELD.getCurrentFrame();
 		Vector3f loc = parent.getLERPLocation();
-		m.setLocation(new Vector3f(loc.x+0.1f, loc.y, loc.z));
+		m.setLocation(new Vector3f(loc.x+0.1f, loc.y-0.4f, loc.z));
 		m.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 		m.scaleBy(4);
 		return m;
