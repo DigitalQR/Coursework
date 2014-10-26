@@ -10,7 +10,7 @@ import Tools.Maths.Vector2f;
 
 public class DisplayManager{
 	
-	private static final int FPS = 240;
+	private static final int FPS = 60;
 	public static Vector2f p480 = new Vector2f(800, 480);
 	public static Vector2f p720 = new Vector2f(1280, 720);
 	public static Vector2f p1080= new Vector2f(1920, 1080);

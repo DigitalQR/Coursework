@@ -1,6 +1,7 @@
 package Entities;
 
 import Control.MainControl;
+import Control.Audio.Sound;
 import Entities.Tools.Component;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
@@ -27,6 +28,9 @@ public abstract class Entity{
 	}
 	
 	public void stun(int duration){
+		Sound hitSound = new Sound("Effects/Hit");
+		hitSound.play();
+		
 		stunDuration = duration;
 		stunTime = System.nanoTime();
 	}

@@ -15,7 +15,8 @@ import Debug.ErrorPopup;
 
 public class Sound{
 
-	private static float volume = 1f;
+	private static float volume = 0.7f;
+	private static int IDTrack = 0;
 	private static ArrayList<Sound> sounds = new ArrayList<Sound>();
 	
 	public static void setup(){
@@ -27,8 +28,7 @@ public class Sound{
 						while(!MainControl.CloseRequest){
 							for(Sound s: (List<Sound>) sounds.clone()){
 								try{
-									s.gainControl.setValue((s.gain+80)*volume-80);
-									
+									s.gainControl.setValue(getActualGain(s.gain));
 									
 									if(s.playing && s.gain*volume != 0f){
 										boolean songFinished = s.clip.getFrameLength() - s.clip.getFramePosition() <= 0;
@@ -45,7 +45,11 @@ public class Sound{
 										sounds.remove(s);
 										s.cleanup();
 									}
-								}catch(NullPointerException e){}
+								}catch(NullPointerException e){
+									
+								}catch(IllegalArgumentException e){
+									ErrorPopup.createMessage(e, true);
+								}
 							}
 						}
 
@@ -60,6 +64,14 @@ public class Sound{
 						}
 					}
 				}).start();
+	}
+	
+	public static float getActualGain(float gain){
+		//Range -80, 6
+		gain+=80;
+		gain/=86;
+		
+		return (gain*volume*86)-80;
 	}
 	
 	public static void setVolume(float vol){
@@ -81,6 +93,7 @@ public class Sound{
 	private boolean loop = false;
 	private boolean destroyOnFinish = true;
 	private boolean playing = false;
+	private int ID;
 	private FloatControl gainControl;
 	
 	public Sound(final String file){
@@ -90,24 +103,32 @@ public class Sound{
 			AudioInputStream input = AudioSystem.getAudioInputStream(new File("Res/Sounds/" + file + ".wav"));
 			clip.open(input);
 			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl.setValue(getActualGain(gain));
 			
 		}catch(Exception e){
 			ErrorPopup.createMessage(e, true);
 		}
+		ID = IDTrack++;
 		sounds.add(this);
+	}
+	
+	public int getID(){
+		return ID;
 	}
 	
 	public boolean isPlaying(){
 		return playing;
 	}
 	
-	private int lastFrame;
+	private int lastFrame = 0;
 	
 	public void play(){
-		gain = -5.0f;
-		clip.start();
-		clip.setFramePosition(lastFrame);
-		playing = true;
+		if(!playing){
+			gain = -5.0f;
+			clip.start();
+			clip.setFramePosition(lastFrame);
+			playing = true;
+		}
 	}
 	
 	public void doNotDestroyOnFinish(){
@@ -115,15 +136,19 @@ public class Sound{
 	}
 	
 	public void pause(){
-		lastFrame = clip.getFramePosition();
-		playing = false;
-		clip.stop();
+		if(playing){
+			lastFrame = clip.getFramePosition();
+			playing = false;
+			clip.stop();
+		}
 	}
 	
 	public void stop(){
-		lastFrame = 0;
-		playing = false;
-		clip.stop();
+		if(playing){
+			lastFrame = 0;
+			playing = false;
+			clip.stop();
+		}
 	}
 	
 	public void setLoop(boolean loop){

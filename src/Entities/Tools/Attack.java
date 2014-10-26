@@ -61,10 +61,10 @@ public class Attack extends Component{
 					e.getVelocity().y+=0.25f;
 				}if(control.isKeyPressed(control.KEY_LEFT)){
 					velocity.x-=size.x;
-					e.getVelocity().x+=0.25f;
+					e.getVelocity().x+=0.3f;
 				}if(control.isKeyPressed(control.KEY_RIGHT)){
 					velocity.x+=size.x;
-					e.getVelocity().x-=0.25f;
+					e.getVelocity().x-=0.3f;
 				}
 				
 				Vector2f location = new Vector2f(e.getLocation().x+e.getVelocity().x,e.getLocation().y+e.getVelocity().y);

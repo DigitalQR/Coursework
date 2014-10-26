@@ -42,7 +42,6 @@ public class OverworldStage extends Stage{
 		
 		music = new Sound("Music/Open Hexagon - Starship Showdown");
 		music.setLoop(true);
-		music.setGain(0);
 		music.doNotDestroyOnFinish();
 		
 		//Setup hitbox model data
@@ -305,9 +304,11 @@ public class OverworldStage extends Stage{
 	}
 
 	public void switchToUpdate(){
+		music.play();
 	}
 	
 	public void switchFromUpdate(){
+		music.pause();
 	}
 
 }

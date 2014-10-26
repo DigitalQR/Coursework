@@ -123,8 +123,8 @@ public class DisplayControl implements Runnable{
 	
 	public static void setStage(int i){
 		stage[STAGE_Current].switchFromUpdate();
+		stage[i].switchToUpdate();
 		STAGE_Current = i;
-		stage[STAGE_Current].switchToUpdate();
 	}
 	
 	public static boolean isCurrentStage(int i){
