@@ -42,7 +42,6 @@ public class Sound{
 										
 										s.clip.loop(-1);
 									}else if(s.destroyOnFinish){
-										sounds.remove(s);
 										s.cleanup();
 									}
 								}catch(NullPointerException e){
@@ -89,7 +88,7 @@ public class Sound{
 	
 	private Clip clip;
 	private String name = "";
-	private float gain;
+	private float gain = -5f;
 	private boolean loop = false;
 	private boolean destroyOnFinish = true;
 	private boolean playing = false;
@@ -109,7 +108,6 @@ public class Sound{
 			ErrorPopup.createMessage(e, true);
 		}
 		ID = IDTrack++;
-		sounds.add(this);
 	}
 	
 	public int getID(){
@@ -128,7 +126,15 @@ public class Sound{
 			clip.start();
 			clip.setFramePosition(lastFrame);
 			playing = true;
+			
+			if(!sounds.contains(this)){
+				sounds.add(this);
+			}
 		}
+	}
+	
+	public boolean hasFinished(){
+		return !loop && !playing;
 	}
 	
 	public void doNotDestroyOnFinish(){
@@ -163,7 +169,14 @@ public class Sound{
 		this.gain = gain;
 	}
 	
-	public void cleanup(){
+	public void destroy(){
+		destroyOnFinish = true;
+		playing = false;
+	}
+	
+	private void cleanup(){
+		sounds.remove(this);
+		playing = false;
 		clip.stop();
 		clip.flush();
 		clip.drain();
@@ -171,6 +184,5 @@ public class Sound{
 			System.out.println("Sound thread shutting down.. (" + name + ")");
 		}
 	}
-	
 }
 

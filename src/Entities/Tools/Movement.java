@@ -11,8 +11,9 @@ public class Movement extends Component{
 
 	private ControlScheme control;
 	private Vector2f accelerationLimit = new Vector2f(0.2f, 40f);
-	boolean touchingGround = false;
-	int touchingWall = 0;
+	private boolean touchingGround = false;
+	private int touchingWall = 0;
+	private boolean bounce = true;
 	
 	public Movement(ControlScheme controlScheme){
 		control = controlScheme;
@@ -98,6 +99,7 @@ public class Movement extends Component{
 		}
 		
 		//Hitbox detection
+		float afterX = 0;
 		int touchingWall = 0;
 		if(e.getVelocity().x != 0){
 			float initialVelx = e.getVelocity().x;
@@ -114,6 +116,9 @@ public class Movement extends Component{
 							touchingWall = 1;
 						}
 					}
+					if(bounce && Toolkit.Modulus(x) > accelerationLimit.x/2 && e.stunned()){
+						afterX = -x-initialVelx*0.9f;
+					}
 					break;
 				}else{
 					e.getVelocity().x = x;
@@ -124,6 +129,7 @@ public class Movement extends Component{
 		location.x+=e.getVelocity().x;
 		this.touchingWall = touchingWall;
 		e.setLocation(location);
+		e.getVelocity().x+=afterX;
 	}
 	
 	private void updateY(Entity e){
@@ -159,12 +165,16 @@ public class Movement extends Component{
 			touchingGround = true;
 		}
 		
-		//Hitbox detection
+		//Hitbox detection]
+		float afterY = 0;
 		if(e.getVelocity().y != 0){
 			float initialVely = e.getVelocity().y;
 			
 			for(float y = 0; Toolkit.Modulus(y) <= Toolkit.Modulus(initialVely); y+= Toolkit.Sign(initialVely)*0.01f){
 				if(insideHitbox(new Vector2f(location.x, location.y + y), new Vector2f(e.getSize().x, e.getSize().y))){
+					if(bounce && Toolkit.Modulus(y) > accelerationLimit.x/2 && e.stunned()){
+						afterY = -y-initialVely*0.9f;
+					}
 					break;
 				}else{
 					e.getVelocity().y = y;
@@ -174,7 +184,9 @@ public class Movement extends Component{
 		
 		location.y+=e.getVelocity().y;
 		e.setLocation(location);
+		e.getVelocity().y+=afterY;
 	}
+
 	
 	private boolean insideHitbox(Vector2f location, Vector2f size){
 		for(SquareHitbox hb:Settings.hb){

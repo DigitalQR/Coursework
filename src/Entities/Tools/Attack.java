@@ -43,7 +43,7 @@ public class Attack extends Component{
 				
 				Damage d = new Damage(new Vector2f(0,0), size, 600, 0.2f, e, true, Damage.CUBE, attackSound);
 				d.setVelocity(velocity);
-				d.setDamageVelocity(new Vector2f(velocity.x*0.9f, velocity.y*0.9f));
+				d.setDamageVelocity(new Vector2f(velocity.x*0.8f, velocity.y*0.8f));
 				Damage.add(d);
 				
 				lastAttack = currentTime;
@@ -73,7 +73,7 @@ public class Attack extends Component{
 				
 				Damage d = new Damage(location, size, 500, 0.05f, e, false, Damage.CUBE, rangeSound);
 				d.setVelocity(velocity);
-				d.setDamageVelocity(new Vector2f(velocity.x*0.75f, velocity.y*0.75f));
+				d.setDamageVelocity(new Vector2f(velocity.x*0.8f, velocity.y*0.8f));
 				Damage.add(d);
 				
 				lastAttack = currentTime;

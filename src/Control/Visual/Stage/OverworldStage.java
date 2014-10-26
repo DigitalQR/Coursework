@@ -22,6 +22,7 @@ import RenderEngine.Renderer;
 import RenderEngine.Stencil;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
+import Tools.Maths.Toolkit;
 import Tools.Maths.Vector3f;
 
 public class OverworldStage extends Stage{
@@ -40,9 +41,15 @@ public class OverworldStage extends Stage{
 		winner = -1;
 		endTime = 0;
 		
-		music = new Sound("Music/Open Hexagon - Starship Showdown");
-		music.setLoop(true);
-		music.doNotDestroyOnFinish();
+		if(music == null){
+			String[] files = {"Music/Open Hexagon - Starship Showdown", "Music/Open Hexagon - Pointless - Jack Russel"};
+			int index = Toolkit.RandomInt(0, 1);
+			
+			music = new Sound(files[index]);
+			music.setLoop(true);
+			music.doNotDestroyOnFinish();
+			music.play();
+		}
 		
 		//Setup hitbox model data
 		hb = new ArrayList<Model>();
@@ -52,8 +59,6 @@ public class OverworldStage extends Stage{
 			hb.add(m);
 		}
 	}
-	
-	
 	
 	public void update(){
 		
@@ -304,11 +309,9 @@ public class OverworldStage extends Stage{
 	}
 
 	public void switchToUpdate(){
-		music.play();
 	}
 	
 	public void switchFromUpdate(){
-		music.pause();
 	}
 
 }
