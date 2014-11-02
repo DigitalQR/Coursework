@@ -15,7 +15,7 @@ import Debug.ErrorPopup;
 
 public class Sound{
 
-	private static float volume = 0.7f;
+	private static float volume = 1f;
 	private static int IDTrack = 0;
 	private static ArrayList<Sound> sounds = new ArrayList<Sound>();
 	

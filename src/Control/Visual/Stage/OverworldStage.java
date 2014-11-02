@@ -76,13 +76,11 @@ public class OverworldStage extends Stage{
 		//Draw HUD
 		if(winner == -1){
 			//Exit to menu
-			for(Player p: User){
-				if(p.isKeyPressed(p.getControlScheme().KEY_START)){
-					MainControl.Paused = true;
-					DisplayControl.setStage(DisplayControl.STAGE_MENU);
-					break;
-				}
+			if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_START)){
+				MainControl.Paused = true;
+				DisplayControl.setStage(DisplayControl.STAGE_MENU);
 			}
+			
 			
 			String[] playerInfo = new String[Settings.User.size()];
 			
