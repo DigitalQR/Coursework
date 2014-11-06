@@ -22,7 +22,7 @@ public class GamepadSetupStage extends Stage{
 	
 	private final int TASK_UNASSIGNED = 0, TASK_DELETE = 1, TASK_ASSIGN = 2;
 	
-	public void prepare(Font font){
+	public GamepadSetupStage(Font font){
 		Gamepad[] pad = Gamepad.getGamepads();
 		Controller = new Button2f[pad.length];
 		ControllerTask = new Button2f[3][pad.length];

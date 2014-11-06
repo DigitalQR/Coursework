@@ -50,17 +50,18 @@ public class Sound{
 									ErrorPopup.createMessage(e, true);
 								}
 							}
+							try{
+								TimeUnit.MILLISECONDS.sleep(100);
+							}catch(InterruptedException e){
+								ErrorPopup.createMessage(e, true);
+							}
 						}
-
+						volume = 0;
+						
 						for(Sound s: sounds){
 							s.cleanup();
 						}
 						
-						try{
-							TimeUnit.MILLISECONDS.sleep(100);
-						}catch(InterruptedException e){
-							ErrorPopup.createMessage(e, true);
-						}
 					}
 				}).start();
 	}
@@ -69,7 +70,7 @@ public class Sound{
 		//Range -80, 6
 		gain+=80;
 		gain/=86;
-		
+			
 		return (gain*volume*86)-80;
 	}
 	
@@ -96,18 +97,20 @@ public class Sound{
 	private FloatControl gainControl;
 	
 	public Sound(final String file){
-		name = file;
-		try{
-			clip = AudioSystem.getClip();
-			AudioInputStream input = AudioSystem.getAudioInputStream(new File("Res/Sounds/" + file + ".wav"));
-			clip.open(input);
-			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			gainControl.setValue(getActualGain(gain));
-			
-		}catch(Exception e){
-			ErrorPopup.createMessage(e, true);
+		if(Math.round(volume*100) != 0){
+			name = file;
+			try{
+				clip = AudioSystem.getClip();
+				AudioInputStream input = AudioSystem.getAudioInputStream(new File("Res/Sounds/" + file + ".wav"));
+				clip.open(input);
+				gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+				gainControl.setValue(getActualGain(gain));
+				
+			}catch(Exception e){
+				ErrorPopup.createMessage(e, true);
+			}
+			ID = IDTrack++;
 		}
-		ID = IDTrack++;
 	}
 	
 	public int getID(){

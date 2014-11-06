@@ -65,10 +65,10 @@ public class OverworldStage extends Stage{
 		@SuppressWarnings("unchecked")
 		ArrayList<Player> User = (ArrayList<Player>) Settings.User.clone();
 
-		
 		for(Player p: User){
 			p.processLERPLocation();
 		}
+		
 		
 		Camera.process(User);
 		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);

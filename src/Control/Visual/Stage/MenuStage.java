@@ -28,6 +28,7 @@ public class MenuStage extends Stage{
 	private Button2f[] MainButton;
 	
 	GamepadSetupStage GamepadSetup;
+	SettingStage Setting;
 	
 	public void prepare(){
 		font = new Font("Font/Default");
@@ -37,8 +38,8 @@ public class MenuStage extends Stage{
 		
 		MainPrepare();
 		
-		GamepadSetup = new GamepadSetupStage();
-		GamepadSetup.prepare(font);
+		GamepadSetup = new GamepadSetupStage(font);
+		Setting = new SettingStage(font);
 		
 		player = Settings.User.get(0);
 
@@ -70,9 +71,23 @@ public class MenuStage extends Stage{
 		MainDraw();
 		
 		switch(activeButton){
+			//Start
+			case 1:
+				break;
+			
+			//Setup Controllers
 			case 2:
 				GamepadSetup.update();
-			break;
+				break;
+			
+			//Settings
+			case 3:
+				Setting.update();
+				break;
+			
+			//Exit
+			case 4:
+				break;	
 		}
 		
 	}
@@ -138,7 +153,7 @@ public class MenuStage extends Stage{
 	}
 	
 	private void MainProcessMainButton(){
-		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_SELECT)){
+		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_SELECT) && (activeButton == 1 || activeButton == 4)){
 			activeButton = selectedButton;
 			input();
 			switch(selectedButton){

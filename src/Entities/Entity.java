@@ -1,6 +1,7 @@
 package Entities;
 
 import Control.MainControl;
+import Control.Settings;
 import Control.Audio.Sound;
 import Entities.Tools.Component;
 import Tools.Maths.Toolkit;
@@ -99,13 +100,19 @@ public abstract class Entity{
 	private Vector3f LERPLocation = new Vector3f(0,0,0);
 	
 	public void processLERPLocation(){
-		float LookupTime = System.nanoTime()-MainControl.UPS;
-		float CurrentTime = System.nanoTime();
-		Vector3f location = this.getLocation();
+
+		if(Settings.toggles.get("s_lerp")){
+			float LookupTime = System.nanoTime()-MainControl.UPS;
+			float CurrentTime = System.nanoTime();
+			Vector3f location = this.getLocation();
+			
+			float x = Toolkit.LERPValue(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
+			float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
+			LERPLocation = new Vector3f(x, y, location.z);
+		}else{
+			LERPLocation = new Vector3f(location.x, location.y, location.z);
+		}
 		
-		float x = Toolkit.LERPValue(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
-		float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
-		LERPLocation = new Vector3f(x, y, location.z);
 	}
 	
 	public Vector3f getLERPLocation(){
