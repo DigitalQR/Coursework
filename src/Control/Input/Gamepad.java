@@ -37,7 +37,10 @@ public class Gamepad{
 				add(new Gamepad(pad));
 			}
 			if(pad.getType() == Controller.Type.KEYBOARD && keyboard == null){
+				
+				
 				keyboard = new Gamepad(pad);
+				keyboard.GPID = 100;
 				if(!keyboard.doesProfileExist){
 					keyboard.Key[0] = new Button(59,1.0f);
 					keyboard.Key[1] = new Button(43,1.0f);

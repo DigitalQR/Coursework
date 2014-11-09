@@ -17,6 +17,7 @@ import Debug.ErrorPopup;
 public class Sound{
 
 	private static int IDTrack = 0;
+	private static boolean alive = true;
 	private static ArrayList<Sound> sounds = new ArrayList<Sound>();
 	
 	public static void setup(){
@@ -56,7 +57,7 @@ public class Sound{
 								ErrorPopup.createMessage(e, true);
 							}
 						}
-						Settings.floats.put("s_volume", 0f);
+						alive = false;
 						
 						for(Sound s: sounds){
 							s.cleanup();
@@ -97,19 +98,20 @@ public class Sound{
 	private FloatControl gainControl;
 	
 	public Sound(final String file){
-		name = file;
-		try{
-			clip = AudioSystem.getClip();
-			AudioInputStream input = AudioSystem.getAudioInputStream(new File("Res/Sounds/" + file + ".wav"));
-			clip.open(input);
-			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			gainControl.setValue(getActualGain(gain));
-				
-		}catch(Exception e){
-			ErrorPopup.createMessage(e, true);
+		if(alive){
+			name = file;
+			try{
+				clip = AudioSystem.getClip();
+				AudioInputStream input = AudioSystem.getAudioInputStream(new File("Res/Sounds/" + file + ".wav"));
+				clip.open(input);
+				gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+				gainControl.setValue(getActualGain(gain));
+					
+			}catch(Exception e){
+				ErrorPopup.createMessage(e, true);
+			}
+			ID = IDTrack++;
 		}
-		ID = IDTrack++;
-		
 	}
 	
 	public int getID(){
@@ -123,7 +125,7 @@ public class Sound{
 	private int lastFrame = 0;
 	
 	public void play(){
-		if(!playing && Math.round(Settings.floats.get("s_volume")*100) != 0){
+		if(!playing && Math.round(Settings.floats.get("s_volume")*100) != 0 && alive){
 			gain = -5.0f;
 			clip.start();
 			clip.setFramePosition(lastFrame);
