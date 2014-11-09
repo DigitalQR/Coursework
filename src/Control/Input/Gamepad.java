@@ -19,6 +19,7 @@ import net.java.games.input.ControllerEnvironment;
 public class Gamepad{
 	
 	public static Gamepad[] Pad = new Gamepad[0];
+	public static Gamepad keyboard;
 	private static int GPID_TRACK = 0;
 	
 	private boolean doesProfileExist = false;
@@ -32,8 +33,28 @@ public class Gamepad{
 		Controller[] Controllers = CE.getControllers();
 		
 		for(Controller pad:Controllers){
-			if((pad.getType() == Controller.Type.STICK || pad.getType() == Controller.Type.GAMEPAD)){
+			if(pad.getType() == Controller.Type.STICK || pad.getType() == Controller.Type.GAMEPAD ){
 				add(new Gamepad(pad));
+			}
+			if(pad.getType() == Controller.Type.KEYBOARD && keyboard == null){
+				keyboard = new Gamepad(pad);
+				if(!keyboard.doesProfileExist){
+					keyboard.Key[0] = new Button(59,1.0f);
+					keyboard.Key[1] = new Button(55,1.0f);
+					keyboard.Key[2] = new Button(43,1.0f);
+					keyboard.Key[3] = new Button(56,1.0f);
+					keyboard.Key[4] = new Button(59,1.0f);
+					keyboard.Key[5] = new Button(55,1.0f);
+					keyboard.Key[6] = new Button(37,1.0f);
+					keyboard.Key[7] = new Button(40,1.0f);
+					keyboard.Key[8] = new Button(42,1.0f);
+					keyboard.Key[9] = new Button(44,1.0f);
+					keyboard.Key[10] = new Button(13,1.0f);
+					keyboard.Key[11] = new Button(42,1.0f);
+					keyboard.Key[12] = new Button(44,1.0f);
+					keyboard.doesProfileExist = true;
+				}
+				add(keyboard);
 			}
 		}
 	}
@@ -70,11 +91,13 @@ public class Gamepad{
 	
 	BUTTON_PRIMARY = T++,
 	BUTTON_SECONDARY = T++,
-	
-	BUTTON_PAUSE = T++;
+
+	BUTTON_PAUSE = T++,
+	BUTTON_MENU_FORWARD = T++,
+	BUTTON_MENU_BACK = T++;
 		
 	private static String[] KeyName = 
-		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary attack", "Secondary attack", "Pause"};
+		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary attack", "Secondary attack", "Pause", "Menu Forward", "Menu Back"};
 	
 	private Button[] Key = new Button[KeyName.length];
 	private float[] Raw;
@@ -109,7 +132,7 @@ public class Gamepad{
 		poll();
 		if(MenuStage.timePassed()){
 			for(int i = 0; i <Raw.length; i++){
-				if(Raw[i] != 0 && !BoundButtons.contains(i + " " + Raw[i])){
+				if(Raw[i] != 0){
 					BoundButtons.add(i + " " + Raw[i]);
 					Key[bindingTrack] = new Button(i, Raw[i]);
 					bindingTrack++;
@@ -208,6 +231,12 @@ public class Gamepad{
 				p.getControlScheme().setDefaultControls();
 			}
 		}
+		for(Gamepad p: Pad){
+			if(p.assignedPlayer == i){
+				p.assignedPlayer = -1;
+			}
+		}
+		
 		assignedPlayer = i;
 		Settings.User.get(i).setControlScheme(this.GPID);
 	}

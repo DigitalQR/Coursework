@@ -14,7 +14,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.0.10";
+	public static final String Version = "1.0.11 <Set the game and listen>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -56,12 +56,14 @@ public class Settings implements Runnable{
 		
 		//Floats
 		floatNames.add("s_light_deviation");
+		floatNames.add("s_volume");
 		
 		for(String s: floatNames){
 			floats.put(s, 0f);
 		}
-		
+
 		floats.put("s_light_deviation", 0.25f);
+		floats.put("s_volume", 0.8f);
 		
 		new Thread(new Settings()).start();
 	}
@@ -99,13 +101,17 @@ public class Settings implements Runnable{
 							toggles.put("s_lerp", true);
 							DisplayManager.FPS = 120;
 							System.out.println("Low Settings de-activated.");
+							
 						}else{
 							toggles.put("s_lerp", false);
 							DisplayManager.FPS = 30;
 							System.out.println("Low Settings activated.");
 						}
-						toggles.put(raw[1], !toggles.get(raw[1]));
-					}else if(toggles.containsKey(raw[1])){
+						
+					}
+					
+					
+					if(toggles.containsKey(raw[1])){
 						toggles.put(raw[1], !toggles.get(raw[1]));
 					}else{
 						System.out.println("Variable " + raw[1] + " does not exist.");

@@ -16,33 +16,25 @@ public class ControlScheme extends Component{
 	}
 	
 	public void setDefaultControls(){
-		setControlScheme(Keyboard.KEY_W, Keyboard.KEY_S, Keyboard.KEY_A, Keyboard.KEY_D, Keyboard.KEY_W, Keyboard.KEY_G, Keyboard.KEY_T, Keyboard.KEY_F, Keyboard.KEY_H, Keyboard.KEY_ESCAPE);
-	}
-	
-	public ControlScheme(int up, int down, int left, int right, int jump, int duck, int block, int primary, int secondary, int start){
-		setControlScheme(up, down, left, right, jump, duck, block, primary, secondary, start);
-	}
-	
-	public void setControlScheme(int up, int down, int left, int right, int jump, int duck, int block, int primary, int secondary, int start){
-		KEY_JUMP = jump; 
-		KEY_DUCK = duck;
-		KEY_BLOCK = block; 
-		KEY_LEFT = left; 
-		KEY_RIGHT = right; 
+		this.GPID = -1;
+		KEY_JUMP = 0; 
+		KEY_DUCK = 0;
+		KEY_BLOCK = 0; 
+		KEY_LEFT = 0; 
+		KEY_RIGHT = 0; 
 		
-		KEY_UP = up; 
-		KEY_DOWN = down;
-		KEY_LEFT = left;
-		KEY_RIGHT = right;
-		KEY_SELECT = primary;
-		KEY_BACK = secondary;
+		KEY_UP = 0; 
+		KEY_DOWN = 0;
+		KEY_LEFT = 0;
+		KEY_RIGHT = 0;
 		
-		KEY_PRIMARY = primary; 
-		KEY_SECONDARY = secondary;
+		KEY_SELECT = 0;
+		KEY_BACK = 0;
 		
-		KEY_START = start;
+		KEY_PRIMARY = 0; 
+		KEY_SECONDARY = 0;
 		
-		GPID = -1;
+		KEY_START = 0;
 	}
 
 	public ControlScheme(int GPID){
@@ -62,8 +54,8 @@ public class ControlScheme extends Component{
 		KEY_LEFT = Gamepad.BUTTON_LEFT;
 		KEY_RIGHT = Gamepad.BUTTON_RIGHT;
 		
-		KEY_SELECT = Gamepad.BUTTON_JUMP;
-		KEY_BACK = Gamepad.BUTTON_DUCK;
+		KEY_SELECT = Gamepad.BUTTON_MENU_FORWARD;
+		KEY_BACK = Gamepad.BUTTON_MENU_BACK;
 		
 		KEY_PRIMARY = Gamepad.BUTTON_PRIMARY; 
 		KEY_SECONDARY = Gamepad.BUTTON_SECONDARY;

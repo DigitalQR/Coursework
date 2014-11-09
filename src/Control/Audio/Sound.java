@@ -11,11 +11,11 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 
 import Control.MainControl;
+import Control.Settings;
 import Debug.ErrorPopup;
 
 public class Sound{
 
-	private static float volume = 1f;
 	private static int IDTrack = 0;
 	private static ArrayList<Sound> sounds = new ArrayList<Sound>();
 	
@@ -30,7 +30,7 @@ public class Sound{
 								try{
 									s.gainControl.setValue(getActualGain(s.gain));
 									
-									if(s.playing && s.gain*volume != 0f){
+									if(s.playing && s.gain*Settings.floats.get("s_volume") != 0f){
 										boolean songFinished = s.clip.getFrameLength() - s.clip.getFramePosition() <= 0;
 										
 										if(s.loop && songFinished){
@@ -51,12 +51,12 @@ public class Sound{
 								}
 							}
 							try{
-								TimeUnit.MILLISECONDS.sleep(100);
+								TimeUnit.MILLISECONDS.sleep(1);
 							}catch(InterruptedException e){
 								ErrorPopup.createMessage(e, true);
 							}
 						}
-						volume = 0;
+						Settings.floats.put("s_volume", 0f);
 						
 						for(Sound s: sounds){
 							s.cleanup();
@@ -71,7 +71,7 @@ public class Sound{
 		gain+=80;
 		gain/=86;
 			
-		return (gain*volume*86)-80;
+		return (gain*Settings.floats.get("s_volume")*86)-80;
 	}
 	
 	public static void setVolume(float vol){
@@ -80,11 +80,11 @@ public class Sound{
 		}if(vol < 0f){
 			vol = 0f;
 		}
-		volume = vol;
+		Settings.floats.put("s_volume", vol);
 	}
 	
 	public static float getVolume(){
-		return volume;
+		return Settings.floats.get("s_volume");
 	}
 	
 	private Clip clip;
@@ -97,20 +97,19 @@ public class Sound{
 	private FloatControl gainControl;
 	
 	public Sound(final String file){
-		if(Math.round(volume*100) != 0){
-			name = file;
-			try{
-				clip = AudioSystem.getClip();
-				AudioInputStream input = AudioSystem.getAudioInputStream(new File("Res/Sounds/" + file + ".wav"));
-				clip.open(input);
-				gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-				gainControl.setValue(getActualGain(gain));
+		name = file;
+		try{
+			clip = AudioSystem.getClip();
+			AudioInputStream input = AudioSystem.getAudioInputStream(new File("Res/Sounds/" + file + ".wav"));
+			clip.open(input);
+			gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			gainControl.setValue(getActualGain(gain));
 				
-			}catch(Exception e){
-				ErrorPopup.createMessage(e, true);
-			}
-			ID = IDTrack++;
+		}catch(Exception e){
+			ErrorPopup.createMessage(e, true);
 		}
+		ID = IDTrack++;
+		
 	}
 	
 	public int getID(){
@@ -124,7 +123,7 @@ public class Sound{
 	private int lastFrame = 0;
 	
 	public void play(){
-		if(!playing){
+		if(!playing && Math.round(Settings.floats.get("s_volume")*100) != 0){
 			gain = -5.0f;
 			clip.start();
 			clip.setFramePosition(lastFrame);

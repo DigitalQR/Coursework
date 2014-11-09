@@ -60,9 +60,11 @@ public class MainControl{
 	
 	private static void setup(){
 		Settings.randomHitboxGen();
-
+		
 		Settings.User.add(new Player(0,0));
 		Settings.User.add(new Player(0,0));
+		
+		Gamepad.keyboard.assignToPlayer(0);
 		
 	}
 

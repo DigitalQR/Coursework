@@ -9,6 +9,7 @@ import Tools.Maths.Vector3f;
 public class Camera {
 
 	private static Vector3f Location = new Vector3f(0,0,0);
+	private static float cameraDepthLimit = 5f;
 	
 	public static void setLocation(int x, int y, int z){
 		Location.x = x;
@@ -57,8 +58,8 @@ public class Camera {
 			}
 		}
 		Location.z = Delta;
-		if(Location.z > -5f){
-			Location.z = -5f;
+		if(Location.z > -cameraDepthLimit){
+			Location.z = -cameraDepthLimit;
 		}
 	}
 }

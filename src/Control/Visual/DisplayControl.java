@@ -22,7 +22,7 @@ public class DisplayControl implements Runnable{
 	public static boolean exists = false;
 	
 	private static void start(){
-		DisplayManager.create(false);
+		DisplayManager.create();
 		setupOpenGL();
 		setupLighting();
 		setupStages();
@@ -50,7 +50,6 @@ public class DisplayControl implements Runnable{
 		r+=0.01f*speed;
 		g+=0.015f*speed;
 		b+=0.02f*speed;
-		
 		
 		RGBA[0] = Toolkit.Modulus((float)Math.sin(r));
 		RGBA[1] = Toolkit.Modulus((float)Math.sin(g));

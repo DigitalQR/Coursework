@@ -136,25 +136,25 @@ public class GamepadSetupStage extends Stage{
 					if(Gamepad.Pad[i].getProfileStatus()){						
 						if(current ==  TASK_DELETE){
 							task.setTexture(MenuStage.ButtonSelected);
-							task.setRGBA(1f, 0.5f, 0.5f, 1f);
+							task.setRGBA(1f, 0.2f, 0.2f, 1f);
 						}else{
 							task.setTexture(MenuStage.ButtonSelected);
 						}
 					}else{
 						task.setTexture(MenuStage.ButtonSelected);
-						task.setRGBA(0.5f, 1f, 0.5f, 1f);
+						task.setRGBA(0.2f, 1f, 0.2f, 1f);
 					}
 				}else{
 					if(Gamepad.Pad[i].getProfileStatus()){
 						if(current ==  TASK_DELETE){
 							task.setTexture(MenuStage.Button);
-							task.setRGBA(1f, 0.5f, 0.5f, 1f);
+							task.setRGBA(1f, 0.2f, 0.2f, 1f);
 						}else{
 							task.setTexture(MenuStage.Button);
 						}
 					}else{
 						task.setTexture(MenuStage.Button);
-						task.setRGBA(0.5f, 1f, 0.5f, 1f);
+						task.setRGBA(0.2f, 1f, 0.2f, 1f);
 					}
 				}
 				Renderer.render(task);

@@ -70,9 +70,9 @@ public class SettingStage extends Stage{
 				m.setTexture(MenuStage.Button);
 			}
 			if(Settings.toggles.get(button.getMessage())){
-				m.setRGBA(0, 1, 0, 1);
+				m.setRGBA(0.2f, 1, 0.2f, 1);
 			}else{
-				m.setRGBA(1, 0, 0, 1);
+				m.setRGBA(1, 0.2f, 0.2f, 1);
 			}
 			
 			Renderer.render(m);
