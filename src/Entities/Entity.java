@@ -1,8 +1,8 @@
 package Entities;
 
-import Control.MainControl;
 import Control.Settings;
 import Control.Audio.Sound;
+import Control.Visual.Stage.OverworldStage;
 import Entities.Tools.Component;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
@@ -102,7 +102,7 @@ public abstract class Entity{
 	public void processLERPLocation(){
 
 		if(Settings.toggles.get("s_lerp")){
-			float LookupTime = System.nanoTime()-MainControl.UPS;
+			float LookupTime = OverworldStage.getLERPTime();
 			float CurrentTime = System.nanoTime();
 			Vector3f location = this.getLocation();
 			

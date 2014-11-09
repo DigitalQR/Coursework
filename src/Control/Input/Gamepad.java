@@ -40,8 +40,8 @@ public class Gamepad{
 				keyboard = new Gamepad(pad);
 				if(!keyboard.doesProfileExist){
 					keyboard.Key[0] = new Button(59,1.0f);
-					keyboard.Key[1] = new Button(55,1.0f);
-					keyboard.Key[2] = new Button(43,1.0f);
+					keyboard.Key[1] = new Button(43,1.0f);
+					keyboard.Key[2] = new Button(56,1.0f);
 					keyboard.Key[3] = new Button(56,1.0f);
 					keyboard.Key[4] = new Button(59,1.0f);
 					keyboard.Key[5] = new Button(55,1.0f);

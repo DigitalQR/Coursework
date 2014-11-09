@@ -34,6 +34,7 @@ public class MainControl{
 				for(Player p: Settings.User){
 					p.update();
 				}
+				Camera.process();
 				
 			}
 

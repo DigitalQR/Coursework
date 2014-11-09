@@ -42,8 +42,8 @@ public class Movement extends Component{
 		//Input
 		if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.08f;
 		if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.08f;
-		if(control.isKeyPressed(control.KEY_UP) && e.getVelocity().y < accelerationLimit.y) e.getVelocity().y+=0.08f;
-		if(control.isKeyPressed(control.KEY_DOWN) && e.getVelocity().y > -accelerationLimit.y) e.getVelocity().y-=0.08f;
+		if(control.isKeyPressed(control.KEY_UP) && e.getVelocity().y < accelerationLimit.x) e.getVelocity().y+=0.08f;
+		if(control.isKeyPressed(control.KEY_DOWN) && e.getVelocity().y > -accelerationLimit.x) e.getVelocity().y-=0.08f;
 		
 		//Normalisation
 		Vector3f location = e.getLocation();

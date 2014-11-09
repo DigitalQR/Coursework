@@ -31,6 +31,7 @@ public class OverworldStage extends Stage{
 	private int winner = -1;
 	private int resetTime = 10;
 	private float endTime = 0;
+	private static float LERPTime = 0;
 	
 	private int winKillCount = 3;
 	
@@ -42,8 +43,8 @@ public class OverworldStage extends Stage{
 		endTime = 0;
 		
 		if(music == null){
-			String[] files = {"Music/Open Hexagon - Starship Showdown", "Music/Open Hexagon - Pointless - Jack Russel"};
-			int index = Toolkit.RandomInt(0, 1);
+			String[] files = {"Music/Open Hexagon - Starship Showdown", "Music/Open Hexagon - Pointless - Jack Russel", "Music/Savant - Melody Circus"};
+			int index = Toolkit.RandomInt(0, files.length-1);
 			
 			music = new Sound(files[index]);
 			music.setLoop(true);
@@ -60,7 +61,12 @@ public class OverworldStage extends Stage{
 		}
 	}
 	
+	public static float getLERPTime(){
+		return LERPTime;
+	}
+	
 	public void update(){
+		LERPTime = System.nanoTime()-MainControl.UPS;
 		
 		@SuppressWarnings("unchecked")
 		ArrayList<Player> User = (ArrayList<Player>) Settings.User.clone();
@@ -69,9 +75,9 @@ public class OverworldStage extends Stage{
 			p.processLERPLocation();
 		}
 		
-		
-		Camera.process(User);
-		GL11.glTranslatef(Camera.getLocation().x, Camera.getLocation().y, Camera.getLocation().z);
+		Camera.processLERP();
+		Vector3f camLocation = new Vector3f(Camera.getLERPLocation().x, Camera.getLERPLocation().y, Camera.getLERPLocation().z);
+		GL11.glTranslatef(camLocation.x, camLocation.y, camLocation.z);
 		
 		//Draw HUD
 		if(winner == -1){
@@ -149,8 +155,8 @@ public class OverworldStage extends Stage{
 					break;
 				}
 				
-				Vector3f location = new Vector3f(-Camera.getLocation().x-1.6f+xOffset, -Camera.getLocation().y+1.5f+yOffset, -Camera.getLocation().z-2f);
-				Vector3f shadowLocation = new Vector3f(-Camera.getLocation().x-1.606f+xOffset, -Camera.getLocation().y+1.506f+yOffset, -Camera.getLocation().z-2.0001f);
+				Vector3f location = new Vector3f(-camLocation.x-1.6f+xOffset, -camLocation.y+1.5f+yOffset, -camLocation.z-2f);
+				Vector3f shadowLocation = new Vector3f(-camLocation.x-1.606f+xOffset, -camLocation.y+1.506f+yOffset, -camLocation.z-2.0001f);
 				
 				
 				float[] RGBA = Settings.User.get(i).getRGBA();
@@ -167,9 +173,9 @@ public class OverworldStage extends Stage{
 			int reset = resetTime-Math.round((System.nanoTime()-endTime)/1000000000);
 			
 			font.setRGBA(1-DisplayControl.getRGBA()[0], 1-DisplayControl.getRGBA()[1], 1-DisplayControl.getRGBA()[2], 1);
-			font.drawText("Player " + winner + " Wins!\nReset in " + reset, new Vector3f(-Camera.getLocation().x-0.6f, -Camera.getLocation().y, -Camera.getLocation().z-2f), 0.01f, 9f);
+			font.drawText("Player " + winner + " Wins!\nReset in " + reset, new Vector3f(-camLocation.x-0.6f, -camLocation.y, -camLocation.z-2f), 0.01f, 9f);
 			font.setRGBA(0, 0, 0, 1);
-			font.drawText("Player " + winner + " Wins!\nReset in " + reset, new Vector3f(-Camera.getLocation().x-0.606f, -Camera.getLocation().y+0.006f, -Camera.getLocation().z-2.0001f), 0.01f, 9f);
+			font.drawText("Player " + winner + " Wins!\nReset in " + reset, new Vector3f(-camLocation.x-0.606f, -camLocation.y+0.006f, -camLocation.z-2.0001f), 0.01f, 9f);
 			
 			for(int i = 0; i<Settings.User.size(); i++){
 				if(i != winner-1){
@@ -196,7 +202,7 @@ public class OverworldStage extends Stage{
 		}
 		//Light position
 		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
-        Location.put(new float[]{-Camera.getLocation().x, -Camera.getLocation().y , 3,1});
+        Location.put(new float[]{-camLocation.x, -camLocation.y , 3,1});
         Location.flip();
         GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
 		
