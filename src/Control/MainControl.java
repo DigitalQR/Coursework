@@ -3,6 +3,7 @@ package Control;
 import java.util.concurrent.TimeUnit;
 
 import Tools.Maths.Toolkit;
+import Collision.Hitbox;
 import Control.Audio.Sound;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
@@ -30,6 +31,9 @@ public class MainControl{
 			Gamepad.pollPads();
 			
 			if(!Paused){
+				for(Hitbox hb: Settings.hb){
+					hb.update();
+				}
 				Damage.updateDamage();
 				Shield.updateShields();
 				

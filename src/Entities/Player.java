@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
+import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.MainControl;
 import Control.Settings;
@@ -94,13 +95,13 @@ public class Player extends Entity{
 	
 	private void spawn(){
 		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
-		List<SquareHitbox> hitbox = new ArrayList<SquareHitbox>();
-		for(SquareHitbox hb: Settings.hb){
+		List<Hitbox> hitbox = new ArrayList<Hitbox>();
+		for(Hitbox hb: Settings.hb){
 			hitbox.add(hb);
 		}
 		Collections.shuffle(hitbox);
 		
-		Main : for(SquareHitbox hb: hitbox){
+		Main : for(Hitbox hb: hitbox){
 			float x = hb.getLocation().x+hb.getSize().x/2;
 			float y = hb.getLocation().y+this.getSize().y;
 			for(;;y+=0.1f){
@@ -108,7 +109,7 @@ public class Player extends Entity{
 					continue Main;
 				}else{
 					boolean intersects = false;
-					for(SquareHitbox h: hitbox){
+					for(Hitbox h: hitbox){
 						if(h.AreaIntersect(new Vector2f(x,y), new Vector2f(this.getSize().x, this.getSize().y))){
 							intersects = true;
 						}

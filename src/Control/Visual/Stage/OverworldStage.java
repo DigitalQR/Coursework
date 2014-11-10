@@ -8,7 +8,7 @@ import java.util.List;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import Collision.SquareHitbox;
+import Collision.Hitbox;
 import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
@@ -27,6 +27,7 @@ import Tools.Maths.Vector3f;
 
 public class OverworldStage extends Stage{
 	private List<Model> hb;
+	private List<Integer> dynamicHb = new ArrayList<Integer>();
 	private Font font;
 	private int winner = -1;
 	private int resetTime = 10;
@@ -53,11 +54,17 @@ public class OverworldStage extends Stage{
 		}
 		
 		//Setup hitbox model data
+		int track = 0;
 		hb = new ArrayList<Model>();
-		for(SquareHitbox h: Settings.hb){
-			Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
-			Model m = new Model(temp);
-			hb.add(m);
+		for(Hitbox h: Settings.hb){
+			if(h.getType() == Hitbox.TYPE_STATIC){
+				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
+				Model m = new Model(temp);
+				hb.add(m);
+			}else{
+				dynamicHb.add(track);
+			}
+			track++;
 		}
 	}
 	
@@ -233,21 +240,6 @@ public class OverworldStage extends Stage{
 		}catch(NullPointerException | ConcurrentModificationException e){
 			e.printStackTrace();
 		}
-	    
-		//Draw boundary
-		Cubef[] sides = {
-				new Cubef(new Vector3f(-1000,-1000,1.3f), new Vector3f(Settings.boundary.getLocation().x,1000,1.3f)),
-				new Cubef(new Vector3f(-1000,-1000,1.2f), new Vector3f(1000,Settings.boundary.getLocation().y,1.2f)),
-				new Cubef(new Vector3f(Settings.boundary.getLocation().x+Settings.boundary.getSize().x, -1000, 1.1f), new Vector3f(1000,1000,1.1f)),
-				new Cubef(new Vector3f(-1000,Settings.boundary.getLocation().y+Settings.boundary.getSize().y,1f), new Vector3f(1000,1000,1f))
-		};
-		
-		for(Cubef c: sides){
-			Model m = new Model(c);
-			m.setRGBA(0, 0, 0, 0.6f);
-			Renderer.render(m);
-		}
-		
 
 
 		//Player outline
@@ -291,6 +283,12 @@ public class OverworldStage extends Stage{
 		for(Model Box:hb){
 			Renderer.render(Box);
 		}
+		for(int i: dynamicHb){
+			Hitbox h = Settings.hb.get(i);
+			Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
+			Model m = new Model(temp);
+			Renderer.render(m);
+		}
 
 		//Draw IDLE player name
 		int playerTrack = 0;
@@ -308,6 +306,20 @@ public class OverworldStage extends Stage{
 			}
 		}
 		
+
+		//Draw boundary
+		Cubef[] sides = {
+				new Cubef(new Vector3f(-1000,-1000,1.3f), new Vector3f(Settings.boundary.getLocation().x,1000,1.3f)),
+				new Cubef(new Vector3f(-1000,-1000,1.2f), new Vector3f(1000,Settings.boundary.getLocation().y,1.2f)),
+				new Cubef(new Vector3f(Settings.boundary.getLocation().x+Settings.boundary.getSize().x, -1000, 1.1f), new Vector3f(1000,1000,1.1f)),
+				new Cubef(new Vector3f(-1000,Settings.boundary.getLocation().y+Settings.boundary.getSize().y,1f), new Vector3f(1000,1000,1f))
+		};
+		
+		for(Cubef c: sides){
+			Model m = new Model(c);
+			m.setRGBA(0, 0, 0, 0.6f);
+			Renderer.render(m);
+		}
 		
 	
 	}

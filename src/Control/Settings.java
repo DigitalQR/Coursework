@@ -7,16 +7,16 @@ import java.util.Scanner;
 
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
-import Collision.SquareHitbox;
+import Collision.Hitbox;
 import Control.Visual.DisplayControl;
 import Control.Visual.DisplayManager;
 import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.0.15 <Set the game and listen>";
+	public static final String Version = "1.2.0 <Set the game and listen>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
-	public static List<SquareHitbox> hb;
+	public static List<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
 
 	public static List<String> toggleNames = new ArrayList<String>();
@@ -212,6 +212,7 @@ public class Settings implements Runnable{
 	
 	public static void randomHitboxGen(){
 		int scale = 8;
-		Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
+		hb = Hitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
+
 	}
 }

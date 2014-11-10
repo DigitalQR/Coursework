@@ -1,6 +1,7 @@
 package Entities.Tools;
 
-import Collision.SquareHitbox;
+import Collision.Hitbox;
+import Collision.MovingHitbox;
 import Control.Settings;
 import Entities.Entity;
 import Tools.Maths.Toolkit;
@@ -28,7 +29,23 @@ public class Movement extends Component{
 	}
 	
 	public void update(Entity e){
-		if(!Settings.toggles.get("s_noclip")){
+		if(!Settings.toggles.get("s_noclip")){	
+			
+			float xVel = Toolkit.Sign(e.getVelocity().x)*e.getSize().x/2;
+			float yVel = Toolkit.Sign(e.getVelocity().y)*e.getSize().y/2;
+			if(touchingGround){
+				yVel = -e.getSize().x/2;
+			}
+			Hitbox hb = getHitboxCollision(new Vector2f(e.getLocation().x+xVel, e.getLocation().y+yVel), new Vector2f(e.getSize().x, e.getSize().y)) ;
+			
+			if(hb != null){
+				if(hb.getType() == Hitbox.TYPE_DYNAMIC){
+					MovingHitbox mhb = (MovingHitbox) hb;
+					e.getLocation().x += mhb.velocity.x;
+					e.getLocation().y += mhb.velocity.y;
+				}
+			}
+			
 			updateX(e);
 			updateY(e);
 		}else{
@@ -74,7 +91,6 @@ public class Movement extends Component{
 
 		location.x+=e.getVelocity().x;
 		location.y+=e.getVelocity().y;
-		//e.setLocation(location);
 	}
 	
 	private void updateX(Entity e){
@@ -159,13 +175,13 @@ public class Movement extends Component{
 		if(Math.round(e.getVelocity().y*100) == 0){
 			e.getVelocity().y = 0;
 		}
-		
+
 		//Is the player grounded
-		if(Toolkit.Sign(e.getVelocity().y) == -1 && insideHitbox(new Vector2f(location.x, location.y + e.getVelocity().y-0.03f), new Vector2f(e.getSize().x, e.getSize().y))){
-			touchingGround = true;
+		if(Toolkit.Sign(e.getVelocity().y) == -1 && insideHitbox(new Vector2f(e.getLocation().x, e.getLocation().y + e.getVelocity().y-0.04f), new Vector2f(e.getSize().x, e.getSize().y))){
+			touchingGround = true;			
 		}
 		
-		//Hitbox detection]
+		//Hitbox detection
 		float afterY = 0;
 		if(e.getVelocity().y != 0){
 			float initialVely = e.getVelocity().y;
@@ -175,7 +191,7 @@ public class Movement extends Component{
 					if(bounce && Toolkit.Modulus(y) > accelerationLimit.x/2 && e.stunned()){
 						afterY = -y-initialVely*0.9f;
 					}
-					break;
+					
 				}else{
 					e.getVelocity().y = y;
 				}
@@ -189,12 +205,21 @@ public class Movement extends Component{
 
 	
 	private boolean insideHitbox(Vector2f location, Vector2f size){
-		for(SquareHitbox hb:Settings.hb){
+		for(Hitbox hb:Settings.hb){
 			if(hb.AreaIntersect(location, size)){
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private Hitbox getHitboxCollision(Vector2f location, Vector2f size){
+		for(Hitbox hb:Settings.hb){
+			if(hb.AreaIntersect(location, size)){
+				return hb;
+			}
+		}
+		return null;
 	}
 	
 }
