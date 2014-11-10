@@ -14,7 +14,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.0.13 <Set the game and listen>";
+	public static final String Version = "1.0.14 <Set the game and listen>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<SquareHitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -89,6 +89,7 @@ public class Settings implements Runnable{
 			System.out.println("toggle <variable>");
 			System.out.println("list <list>");
 			System.out.println("set <variable> <value>");
+			System.out.println("set player_count <value>");
 			System.out.println("reset_stage");
 			System.out.println("stop");
 			System.out.println("");
@@ -148,16 +149,41 @@ public class Settings implements Runnable{
 		//Sets a certain value
 		case "set":
 			if(raw.length == 3){
-				if(floats.containsKey(raw[1])){
+				if(raw[1].equals("player_count")){
+					if(!DisplayControl.isCurrentStage(DisplayControl.STAGE_OVERWORLD)){
+						try{
+							int val = Integer.valueOf(raw[2]);
+							ArrayList<Player> player = new ArrayList<Player>();
+							
+							for(int i = 0; i<val; i++){
+								if(i > User.size()-1){
+									player.add(new Player(0,0));
+								}else{
+									player.add(User.get(i));
+								}
+							}
+							
+							User = player;
+						}catch(NumberFormatException e){
+							System.out.println(raw[2] + " is not an integer.");
+						}
+						
+					}else{
+						System.out.println("Cannot change player count in overworld.");
+						
+					}
+				}else if(floats.containsKey(raw[1])){
 					try{
 						float val = Float.valueOf(raw[2]);
 						floats.put(raw[1], val);
 					}catch(NumberFormatException e){
 						System.out.println(raw[2] + " is not a float.");
 					}
+					
 				}else{
 					System.out.println("Variable " + raw[1] + " does not exist.");
 				}
+				
 			}else{
 				System.out.println("Usage: set <variable> <value>");
 			}

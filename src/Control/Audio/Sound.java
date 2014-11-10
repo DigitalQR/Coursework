@@ -59,7 +59,7 @@ public class Sound{
 						}
 						alive = false;
 						
-						for(Sound s: sounds){
+						for(Sound s: (List<Sound>) sounds.clone()){
 							s.cleanup();
 						}
 						

@@ -33,13 +33,20 @@ public class Player extends Entity{
 		super(new Vector3f(x,y,0f), new Vector3f(0.2f, 0.3f, 0.2f));
 		spawn();
 		
-		Collections.shuffle(Settings.playerColourProfiles);
-		Vector3f colour = Settings.playerColourProfiles.get(0);
-		RGBA[0] = colour.x;
-		RGBA[1] = colour.y;
-		RGBA[2] = colour.z;
-		RGBA[3] = 1;
-		Settings.playerColourProfiles.remove(colour);
+		if(Settings.playerColourProfiles.size() != 0){
+			Collections.shuffle(Settings.playerColourProfiles);
+			Vector3f colour = Settings.playerColourProfiles.get(0);
+			RGBA[0] = colour.x;
+			RGBA[1] = colour.y;
+			RGBA[2] = colour.z;
+			RGBA[3] = 1;
+			Settings.playerColourProfiles.remove(colour);
+		}else{
+			RGBA[0] = (float)Math.random();
+			RGBA[1] = (float)Math.random();
+			RGBA[2] = (float)Math.random();
+			RGBA[3] = 1;
+		}
 		
 		control = new ControlScheme();
 		this.addComponent(new Movement(control));
@@ -47,6 +54,14 @@ public class Player extends Entity{
 		health = new Health();
 		this.addComponent(health);
 	}	
+	
+	public void destroy(){
+		Settings.playerColourProfiles.add(new Vector3f(RGBA[0],RGBA[1],RGBA[2]));
+		if(control.GPID != -1){
+			Gamepad.getGamepad(control.GPID).assignToPlayer(-1);
+		}
+		Settings.User.remove(this);
+	}
 	
 	public float[] getRGBA(){
 		return RGBA.clone();
