@@ -2,6 +2,7 @@ package Entities.Tools;
 
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
+import Entities.Entity;
 import Entities.Assets.Damage;
 
 public class Health extends Component{
@@ -9,7 +10,7 @@ public class Health extends Component{
 	public Vector2f scale = new Vector2f(0.3f, 0.4f);
 	public float factor = 0.0f;
 	private float lastHitTime = 0;
-	private Entity lastHit = null;
+	public Entity lastHit = null;
 	private  float immuneTime = 100;
 	
 	public void reset(){
@@ -31,10 +32,11 @@ public class Health extends Component{
 				lastHitTime = currentTime;
 				lastHit = damage.getParent();
 				Damage.remove(damage);
-
-				float x = damage.getVelocity().x*(5f+factor)*scale.x;
-				float y = damage.getVelocity().y*(2f+factor)*scale.y;
 				
+				float x = damage.getDamageVelocity().x*(5f+factor)*scale.x;
+				float y = damage.getDamageVelocity().y*(2f+factor)*scale.y;
+				
+				e.stun(500+Math.round(factor*75));
 				e.setVelocity(new Vector3f(x, y, 0));
 			}
 		}

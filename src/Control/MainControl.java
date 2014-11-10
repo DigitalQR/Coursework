@@ -3,12 +3,14 @@ package Control;
 import java.util.concurrent.TimeUnit;
 
 import Tools.Maths.Toolkit;
-import Collision.SquareHitbox;
+import Collision.Hitbox;
+import Control.Audio.Sound;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
 import Debug.ErrorPopup;
 import Entities.Player;
 import Entities.Assets.Damage;
+import Entities.Assets.Shield;
 
 
 public class MainControl{
@@ -20,21 +22,31 @@ public class MainControl{
 	public static void main(String[] args){
 		Settings.setup();
 		Gamepad.setup();
+		Sound.setup();
 		setup();
 		new Thread(new DisplayControl()).start();
 		
 		while(!CloseRequest){
 			long StartTime = System.nanoTime();
+			Gamepad.pollPads();
+			
 			if(!Paused){
+				for(Hitbox hb: Settings.hb){
+					hb.update();
+				}
+				Damage.updateDamage();
+				Shield.updateShields();
+				
 				for(Player p: Settings.User){
 					p.update();
 				}
+				Camera.process();
+				
 			}
-			Damage.updateDamage();
-			
+
 			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
 				try{
-					TimeUnit.NANOSECONDS.sleep(1);
+					TimeUnit.NANOSECONDS.sleep(100000);
 				}catch(InterruptedException e){
 					ErrorPopup.createMessage(e, true);
 				}
@@ -54,11 +66,12 @@ public class MainControl{
 	}
 	
 	private static void setup(){
-		int scale = 8;
-		Settings.hb = SquareHitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
-
+		Settings.randomHitboxGen();
+		
 		Settings.User.add(new Player(0,0));
 		Settings.User.add(new Player(0,0));
+		
+		Gamepad.keyboard.assignToPlayer(0);
 		
 	}
 

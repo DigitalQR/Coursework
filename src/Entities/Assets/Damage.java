@@ -2,7 +2,8 @@ package Entities.Assets;
 
 import java.util.ArrayList;
 
-import Entities.Tools.Entity;
+import Control.Audio.Sound;
+import Entities.Entity;
 import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
@@ -11,7 +12,7 @@ import Tools.Maths.Vector3f;
 public class Damage extends Asset{
 
 	private static ArrayList<Damage> damage = new ArrayList<Damage>();
-	private static Animation cube = new Animation("Cube/Spin", 10);
+	public final static Animation CUBE = new Animation("Cube/Spin", 10);
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Damage> getDamageInfo(){
@@ -79,12 +80,14 @@ public class Damage extends Asset{
 	private Vector2f location;
 	private Vector2f size;
 	private Vector2f velocity = new Vector2f(0,0);
+	private Vector2f damageVelocity = new Vector2f(0,0);
 	private float birth;
 	private float life;
 	private float damageValue;
 	private boolean stuckToParent;
+	private Animation animation;
 	
-	public Damage(Vector2f location, Vector2f size, int life, float damageValue, Entity e, boolean stuckToParent){
+	public Damage(Vector2f location, Vector2f size, int life, float damageValue, Entity e, boolean stuckToParent, Animation animation, Sound sound){
 		this.location = location;
 		this.size = size;
 		this.parent = e;
@@ -92,14 +95,25 @@ public class Damage extends Asset{
 		this.life = life;
 		this.damageValue = damageValue;
 		this.stuckToParent = stuckToParent;
+		this.animation = animation;
+		sound.play();
+		update();
+	}
+	
+	public void resetLife(){
+		this.birth = System.nanoTime();
+	}
+	
+	public void setParent(Entity e){
+		this.parent = e;
 	}
 	
 	public Model getModel(){
-		Model m = cube.getCurrentFrame();
-		m.setLocation(new Vector3f(velocity.x+location.x+size.x/2, velocity.y+location.y-size.y, 0));
+		Model m = animation.getCurrentFrame();
+		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y, 0));
 		float[] colour = {0,1,0};
 		m.setRGBA(colour[0], colour[1], colour[2], 1);
-		m.scaleBy(10);
+		m.scaleBy(12);
 		
 		return m;
 	}
@@ -110,6 +124,14 @@ public class Damage extends Asset{
 	
 	public float getDamageValue(){
 		return damageValue;
+	}
+	
+	public Vector2f getDamageVelocity() {
+		return damageVelocity;
+	}
+
+	public void setDamageVelocity(Vector2f velocity) {
+		this.damageVelocity = velocity;
 	}
 	
 	public Vector2f getVelocity() {
@@ -142,11 +164,12 @@ public class Damage extends Asset{
 
 	public void update(){
 		if(stuckToParent){
-			location.x = parent.getLocation().x;
-			location.y = parent.getLocation().y;
+			location.x = parent.getLocation().x+velocity.x;
+			location.y = parent.getLocation().y+velocity.y;
+		}else{
+			location.x+=velocity.x;
+			location.y+=velocity.y;
 		}
-		location.x+=velocity.x;
-		location.y+=velocity.y;
 	}
 
 	public boolean touching(Vector2f point){

@@ -44,6 +44,12 @@ public class Model {
 		}
 	}
 	
+	public void translate(Vector3f v){
+		this.location.x += v.x;
+		this.location.y += v.y;
+		this.location.z += v.z;
+	}
+	
 	public float[] getNormals() {
 		return normal;
 	}

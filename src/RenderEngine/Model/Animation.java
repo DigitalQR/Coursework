@@ -4,6 +4,7 @@ import java.io.File;
 
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
+import Tools.Maths.Vector3f;
 
 public class Animation{
 
@@ -11,6 +12,8 @@ public class Animation{
 	private int length = 0;
 	private float lastUpdate = 0;
 	private int delay = 0;
+	private float scale = 1;
+	private Vector3f location = new Vector3f(0,0,0); 
 	
 	private int[] indices;
 	private float[] textureCoords;
@@ -39,6 +42,27 @@ public class Animation{
 			vertices[i] = strip[i].getVertices();
 			normals[i] = strip[i].getNormals();
 		}
+	}
+	
+	public Animation(float[][] vertices, float[] textureCoords, int[] indices, float[][] normals){
+		this.vertices = vertices;
+		this.textureCoords = textureCoords;
+		this.indices = indices;
+		this.normals = normals;
+	}
+	
+	public void scaleBy(float scale){
+		this.scale = scale;
+	}
+	
+	public void setLocation(Vector3f loc){
+		this.location = loc;
+	}
+	
+	public void translate(Vector3f loc){
+		this.location.x += loc.x;
+		this.location.y += loc.y;
+		this.location.z += loc.z;
 	}
 	
 	public void setDelay(int i){
@@ -94,6 +118,10 @@ public class Animation{
 			normal[i] = Toolkit.LERP(n1, n2, currentTime);
 		}
 		
-		return new Model(vertex, textureCoords.clone(), indices.clone(), normal);
+		Model m = new Model(vertex, textureCoords.clone(), indices.clone(), normal);
+		m.scaleBy(scale);
+		m.setLocation(location);
+		
+		return m;
 	}
 }

@@ -22,13 +22,13 @@ public class DisplayControl implements Runnable{
 	public static boolean exists = false;
 	
 	private static void start(){
-		DisplayManager.create(false);
+		DisplayManager.create();
 		setupOpenGL();
 		setupLighting();
 		setupStages();
 	}
 	
-	private static float r = 0.1f, g = 0.1f, b = 0.3f;
+	public static float r = 0.1f, g = 0.1f, b = 0.3f;
 	private static float[] RGBA = {0f,0f,0f,1f};
 	
 	public static float[] getRGBA(){
@@ -50,7 +50,6 @@ public class DisplayControl implements Runnable{
 		r+=0.01f*speed;
 		g+=0.015f*speed;
 		b+=0.02f*speed;
-		
 		
 		RGBA[0] = Toolkit.Modulus((float)Math.sin(r));
 		RGBA[1] = Toolkit.Modulus((float)Math.sin(g));
@@ -118,10 +117,12 @@ public class DisplayControl implements Runnable{
 	STAGE_MENU = 1,
 	STAGE_TEST = 3;
 
-	private static Stage[] stage;
+	public static Stage[] stage;
 	private static int STAGE_Current = STAGE_MENU;
 	
 	public static void setStage(int i){
+		stage[STAGE_Current].switchFromUpdate();
+		stage[i].switchToUpdate();
 		STAGE_Current = i;
 	}
 	

@@ -5,39 +5,49 @@ import java.util.Collections;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
-import org.newdawn.slick.opengl.Texture;
 
+import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Input.Gamepad;
 import Entities.Tools.Attack;
 import Entities.Tools.ControlScheme;
-import Entities.Tools.Entity;
 import Entities.Tools.Health;
 import Entities.Tools.Movement;
-import RenderEngine.textureLoader;
 import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
-import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 
 public class Player extends Entity{
 	
 	private ControlScheme control;
+	public Health health;
 	
-	private float LastUpdate = 0;
-	private Vector3f LastLocation = new Vector3f(0,0,0);
-	private static Texture PlaneTexture;
-	private Health health;
+	private float[] RGBA = new float[4];
 
 	private static Animation spawn;
 	
 	public Player(float x, float y){
 		super(new Vector3f(x,y,0f), new Vector3f(0.2f, 0.3f, 0.2f));
 		spawn();
+		
+		if(Settings.playerColourProfiles.size() != 0){
+			Collections.shuffle(Settings.playerColourProfiles);
+			Vector3f colour = Settings.playerColourProfiles.get(0);
+			RGBA[0] = colour.x;
+			RGBA[1] = colour.y;
+			RGBA[2] = colour.z;
+			RGBA[3] = 1;
+			Settings.playerColourProfiles.remove(colour);
+		}else{
+			RGBA[0] = (float)Math.random();
+			RGBA[1] = (float)Math.random();
+			RGBA[2] = (float)Math.random();
+			RGBA[3] = 1;
+		}
 		
 		control = new ControlScheme();
 		this.addComponent(new Movement(control));
@@ -46,19 +56,52 @@ public class Player extends Entity{
 		this.addComponent(health);
 	}	
 	
+	public void destroy(){
+		Settings.playerColourProfiles.add(new Vector3f(RGBA[0],RGBA[1],RGBA[2]));
+		if(control.GPID != -1){
+			Gamepad.getGamepad(control.GPID).assignToPlayer(-1);
+		}
+		Settings.User.remove(this);
+	}
+	
+	public float[] getRGBA(){
+		return RGBA.clone();
+	}
+	
 	public float getFactor(){
 		return health.factor;
 	}
 	
+	private float IDLETime = -1;
+	public boolean isPlayerIDLE(){
+		boolean x = this.LastLocation.x == this.getLocation().x;
+		boolean y = this.LastLocation.y == this.getLocation().y;
+		
+		
+		
+		if(IDLETime == -1){
+			if(x && y){
+				IDLETime = System.nanoTime();
+			}
+		}else if(!x || !y){
+			IDLETime = -1;
+		}else{
+			if((System.nanoTime()-IDLETime)/1000000 >= 3000){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private void spawn(){
 		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
-		List<SquareHitbox> hitbox = new ArrayList<SquareHitbox>();
-		for(SquareHitbox hb: Settings.hb){
+		List<Hitbox> hitbox = new ArrayList<Hitbox>();
+		for(Hitbox hb: Settings.hb){
 			hitbox.add(hb);
 		}
 		Collections.shuffle(hitbox);
 		
-		Main : for(SquareHitbox hb: hitbox){
+		Main : for(Hitbox hb: hitbox){
 			float x = hb.getLocation().x+hb.getSize().x/2;
 			float y = hb.getLocation().y+this.getSize().y;
 			for(;;y+=0.1f){
@@ -66,7 +109,7 @@ public class Player extends Entity{
 					continue Main;
 				}else{
 					boolean intersects = false;
-					for(SquareHitbox h: hitbox){
+					for(Hitbox h: hitbox){
 						if(h.AreaIntersect(new Vector2f(x,y), new Vector2f(this.getSize().x, this.getSize().y))){
 							intersects = true;
 						}
@@ -82,12 +125,7 @@ public class Player extends Entity{
 	}
 	
 	public static void loadResources(){
-		PlaneTexture = textureLoader.loadTexture("Model/TornTest");
 		spawn = new Animation("Cube/Spin", 100);
-	}
-	
-	public void setControlScheme(int up, int down, int left, int right, int jump, int duck, int primary, int secondary, int start){
-		control.setControlScheme(up, down, left, right, jump, duck, primary, secondary, start);
 	}
 	
 	public void setControlScheme(int GPID){
@@ -109,7 +147,7 @@ public class Player extends Entity{
 	public void update(){
 		Vector3f location = this.getLocation();
 		LastLocation = new Vector3f(location.x, location.y, location.z);
-		LastUpdate = System.nanoTime()-MainControl.UPS;
+		this.LastUpdate = System.nanoTime()-MainControl.UPS;
 		
 		if(!health.isDead){
 			this.updateComponents();
@@ -125,22 +163,6 @@ public class Player extends Entity{
 			health.kill();
 		}
 	}
-	
-	private Vector3f LERPLocation = this.getLocation();
-	
-	public void processLERPLocation(){
-		float LookupTime = System.nanoTime()-MainControl.UPS;
-		float CurrentTime = System.nanoTime();
-		Vector3f location = this.getLocation();
-		
-		float x = Toolkit.LERPValue(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
-		float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
-		LERPLocation = new Vector3f(x, y, location.z);
-	}
-	
-	public Vector3f getLERPLocation(){
-		return LERPLocation;
-	}
 
 	public Model getModel(){
 		Model m = spawn.getCurrentFrame();
@@ -155,7 +177,6 @@ public class Player extends Entity{
 	public Model getHitbox(){
 		Cubef temp1 = new Cubef(new Vector3f(0,0,0), new Vector3f(this.getSize().x, this.getSize().y, 0.2f+this.getSize().x));
 		Model m = new Model(temp1);
-		m.setTexture(PlaneTexture);
 		m.setLocation(getLERPLocation());
 		m.setRGBA(1, 1, 1, 0.3f);
 		return m;

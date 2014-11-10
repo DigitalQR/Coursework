@@ -22,7 +22,7 @@ public class GamepadSetupStage extends Stage{
 	
 	private final int TASK_UNASSIGNED = 0, TASK_DELETE = 1, TASK_ASSIGN = 2;
 	
-	public void prepare(Font font){
+	public GamepadSetupStage(Font font){
 		Gamepad[] pad = Gamepad.getGamepads();
 		Controller = new Button2f[pad.length];
 		ControllerTask = new Button2f[3][pad.length];
@@ -136,25 +136,25 @@ public class GamepadSetupStage extends Stage{
 					if(Gamepad.Pad[i].getProfileStatus()){						
 						if(current ==  TASK_DELETE){
 							task.setTexture(MenuStage.ButtonSelected);
-							task.setRGBA(1f, 0.5f, 0.5f, 1f);
+							task.setRGBA(1f, 0.2f, 0.2f, 1f);
 						}else{
 							task.setTexture(MenuStage.ButtonSelected);
 						}
 					}else{
 						task.setTexture(MenuStage.ButtonSelected);
-						task.setRGBA(0.5f, 1f, 0.5f, 1f);
+						task.setRGBA(0.2f, 1f, 0.2f, 1f);
 					}
 				}else{
 					if(Gamepad.Pad[i].getProfileStatus()){
 						if(current ==  TASK_DELETE){
 							task.setTexture(MenuStage.Button);
-							task.setRGBA(1f, 0.5f, 0.5f, 1f);
+							task.setRGBA(1f, 0.2f, 0.2f, 1f);
 						}else{
 							task.setTexture(MenuStage.Button);
 						}
 					}else{
 						task.setTexture(MenuStage.Button);
-						task.setRGBA(0.5f, 1f, 0.5f, 1f);
+						task.setRGBA(0.2f, 1f, 0.2f, 1f);
 					}
 				}
 				Renderer.render(task);
@@ -243,6 +243,12 @@ public class GamepadSetupStage extends Stage{
 			assign = -1;
 		}
 		
+	}
+
+	public void switchToUpdate(){
+	}
+
+	public void switchFromUpdate(){
 	}
 
 }
