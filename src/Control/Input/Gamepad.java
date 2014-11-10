@@ -28,6 +28,14 @@ public class Gamepad{
 		return Pad;
 	}
 	
+	public static void pollPads(){
+		for(Gamepad p: Pad){
+			if(p.assignedPlayer != -1){
+				p.poll();
+			}
+		}
+	}
+	
 	public static void setup(){
 		ControllerEnvironment CE = ControllerEnvironment.getDefaultEnvironment();
 		Controller[] Controllers = CE.getControllers();
@@ -177,10 +185,11 @@ public class Gamepad{
 	}
 	
 	public boolean isButtonPressed(int ID){
-		poll();
-		if(Key[ID].getState() == Raw[Key[ID].getID()]){
-			return true;
-		}
+		try{
+			if(Key[ID].getState() == Raw[Key[ID].getID()]){
+				return true;
+			}
+		}catch(NullPointerException e){}
 		return false;
 	}
 	

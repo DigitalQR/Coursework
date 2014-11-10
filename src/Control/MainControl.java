@@ -27,6 +27,8 @@ public class MainControl{
 		
 		while(!CloseRequest){
 			long StartTime = System.nanoTime();
+			Gamepad.pollPads();
+			
 			if(!Paused){
 				Damage.updateDamage();
 				Shield.updateShields();
