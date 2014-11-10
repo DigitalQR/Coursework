@@ -309,10 +309,10 @@ public class OverworldStage extends Stage{
 
 		//Draw boundary
 		Cubef[] sides = {
-				new Cubef(new Vector3f(-1000,-1000,1.3f), new Vector3f(Settings.boundary.getLocation().x,1000,1.3f)),
-				new Cubef(new Vector3f(-1000,-1000,1.2f), new Vector3f(1000,Settings.boundary.getLocation().y,1.2f)),
-				new Cubef(new Vector3f(Settings.boundary.getLocation().x+Settings.boundary.getSize().x, -1000, 1.1f), new Vector3f(1000,1000,1.1f)),
-				new Cubef(new Vector3f(-1000,Settings.boundary.getLocation().y+Settings.boundary.getSize().y,1f), new Vector3f(1000,1000,1f))
+				new Cubef(new Vector3f(-1000,-1000,0.3f), new Vector3f(Settings.boundary.getLocation().x,1000,0.3f)),
+				new Cubef(new Vector3f(-1000,-1000,0.2f), new Vector3f(1000,Settings.boundary.getLocation().y,0.2f)),
+				new Cubef(new Vector3f(Settings.boundary.getLocation().x+Settings.boundary.getSize().x, -1000, 0.1f), new Vector3f(1000,1000,0.1f)),
+				new Cubef(new Vector3f(-1000,Settings.boundary.getLocation().y+Settings.boundary.getSize().y,0f), new Vector3f(1000,1000,0f))
 		};
 		
 		for(Cubef c: sides){

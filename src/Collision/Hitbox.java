@@ -34,38 +34,13 @@ public abstract class Hitbox{
 		return size;
 	}
 	
-	public boolean PointIntersect(Vector2f point){
-		float x = Math.round(location.x*100);
-		float y = Math.round(location.y*100);
-		float width = Math.round(size.x*100);
-		float height = Math.round(size.y*100);
-		if(point.x >= x && point.x <= x+width && point.y >= y && point.y <= y+height){
-			return true;
-		}
-		return false;
-	}
-	
 	public boolean AreaIntersect(Vector2f a, Vector2f s){
-		float X = Math.round(a.x*100);
-		float Y = Math.round(a.y*100);
-		float WIDTH = Math.round(s.x*100);
-		float HEIGHT = Math.round(s.y*100);
-		float x = Math.round(location.x*100);
-		float y = Math.round(location.y*100);
-		float width = Math.round(size.x*100);
-		float height = Math.round(size.y*100);
+		Vector2f at = new Vector2f(location.x, location.y);
+		Vector2f ab = new Vector2f(location.x+size.x, location.y+size.y);
+		Vector2f bt = new Vector2f(a.x, a.y);
+		Vector2f bb = new Vector2f(a.x+s.x, a.y+s.y);
 		
-		if(PointIntersect(new Vector2f(X, Y)) || PointIntersect(new Vector2f(X+WIDTH, Y)) || PointIntersect(new Vector2f(X, Y+HEIGHT)) || PointIntersect(new Vector2f(X+WIDTH, Y+HEIGHT))){
-			return true;
-		}
-		if((x >= X && x <= X+WIDTH && y >= Y && y <= Y+HEIGHT ) || 
-		   (x+width >= X && x+width <= X+WIDTH && y >= Y && y <= Y+HEIGHT ) || 
-		   (x >= X && x <= X+WIDTH && y+height >= Y && y+height <= Y+HEIGHT ) || 
-		   (x+width >= X && x+width <= X+WIDTH && y+height >= Y && y+height <= Y+HEIGHT )){
-			return true;
-		}
-		
-		return false;
+		return !(Math.round(ab.x*100) < Math.round(bt.x*100) || Math.round(bb.x*100)  < Math.round(at.x*100)  || Math.round(ab.y*100)  < Math.round(bt.y*100)  || Math.round(bb.y*100)  < Math.round(at.y*100) );
 	}
 
 	public static List<Hitbox> RandomGeneration(int n, int x, int y, int Width, int Height, int MinSize, int MaxSize){
