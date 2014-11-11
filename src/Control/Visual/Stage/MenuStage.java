@@ -3,11 +3,13 @@ package Control.Visual.Stage;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
+import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
 import Control.Visual.DisplayControl;
 import Control.Visual.Font;
 import Control.Visual.Menu.Button2f;
+import Control.Visual.Menu.Assets.TextBox;
 import Entities.Player;
 import RenderEngine.textureLoader;
 import RenderEngine.Renderer;
@@ -60,13 +62,15 @@ public class MenuStage extends Stage{
 	private static Player player;
 	
 	public void update(){
+        
+		Camera.setLocation(-7.7f, -7.5f, -10);
+		Camera.focus();
+		
 		Model m = player.getModel();
 		m.scaleBy(20);
 		m.setLocation(new Vector3f(4, -7, -15));
 		m.setTexture(Button);
         Renderer.render(m);
-        
-		GL11.glTranslatef(-7.7f, -7.5f, -10);
 
 		MainDraw();
 		
@@ -107,6 +111,7 @@ public class MenuStage extends Stage{
 	}
 	
 	private void MainDraw(){
+		
 		//Version number
 		font.drawText("Version: " + Settings.Version, new Vector3f(-0.5f,-0.3f,0), 0.04f, 7f);
 		

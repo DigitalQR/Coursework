@@ -165,7 +165,7 @@ public class DisplayControl implements Runnable{
 		    	Location.flip();
 		    	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
 			}else{
-				GL11.glDisable(GL11.GL_LIGHTING);
+				//GL11.glDisable(GL11.GL_LIGHTING);
 			}
 			
 			stage[STAGE_Current].update();

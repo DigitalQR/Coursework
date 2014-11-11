@@ -15,6 +15,7 @@ import Control.Settings;
 import Control.Audio.Sound;
 import Control.Visual.DisplayControl;
 import Control.Visual.Font;
+import Control.Visual.Menu.Assets.TextBox;
 import Entities.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
@@ -84,7 +85,11 @@ public class OverworldStage extends Stage{
 		
 		Camera.processLERP();
 		Vector3f camLocation = new Vector3f(Camera.getLERPLocation().x, Camera.getLERPLocation().y, Camera.getLERPLocation().z);
-		GL11.glTranslatef(camLocation.x, camLocation.y, camLocation.z);
+		Camera.focus();
+		
+
+		TextBox tb = new TextBox(new Vector3f(0,0,-10), new Vector3f(7,7,0.5f), "Test", "This is a test description that\nI am going to have to manage.");
+		tb.draw();
 		
 		//Draw HUD
 		if(winner == -1){
@@ -161,7 +166,7 @@ public class OverworldStage extends Stage{
 					yOffset = 0;
 					break;
 				}
-				
+
 				Vector3f location = new Vector3f(-camLocation.x-1.6f+xOffset, -camLocation.y+1.5f+yOffset, -camLocation.z-2f);
 				Vector3f shadowLocation = new Vector3f(-camLocation.x-1.606f+xOffset, -camLocation.y+1.506f+yOffset, -camLocation.z-2.0001f);
 				

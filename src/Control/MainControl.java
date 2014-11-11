@@ -29,7 +29,6 @@ public class MainControl{
 		while(!CloseRequest){
 			long StartTime = System.nanoTime();
 			Gamepad.pollPads();
-			
 			if(!Paused){
 				for(Hitbox hb: Settings.hb){
 					hb.update();

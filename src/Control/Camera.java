@@ -3,6 +3,8 @@ package Control;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import Control.Visual.Stage.OverworldStage;
 import Entities.Player;
 import Tools.Maths.Toolkit;
@@ -19,10 +21,14 @@ public class Camera {
 	private static float LastUpdate = 0;
 	private static float cameraDepthLimit = 5f;
 	
-	public static void setLocation(int x, int y, int z){
+	public static void setLocation(float x, float y, float z){
 		Location.x = x;
 		Location.y = y;
 		Location.z = z;
+	}
+
+	public static void focus(){
+		GL11.glTranslatef(LERPLocation.x, LERPLocation.y, LERPLocation.z);
 	}
 	
 	public static Vector3f getLocation(){
@@ -48,7 +54,7 @@ public class Camera {
 		}
 	}
 	
-	public static void process(){		
+	public static void process(){
 		LastUpdate = System.nanoTime()-MainControl.UPS;
 		
 		@SuppressWarnings("unchecked")
