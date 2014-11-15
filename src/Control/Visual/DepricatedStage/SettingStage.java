@@ -1,4 +1,4 @@
-package Control.Visual.Stage;
+package Control.Visual.DepricatedStage;
 
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;

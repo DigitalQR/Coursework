@@ -1,4 +1,6 @@
-package Control.Visual.Stage;
+package Control.Visual.DepricatedStage;
+
+import java.util.ArrayList;
 
 public abstract class Stage {
 	

@@ -1,11 +1,11 @@
 package Control;
 
-
+import java.nio.FloatBuffer;
 import java.util.List;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import Control.Visual.Stage.OverworldStage;
 import Entities.Player;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
@@ -17,14 +17,56 @@ public class Camera {
 	private static Vector3f LastLocation = new Vector3f(0,0,-10f);
 	private static Vector3f LERPLocation = new Vector3f(0,0,-10f);
 	private static Vector3f Location = new Vector3f(0,0,-10f);
+	private static float LERPTime = 0;
 	
 	private static float LastUpdate = 0;
 	private static float cameraDepthLimit = 5f;
+	
+	public static float r = 0.5f, g = 1f, b = 0.5f;
+	private static float[] RGBA = {0f,0f,0f,1f};
+	
+	public static float[] getRGBA(){
+		return RGBA;
+	}
+
+	public static float[] getInverseRGBA(){
+		float[] RGBA = getRGBA().clone();
+		for(int i = 0; i<3; i++){
+			RGBA[i] = 1f - RGBA[i];
+
+		}
+		return RGBA;
+	}
+	
+	public static void incrementRandomLighting(){
+		float speed = Settings.floats.get("s_light_deviation");
+		r+=0.01f*speed;
+		g+=0.015f*speed;
+		b+=0.02f*speed;
+		
+		RGBA[0] = Toolkit.Modulus((float)Math.sin(r));
+		RGBA[1] = Toolkit.Modulus((float)Math.sin(g));
+		RGBA[2] = Toolkit.Modulus((float)Math.sin(b));
+		
+		for(int i = 0; i<3; i++){
+			if(RGBA[i] > 0.7f){
+				RGBA[i] = 0.7f;
+			}
+		}
+	}
 	
 	public static void setLocation(float x, float y, float z){
 		Location.x = x;
 		Location.y = y;
 		Location.z = z;
+	}
+	
+	public static void setLERPTime(){
+		LERPTime = System.nanoTime()-MainControl.UPS;
+	}
+	
+	public static float getLERPTime(){
+		return LERPTime;
 	}
 
 	public static void focus(){
@@ -40,8 +82,17 @@ public class Camera {
 	}
 	
 	public static void processLERP(){
+		setLERPTime();
+		
+		@SuppressWarnings("unchecked")
+		List<Player> User = (List<Player>) Settings.User.clone();
+		
+		for(Player p: User){
+			p.processLERPLocation();
+		}
+		
 		if(Settings.toggles.get("s_lerp")){
-			float LookupTime = OverworldStage.getLERPTime();
+			float LookupTime = LERPTime;
 			float CurrentTime = System.nanoTime();
 			Vector3f location = new Vector3f(Location.x, Location.y, Location.z);
 			
@@ -52,6 +103,18 @@ public class Camera {
 		}else{
 			LERPLocation = new Vector3f(Location.x, Location.y, Location.z);
 		}
+		
+		//Light position
+		FloatBuffer Location = BufferUtils.createFloatBuffer(16);
+        Location.put(new float[]{-LERPLocation.x, -LERPLocation.y , 3,1});
+        Location.flip();
+        GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
+        
+		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
+		float[] RGBA = getRGBA().clone();
+		Ambient.put(new float[]{RGBA[0], RGBA[1], RGBA[2], RGBA[3]});
+        Ambient.flip();
+        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
 	}
 	
 	public static void process(){
@@ -59,6 +122,7 @@ public class Camera {
 		
 		@SuppressWarnings("unchecked")
 		List<Player> User = (List<Player>) Settings.User.clone();
+		
 		LastLocation = new Vector3f(Location.x, Location.y, Location.z);
 		Vector3f location = new Vector3f(Location.x, Location.y, Location.z);
 		

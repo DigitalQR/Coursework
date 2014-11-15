@@ -8,13 +8,12 @@ import java.util.Scanner;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
-import Control.Visual.DisplayControl;
 import Control.Visual.DisplayManager;
 import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.1.2D <UI overhaul>";
+	public static final String Version = "1.1.2 <UI overhaul>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -62,7 +61,7 @@ public class Settings implements Runnable{
 			floats.put(s, 0f);
 		}
 
-		floats.put("s_light_deviation", 0.25f);
+		floats.put("s_light_deviation", 1f);
 		floats.put("s_volume", 0.8f);
 		
 		new Thread(new Settings()).start();
@@ -150,7 +149,8 @@ public class Settings implements Runnable{
 		case "set":
 			if(raw.length == 3){
 				if(raw[1].equals("player_count")){
-					if(!DisplayControl.isCurrentStage(DisplayControl.STAGE_OVERWORLD)){
+					//TODO If the stage is correct
+					if(true){
 						try{
 							int val = Integer.valueOf(raw[2]);
 							ArrayList<Player> player = new ArrayList<Player>();
@@ -192,7 +192,7 @@ public class Settings implements Runnable{
 		case "reset_stage":
 			if(raw.length == 1){
 				randomHitboxGen();
-				DisplayControl.stage[DisplayControl.STAGE_OVERWORLD].prepare();
+				//TODO Re-intialise the overworld stage
 			}else{
 				System.out.println("Usage: reset_stage");
 			}

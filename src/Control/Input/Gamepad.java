@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import Tools.String.Parametres;
 import Control.Settings;
-import Control.Visual.Stage.MenuStage;
+import Control.Visual.DepricatedStage.MenuStage;
 import Debug.ErrorPopup;
 import Entities.Player;
 import net.java.games.input.Component;

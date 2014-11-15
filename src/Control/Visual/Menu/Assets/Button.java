@@ -13,6 +13,7 @@ public class Button extends Component{
 	private float[] colour = {1,1,1,1};
 	private String message;
 	private Texture texture;
+	private float textSize = 0.06f;
 	
 	public Button(Vector3f location, Vector3f size, String message){
 		super(location, size);
@@ -54,13 +55,18 @@ public class Button extends Component{
 	public void setColour(float[] colour) {
 		this.colour = colour;
 	}
+	
+	public void setTextSize(float textSize){
+		this.textSize = textSize;
+	}
 
 	private Cubef getCube(){
+		Vector3f location = this.getLERPHUDLocation();
 		Cubef cube = new Cubef(new Vector3f(location.x, location.y, location.z), new Vector3f(location.x+size.x, location.y+size.y, location.z+size.z));
 		return cube;
 	}
 	
-	public void draw(){
+	public void updateUI(){
 		Model m = new Model(getCube());
 		m.setRGBA(colour[0], colour[1], colour[2], colour[3]);
 		
@@ -69,12 +75,12 @@ public class Button extends Component{
 		}
 		Renderer.render(m);
 		
+		Vector3f location = this.getLERPHUDLocation();
 		text.setRGBA(0, 0, 0, 1);
-		text.drawText(message, new Vector3f(location.x, location.y+size.y/3, location.z+size.z+0.001f), 0.03f, 7f);
+		text.drawText(message, new Vector3f(location.x, location.y+size.y/2, location.z+size.z+0.001f), size.y*(textSize/7), 7f);
 	}
 
-	protected void update(){
-		this.runAction();
+	protected void process(){
 	}
 
 }

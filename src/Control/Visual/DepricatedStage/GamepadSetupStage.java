@@ -1,4 +1,4 @@
-package Control.Visual.Stage;
+package Control.Visual.DepricatedStage;
 
 import Control.Settings;
 import Control.Input.Gamepad;

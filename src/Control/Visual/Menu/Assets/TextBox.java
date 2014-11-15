@@ -1,14 +1,11 @@
 package Control.Visual.Menu.Assets;
 
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
 import RenderEngine.Renderer;
-import RenderEngine.Stencil;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
-import Control.Camera;
 import Control.Visual.Menu.Assets.Core.Component;
 
 public class TextBox extends Component{
@@ -22,6 +19,8 @@ public class TextBox extends Component{
 	private Texture contentTexture;
 	private boolean headerEnabled = true;
 	private boolean contentEnabled = true;
+	private float headerTextSize = 0.1f;
+	private float contentTextSize = 0.03f;
 	
 	
 	public TextBox(Vector3f location, Vector3f size, String header, String content){
@@ -29,6 +28,12 @@ public class TextBox extends Component{
 		this.header = header;
 		this.content = content;
 		this.headerHeight = size.y*0.15f;
+		
+		if(header == null){
+			disableHeader();
+		}if(content == null){
+			disableContent();
+		}
 	}
 	
 	public String getHeader() {
@@ -84,28 +89,30 @@ public class TextBox extends Component{
 	}
 
 	public void setHeaderHeight(float headerHeight) {
-		this.headerHeight = headerHeight;
+		this.headerHeight = size.y*headerHeight;
+	}
+	
+	public void setHeaderTextSize(float size){
+		this.headerTextSize = size;
+	}
+	
+	public void setContentTextSize(float size){
+		this.contentTextSize = size;
 	}
 
-	protected void update(){
-		this.runAction();
+	protected void process(){
+		
 	}
 
 
 	private Cubef getHeaderCube(){
-		Vector3f location = new Vector3f(this.location.x, this.location.y, this.location.z);
-		location.x -= Camera.getLERPLocation().x;
-		location.y -= Camera.getLERPLocation().y;
-		location.z -= Camera.getLERPLocation().z;
+		Vector3f location = this.getLERPHUDLocation();
 		Cubef cube = new Cubef(new Vector3f(location.x, location.y+size.y-headerHeight, location.z), new Vector3f(location.x+size.x, location.y+size.y+headerHeight, location.z+size.z));
 		return cube;
 	}
 
 	private Cubef getContentCube(){
-		Vector3f location = new Vector3f(this.location.x, this.location.y, this.location.z);
-		location.x -= Camera.getLERPLocation().x;
-		location.y -= Camera.getLERPLocation().y;
-		location.z -= Camera.getLERPLocation().z;
+		Vector3f location = this.getLERPHUDLocation();
 		Cubef cube = new Cubef(new Vector3f(location.x, location.y, location.z), new Vector3f(location.x+size.x, location.y+size.y-headerHeight-0.1f, location.z+size.z));
 		return cube;
 	}
@@ -119,7 +126,7 @@ public class TextBox extends Component{
 		contentEnabled = false;
 	}
 	
-	public void draw(){
+	public void updateUI(){
 		if(headerEnabled){
 			Model h = new Model(getHeaderCube());
 			h.setRGBA(headerColour[0], headerColour[1], headerColour[2], headerColour[3]);
@@ -131,7 +138,7 @@ public class TextBox extends Component{
 			
 			Vector3f location = getHeaderCube().getLocation();
 			text.setRGBA(0, 0, 0, 1);
-			text.drawText(header, new Vector3f(location.x, location.y+size.y/8, location.z+size.z+0.001f), size.y*(0.1f/7), 7f);
+			text.drawText(header, new Vector3f(location.x, location.y+size.y/8, location.z+size.z+0.001f), size.y*(headerTextSize/7), 7f);
 		}
 		
 		if(contentEnabled){
@@ -144,7 +151,7 @@ public class TextBox extends Component{
 			Renderer.render(c);
 			Vector3f location = getContentCube().getLocation();
 			text.setRGBA(0, 0, 0, 1);
-			text.drawText(content, new Vector3f(location.x, location.y+size.y-headerHeight-0.5f, location.z+size.z+0.001f), size.y*(0.03f/7), 7f);
+			text.drawText(content, new Vector3f(location.x, location.y+getContentCube().getSize().y-size.y*(0.03f/7)*10, location.z+size.z+0.001f), size.y*(contentTextSize/7), 7f);
 		}
 	}
 

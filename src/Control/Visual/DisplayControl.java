@@ -7,15 +7,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-import Control.Camera;
 import Control.MainControl;
 import Control.Settings;
-import Control.Visual.Stage.MenuStage;
-import Control.Visual.Stage.OverworldStage;
-import Control.Visual.Stage.Stage;
+import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 import RenderEngine.Renderer;
-import Tools.Maths.Toolkit;
 
 public class DisplayControl implements Runnable{
 	
@@ -25,45 +21,7 @@ public class DisplayControl implements Runnable{
 		DisplayManager.create();
 		setupOpenGL();
 		setupLighting();
-		setupStages();
-	}
-	
-	public static float r = 0.1f, g = 0.1f, b = 0.3f;
-	private static float[] RGBA = {0f,0f,0f,1f};
-	
-	public static float[] getRGBA(){
-		return RGBA;
-	}
-
-	public static float[] getInverseRGBA(){
-		float[] RGBA = getRGBA().clone();
-		for(int i = 0; i<3; i++){
-			RGBA[i] = 1f - RGBA[i];
-
-		}
-		return RGBA;
-	}
-	
-	private static void incrementRandomLighting(){
-		FloatBuffer Ambient = BufferUtils.createFloatBuffer(16);
-		float speed = Settings.floats.get("s_light_deviation");
-		r+=0.01f*speed;
-		g+=0.015f*speed;
-		b+=0.02f*speed;
-		
-		RGBA[0] = Toolkit.Modulus((float)Math.sin(r));
-		RGBA[1] = Toolkit.Modulus((float)Math.sin(g));
-		RGBA[2] = Toolkit.Modulus((float)Math.sin(b));
-		
-		for(int i = 0; i<3; i++){
-			if(RGBA[i] > 0.7f){
-				RGBA[i] = 0.7f;
-			}
-		}
-		
-		Ambient.put(new float[]{RGBA[0], RGBA[1], RGBA[2], RGBA[3]});
-        Ambient.flip();
-        GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, Ambient);
+		Stage.setupStages();
 	}
 	
 	private static void setupLighting(){
@@ -82,13 +40,6 @@ public class DisplayControl implements Runnable{
         
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glColorMaterial(GL11.GL_FRONT, GL11.GL_DIFFUSE);
-
-        r = Toolkit.RandomInt(30, 100);
-        r /= 100;
-        g = Toolkit.RandomInt(30, 100);
-        g /= 100;
-        b = Toolkit.RandomInt(30, 100);
-        b /= 100;
 	}
 	
 	private static void setupOpenGL(){
@@ -111,45 +62,15 @@ public class DisplayControl implements Runnable{
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
-		
-	public static final int
-	STAGE_OVERWORLD = 0,
-	STAGE_MENU = 1,
-	STAGE_TEST = 3;
-
-	public static Stage[] stage;
-	private static int STAGE_Current = STAGE_MENU;
-	
-	public static void setStage(int i){
-		stage[STAGE_Current].switchFromUpdate();
-		stage[i].switchToUpdate();
-		STAGE_Current = i;
-	}
-	
-	public static boolean isCurrentStage(int i){
-		return STAGE_Current == i;
-	}
-	
-	private static void setupStages(){
-		stage = new Stage[2];
-		
-		stage[0] = new OverworldStage();
-		stage[1] = new MenuStage();
-	}
-
 	
 	public void run(){
 		start();
 		exists = true;
 		GLU.gluLookAt(0, 0, 0, 0.0f, 0.0f, -1.0f, 0, 1, 0);
-
-		for(int i = 0; i < stage.length; i++){
-			stage[i].prepare();
-		}
 		
 		Player.loadResources();
 		
-		while(!Display.isCloseRequested() && !MainControl.CloseRequest){
+		while(!Display.isCloseRequested() && !MainControl.CloseRequest){	        
 			Renderer.prepare();
 			
 			if(!Settings.toggles.get("d_wireframe")){
@@ -158,18 +79,7 @@ public class DisplayControl implements Runnable{
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 			}
 			
-			if(STAGE_Current == STAGE_OVERWORLD){
-				GL11.glEnable(GL11.GL_LIGHTING);
-				FloatBuffer Location = BufferUtils.createFloatBuffer(16);
-		    	Location.put(new float[]{Camera.getLocation().x,Camera.getLocation().y,10,1});
-		    	Location.flip();
-		    	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, Location);
-			}else{
-				//GL11.glDisable(GL11.GL_LIGHTING);
-			}
-			
-			stage[STAGE_Current].update();
-			incrementRandomLighting();
+			Stage.drawCurrentStage();
 			
 			processCamera();
 			DisplayManager.update();
