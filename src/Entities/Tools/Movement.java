@@ -190,7 +190,7 @@ public class Movement extends Component{
 			for(float y = 0; Toolkit.Modulus(y) <= Toolkit.Modulus(initialVely); y+= Toolkit.Sign(initialVely)*COLLISION_DEPTH){
 				if(insideHitbox(new Vector2f(location.x, location.y + y), new Vector2f(e.getSize().x, e.getSize().y))){
 					if(bounce && Toolkit.Modulus(y) > accelerationLimit.x/2 && e.stunned()){
-						afterY = -y-initialVely*0.9f;
+						afterY = -y-initialVely*0.3f;
 					}
 					
 				}else{

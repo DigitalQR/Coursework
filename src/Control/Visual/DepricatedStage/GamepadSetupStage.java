@@ -3,7 +3,6 @@ package Control.Visual.DepricatedStage;
 import Control.Settings;
 import Control.Input.Gamepad;
 import Control.Visual.Font;
-import Control.Visual.Menu.Button2f;
 import RenderEngine.Renderer;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;

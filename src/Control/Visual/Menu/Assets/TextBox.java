@@ -116,14 +116,23 @@ public class TextBox extends Component{
 		Cubef cube = new Cubef(new Vector3f(location.x, location.y, location.z), new Vector3f(location.x+size.x, location.y+size.y-headerHeight-0.1f, location.z+size.z));
 		return cube;
 	}
-	
+
 	public void disableHeader(){
 		headerHeight = 0;
 		headerEnabled = false;
 	}
 	
+	public void enableHeader(){
+		headerHeight = size.y*0.15f;
+		headerEnabled = true;
+	}
+
 	public void disableContent(){
 		contentEnabled = false;
+	}
+	
+	public void enableContent(){
+		contentEnabled = true;
 	}
 	
 	public void updateUI(){

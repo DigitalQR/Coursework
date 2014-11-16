@@ -9,4 +9,8 @@ public class Vector3f {
 		this.y = g;
 		this.z = h;
 	}
+	
+	public Vector3f clone(){
+		return new Vector3f(x,y,z);
+	}
 }

@@ -60,6 +60,8 @@ public class MainControl{
 		
 		Settings.User.add(new Player(0,0));
 		Settings.User.add(new Player(0,0));
+		Settings.User.add(new Player(0,0));
+		Settings.User.add(new Player(0,0));
 		
 		Gamepad.keyboard.assignToPlayer(0);
 		

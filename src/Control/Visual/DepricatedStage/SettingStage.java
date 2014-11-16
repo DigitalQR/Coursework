@@ -5,7 +5,6 @@ import RenderEngine.Model.Model;
 import Tools.Maths.Vector2f;
 import Control.Settings;
 import Control.Visual.Font;
-import Control.Visual.Menu.Button2f;
 import Entities.Player;
 
 public class SettingStage extends Stage{

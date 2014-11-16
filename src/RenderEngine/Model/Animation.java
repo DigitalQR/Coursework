@@ -59,6 +59,10 @@ public class Animation{
 		this.location = loc;
 	}
 	
+	public Vector3f getLocation(){
+		return location;
+	}
+	
 	public void translate(Vector3f loc){
 		this.location.x += loc.x;
 		this.location.y += loc.y;

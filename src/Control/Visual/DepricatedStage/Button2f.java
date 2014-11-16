@@ -1,4 +1,4 @@
-package Control.Visual.Menu;
+package Control.Visual.DepricatedStage;
 
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;

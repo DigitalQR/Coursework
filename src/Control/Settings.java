@@ -8,12 +8,15 @@ import java.util.Scanner;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
+import Control.Input.Gamepad;
 import Control.Visual.DisplayManager;
+import Control.Visual.Stage.OverworldStage;
+import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.1.2 <UI overhaul>";
+	public static final String Version = "1.1.3 <UI overhaul>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -47,6 +50,7 @@ public class Settings implements Runnable{
 		toggleNames.add("s_noclip");
 		toggleNames.add("s_lerp");
 		toggleNames.add("s_low_settings");
+		toggleNames.add("s_afk_names");
 		
 		for(String s: toggleNames){
 			toggles.put(s, false);
@@ -149,10 +153,17 @@ public class Settings implements Runnable{
 		case "set":
 			if(raw.length == 3){
 				if(raw[1].equals("player_count")){
-					//TODO If the stage is correct
-					if(true){
+					
+					if(Stage.getStage("menu").isCurrentStage()){
 						try{
 							int val = Integer.valueOf(raw[2]);
+							for(int i = val; i<User.size(); i++){
+								final int GPID = User.get(i).getControlScheme().GPID;
+								if(GPID != -1){
+									Gamepad.getGamepad(GPID).assignToPlayer(-1);
+								}
+							}
+							
 							ArrayList<Player> player = new ArrayList<Player>();
 							
 							for(int i = 0; i<val; i++){
@@ -169,7 +180,7 @@ public class Settings implements Runnable{
 						}
 						
 					}else{
-						System.out.println("Cannot change player count in overworld.");
+						System.out.println("Can only change player count on main menu.");
 						
 					}
 				}else if(floats.containsKey(raw[1])){
@@ -192,7 +203,8 @@ public class Settings implements Runnable{
 		case "reset_stage":
 			if(raw.length == 1){
 				randomHitboxGen();
-				//TODO Re-intialise the overworld stage
+				OverworldStage over = (OverworldStage) Stage.getStage("overworld");
+				over.generateHitboxModels();
 			}else{
 				System.out.println("Usage: reset_stage");
 			}

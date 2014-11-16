@@ -15,8 +15,8 @@ public class FocusableItem {
 		return ID;
 	}
 	
-	public void setParent(int ID){
-		this.parentID = ID;
+	public void setParent(FocusableItem i){
+		this.parentID = i.ID;
 	}
 	
 	public void focus(){

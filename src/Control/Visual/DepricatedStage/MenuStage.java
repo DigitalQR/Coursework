@@ -7,7 +7,6 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Visual.DisplayControl;
 import Control.Visual.Font;
-import Control.Visual.Menu.Button2f;
 import Control.Visual.Menu.Assets.TextBox;
 import Entities.Player;
 import RenderEngine.textureLoader;

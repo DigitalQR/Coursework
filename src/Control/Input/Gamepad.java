@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import Tools.String.Parametres;
 import Control.Settings;
-import Control.Visual.DepricatedStage.MenuStage;
+import Control.Visual.Menu.Assets.Core.Input;
 import Debug.ErrorPopup;
 import Entities.Player;
 import net.java.games.input.Component;
@@ -108,7 +108,7 @@ public class Gamepad{
 	BUTTON_MENU_BACK = T++;
 		
 	private static String[] KeyName = 
-		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary attack", "Secondary attack", "Pause", "Menu Forward", "Menu Back"};
+		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary\nattack", "Secondary\nattack", "Pause", "Menu\nForward", "Menu\nBack"};
 	
 	private Button[] Key = new Button[KeyName.length];
 	private float[] Raw;
@@ -141,13 +141,17 @@ public class Gamepad{
 	
 	public String getCurrentBinding(){
 		poll();
-		if(MenuStage.timePassed()){
+		if(Input.hasTimePassed()){
 			for(int i = 0; i <Raw.length; i++){
 				if(Raw[i] != 0){
-					BoundButtons.add(i + " " + Raw[i]);
-					Key[bindingTrack] = new Button(i, Raw[i]);
-					bindingTrack++;
-					MenuStage.input();
+					try{
+						BoundButtons.add(i + " " + Raw[i]);
+						Key[bindingTrack] = new Button(i, Raw[i]);
+						bindingTrack++;
+						Input.recieved();
+					}catch(IndexOutOfBoundsException e){
+						System.err.println("Minor @ Gamepad/getCurrentBinding(): " + e.getMessage());
+					}
 				}
 			}
 		}
@@ -250,7 +254,9 @@ public class Gamepad{
 		}
 		
 		assignedPlayer = i;
-		Settings.User.get(i).setControlScheme(this.GPID);
+		if(i > -1){
+			Settings.User.get(i).setControlScheme(this.GPID);
+		}
 	}
 
 	public void deleteProfileStatus(){
