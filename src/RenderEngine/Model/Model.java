@@ -39,10 +39,11 @@ public class Model {
 		return new float[]{red, green, blue, alpha};
 	}
 	
-	public Model clone(){
-		Model m = new Model(vertices, texCoords, indices, normal);
+	public Model clone(){Model m = new Model(vertices.clone(), texCoords.clone(), indices.clone(), normal.clone());
 		m.setLocation(getLocation().clone());
 		m.scaleBy(scale);
+		m.setTexture(texture);
+		m.setRGBA(red, green, blue, alpha);
 		
 		return m;
 	}

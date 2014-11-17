@@ -159,7 +159,22 @@ public class OverworldStage extends Stage{
 			Renderer.render(m);
 		}
 		
+		//Draw IDLE player name
+		int playerTrack = 0;
+		for(Player p: player){
+			playerTrack++;
+				if(!p.isDead() && p.isPlayerIDLE()){
+					Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z+1f);
+					
+					float[] RGBA = Camera.getInverseRGBA();
+					text.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
+					text.drawText("PLAYER " + playerTrack, location, 0.04f, 8f);
+
+			}
+		}
+		
 	}
 	
+
 
 }

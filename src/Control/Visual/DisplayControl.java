@@ -9,6 +9,7 @@ import org.lwjgl.util.glu.GLU;
 
 import Control.MainControl;
 import Control.Settings;
+import Control.Visual.Menu.Assets.Core.FocusableItem;
 import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 import RenderEngine.Renderer;
@@ -19,6 +20,7 @@ public class DisplayControl implements Runnable{
 	
 	private static void start(){
 		DisplayManager.create();
+		FocusableItem.initialise();
 		setupOpenGL();
 		setupLighting();
 		Stage.setupStages();
@@ -51,6 +53,9 @@ public class DisplayControl implements Runnable{
 		GL11.glEnable(GL11.GL_CULL_FACE);
 		GL11.glCullFace(GL11.GL_BACK);
 		
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
 		GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 		
@@ -59,8 +64,6 @@ public class DisplayControl implements Runnable{
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 		
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
 	public void run(){

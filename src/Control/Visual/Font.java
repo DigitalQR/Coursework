@@ -7,16 +7,19 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.opengl.Texture;
 
 import Debug.ErrorPopup;
 import RenderEngine.Renderer;
+import RenderEngine.textureLoader;
 import RenderEngine.Model.Model;
-import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 
 public class Font{
 	
 	private Character[] Letter;
+	public static final int CHARACTER_TOTAL = 43;
+	private Texture texture;
 	private float[] RGBA = {0f,0f,0f,1f};
 	
 	public void setRGBA(float r, float g, float b, float a){
@@ -27,26 +30,14 @@ public class Font{
 	}
 	
 	public Font(String file){
-		Letter = new Character[43];
+		Letter = new Character[CHARACTER_TOTAL];
+		texture = textureLoader.loadTexture("Font/Default");
 		
 		try{
 			BufferedImage fontsheet = ImageIO.read(new File("res/" + file + ".png"));
-			int size = fontsheet.getHeight();
 			
 			for(int i = 0; i < Letter.length; i++){
-				BufferedImage temp = fontsheet.getSubimage(i*size, 0, size, size);
-				Letter[i] = new Character(size);
-
-				for(int y = 0; y<size; y++){
-					for(int x = 0; x<size; x++){
-						if(temp.getRGB(x, y) != -1){
-							Letter[i].setChar(x, y, true);
-						}else{
-							Letter[i].setChar(x, y, false);
-						}
-					}
-				}
-				Letter[i].generateModel();
+				Letter[i] = new Character(i, fontsheet.getWidth(), fontsheet.getHeight());
 			}
 			
 		}catch(IOException e){
@@ -54,65 +45,41 @@ public class Font{
 			ErrorPopup.createMessage(e, true);
 		}
 	}
-	
-	private Cubef[] getSentence(String Message, Vector3f translation, float scale, float LetterSize){
-		String mes = correctString(Message);
-		Cubef[] temp = new Cubef[getCubeCount(mes)];
-		float x = translation.x;
-		int track = 0;
-		LetterSize*=scale;
-		
-		for(char s:mes.toCharArray()){
-			int Char = getLetterID(s);
-			if(Char >= 0){
-				Cubef[] t = Letter[Char].getCubeModel(translation, scale);
-				for(int i = 0; i < t.length; i++){
-					temp[track++] = t[i];
-				}
-				
-			}else{
-				if(-Char == '\n'){
-					translation.y-=LetterSize;
-					translation.x = x-LetterSize;
-				}
-			}
-			
-			translation.x+=LetterSize;
-		}
-																																																																																																																																																																																								
-		return temp;
-	}
-	
 
-	
 	public void drawText(String Message, Vector3f translation, float scale, float LetterSize){
 		boolean light = GL11.glGetBoolean(GL11.GL_LIGHTING);
+		scale*=8;
+		LetterSize/=8;
+		
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		if(light){
 			GL11.glDisable(GL11.GL_LIGHTING);	
 		}
-		Cubef[] mes = getSentence(Message, translation, scale, LetterSize);
-
-		for(Cubef c:mes){
-			Model m = new Model(c);
-			m.setRGBA(RGBA[0],RGBA[1],RGBA[2],RGBA[3]);
-			Renderer.render(m);
+		
+		float originalX = translation.x;
+		
+		for(char s:correctString(Message).toCharArray()){
+			int c = getLetterID(s);
+			if(c != ' '){
+				if(-c == '\n'){
+					translation.x = originalX - LetterSize*scale;
+					translation.y -= LetterSize*scale;
+				}else if(c >= 0){
+					Model m = Letter[c].getModel();
+					m.scaleBy(scale);
+					m.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+					m.setLocation(translation);
+					m.setTexture(texture);
+					Renderer.render(m);
+				}
+			}
+			translation.x+= LetterSize*scale;
 		}
 		
 		if(light){
 			GL11.glEnable(GL11.GL_LIGHTING);	
 		}
-	}
-	
-	private int getCubeCount(String mes){
-		int count = 0;
-		
-		for(char s:mes.toCharArray()){
-			if(getLetterID(s) >= 0){
-				count+=Letter[getLetterID(s)].getCubeCount();
-			}
-		}
-		
-		return count;
+		GL11.glEnable(GL11.GL_CULL_FACE);
 	}
 	
 	private static String correctString(String message){

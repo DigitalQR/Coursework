@@ -231,10 +231,10 @@ public class GamepadSetupStage extends Stage implements Action{
 				Input.recieved();
 			}
 			if(currentButton < 0){
-				currentButton = Settings.User.size()-1;
+				currentButton = 0;
 			}
 			if(currentButton > Settings.User.size()-1){
-				currentButton = 0;
+				currentButton = Settings.User.size()-1;
 			}
 			playerName.setHeader("Player:\n" + (currentButton + 1));
 			
