@@ -10,7 +10,7 @@ public class Renderer{
 	
 	
 	public static void prepare(){
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 		
 		float[] RGBA = Camera.getRGBA().clone();
 		for(int i = 0; i<3; i++){
