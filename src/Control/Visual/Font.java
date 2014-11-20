@@ -18,7 +18,7 @@ import Tools.Maths.Vector3f;
 public class Font{
 	
 	private Character[] Letter;
-	public static final int CHARACTER_TOTAL = 43;
+	public static final int CHARACTER_TOTAL = 44;
 	private Texture texture;
 	private float[] RGBA = {0f,0f,0f,1f};
 	
@@ -36,7 +36,7 @@ public class Font{
 		try{
 			BufferedImage fontsheet = ImageIO.read(new File("res/" + file + ".png"));
 			
-			for(int i = 0; i < Letter.length; i++){
+			for(int i = 0; i < CHARACTER_TOTAL; i++){
 				Letter[i] = new Character(i, fontsheet.getWidth(), fontsheet.getHeight());
 			}
 			
@@ -57,10 +57,9 @@ public class Font{
 		}
 		
 		float originalX = translation.x;
-		
 		for(char s:correctString(Message).toCharArray()){
 			int c = getLetterID(s);
-			if(c != ' '){
+			if(c != -' '){
 				if(-c == '\n'){
 					translation.x = originalX - LetterSize*scale;
 					translation.y -= LetterSize*scale;
@@ -100,6 +99,9 @@ public class Font{
 			if(c  >= '0' && c <= '?'){
 				Out+=c;
 			}
+			if(c == '%'){
+				Out+=c;
+			}
 		}
 		return Out;
 	}
@@ -111,6 +113,8 @@ public class Font{
 			return Char-22;
 		}else if(Char == '.'){
 			return 42;
+		}else if(Char == '%'){
+			return 43;
 		}else{
 			return -Char;
 		}

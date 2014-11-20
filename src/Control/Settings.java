@@ -16,7 +16,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.1.4 <UI overhaul>";
+	public static final String Version = "1.1.5 <UI overhaul>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -153,35 +153,28 @@ public class Settings implements Runnable{
 		case "set":
 			if(raw.length == 3){
 				if(raw[1].equals("player_count")){
-					
-					if(Stage.getStage("menu").isCurrentStage()){
-						try{
-							int val = Integer.valueOf(raw[2]);
-							for(int i = val; i<User.size(); i++){
-								final int GPID = User.get(i).getControlScheme().GPID;
-								if(GPID != -1){
-									Gamepad.getGamepad(GPID).assignToPlayer(-1);
-								}
+					try{
+						int val = Integer.valueOf(raw[2]);
+						for(int i = val; i<User.size(); i++){
+							final int GPID = User.get(i).getControlScheme().GPID;
+							if(GPID != -1){
+								Gamepad.getGamepad(GPID).assignToPlayer(-1);
 							}
-							
-							ArrayList<Player> player = new ArrayList<Player>();
-							
-							for(int i = 0; i<val; i++){
-								if(i > User.size()-1){
-									player.add(new Player(0,0));
-								}else{
-									player.add(User.get(i));
-								}
-							}
-							
-							User = player;
-						}catch(NumberFormatException e){
-							System.out.println(raw[2] + " is not an integer.");
 						}
 						
-					}else{
-						System.out.println("Can only change player count on main menu.");
+						ArrayList<Player> player = new ArrayList<Player>();
 						
+						for(int i = 0; i<val; i++){
+							if(i > User.size()-1){
+								player.add(new Player(0,0));
+							}else{
+								player.add(User.get(i));
+							}
+						}
+						
+						User = player;
+					}catch(NumberFormatException e){
+						System.out.println(raw[2] + " is not an integer.");
 					}
 				}else if(floats.containsKey(raw[1])){
 					try{

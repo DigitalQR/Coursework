@@ -15,6 +15,7 @@ import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 import RenderEngine.Renderer;
 import RenderEngine.Stencil;
+import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
@@ -22,9 +23,12 @@ import Tools.Maths.Vector3f;
 public class OverworldStage extends Stage{
 
 	private List<Model> hb;
+	private Animation playerModel;
 	
 	public OverworldStage(){
 		super();
+		playerModel = new Animation("Cube/Spin", 500);
+		restartTime = Math.round(System.nanoTime()/1000000000);
 		generateHitboxModels();
 	}
 	
@@ -39,6 +43,43 @@ public class OverworldStage extends Stage{
 		}
 	}
 	
+	
+	/*
+	 TODO - Make gamemode hierachy 
+	 */
+	
+	private int winnerID = -1;
+	private boolean running = true;
+	private float restartTime = 0;
+	
+	private boolean hasFinished(){
+		if(running){
+			int i = 0;
+			for(Player p: Settings.User){
+				if(p.killCount >= 3){
+					winnerID = i;
+					restartTime = Camera.getLERPTime();
+					
+					int n = 0;
+					for(Player pl: Settings.User){
+						if(n != winnerID){
+							pl.kill();
+						}
+						n++;
+					}
+					
+					running = false;
+					return true;
+				}
+				i++;
+			}
+			running = true;
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
 	protected void updateInfo(){
 		for(Hitbox hb: Settings.hb){
 			hb.update();
@@ -46,8 +87,37 @@ public class OverworldStage extends Stage{
 		Damage.updateDamage();
 		Shield.updateShields();
 		
-		for(Player p: Settings.User){
-			p.update();
+		//Has game ended
+		if(!hasFinished()){
+			for(Player p: Settings.User){
+				p.update();
+			}
+		}else{
+			int i = 0;
+			for(Player p: Settings.User){
+				if(i == winnerID){
+					float[] RGBA = p.getRGBA();
+					p.update();
+					Camera.setRGB(RGBA[0], RGBA[1], RGBA[2]);
+					
+				}else{
+					p.kill();
+				}
+				i++;
+			}
+			int Dif = 10 + (int) Math.round((restartTime-Camera.getLERPTime())/1000000000);
+			
+			//Reset
+			if(Dif < 0){
+				running = true;
+				winnerID = -1;
+				for(Player p: Settings.User){
+					p.killCount = 0;
+					p.kill();
+				}
+				Settings.issueCommand("reset_stage");
+			}
+			
 		}
 		Camera.process();
 		
@@ -126,25 +196,7 @@ public class OverworldStage extends Stage{
 		for(Model Box:hb){
 			Renderer.render(Box);
 		}
-		
-		//Draw IDLE player name
-		if(Settings.toggles.get("s_afk_names")){
-			int playerTrack = 0;
-			for(Player p: player){
-				playerTrack++;
-					if(!p.isDead() && p.isPlayerIDLE()){
-						Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z+1f);
-						Vector3f location2 = new Vector3f(location.x-0.006f, location.y-0.006f, location.z-0.001f);
-						float[] colour = Camera.getInverseRGBA();
-						text.setRGBA(colour[0], colour[1], colour[2], 1f);
-						text.drawText("PLAYER " + playerTrack, location, 0.04f, 8f);
 	
-						text.setRGBA(0, 0, 0, 1f);
-						text.drawText("PLAYER " + playerTrack, location2, 0.04f, 8f);
-				}
-			}
-		}		
-
 		//Draw boundary
 		Cubef[] sides = {
 				new Cubef(new Vector3f(-1000,-1000,0.3f), new Vector3f(Settings.boundary.getLocation().x,1000,0.3f)),
@@ -164,7 +216,7 @@ public class OverworldStage extends Stage{
 		for(Player p: player){
 			playerTrack++;
 				if(!p.isDead() && p.isPlayerIDLE()){
-					Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z+1f);
+					Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, p.getLERPLocation().z+1.5f);
 					
 					float[] RGBA = Camera.getInverseRGBA();
 					text.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
@@ -173,6 +225,81 @@ public class OverworldStage extends Stage{
 			}
 		}
 		
+		//Game ended
+		if(!running){
+			int Dif = 10 + (int) Math.round((restartTime-Camera.getLERPTime())/1000000000);
+
+			float[] RGBA = Camera.getInverseRGBA();
+			Vector3f location = new Vector3f(-0.5f,0,-1.5f);
+			location.x -= Camera.getLERPLocation().x;
+			location.y -= Camera.getLERPLocation().y;
+			location.z -= Camera.getLERPLocation().z;
+			
+			text.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
+			text.drawText("Restart in:\n     " + Dif, location, 0.01f, 8f);
+		}
+		
+		
+		//Draw HUD
+		Stencil.enable();
+		GL11.glDisable(GL11.GL_LIGHTING);
+		int ID = 0;
+		for(Player p: player){
+			float scale =0.3f;
+			Model core = playerModel.getCurrentFrame().clone();
+			
+			Vector3f location = getHUDLocation(ID);
+			core.setLocation(location);
+			
+			Model outline = core.clone();
+			outline.getLocation().y-=0.24f*scale;
+			outline.scaleBy(1.6f*scale*6);
+			outline.setRGBA(0,0,0,1);
+			Renderer.render(outline);
+
+			float[] RGB = p.getRGBA();
+			
+			Model colour = core.clone();
+			colour.getLocation().y-=0.2f*scale;
+			colour.scaleBy(1.5f*scale*6);
+			colour.setRGBA(RGB[0], RGB[1], RGB[2], 1);
+			Renderer.render(colour);
+			
+			GL11.glEnable(GL11.GL_LIGHTING);
+			core.scaleBy(scale*6);
+			Renderer.render(core);
+			GL11.glDisable(GL11.GL_LIGHTING);
+			
+			location.x+=0.08f;
+			location.y+=0.1f;
+
+			float[] RGBA = Camera.getInverseRGBA();
+			String data = "" + Math.round(p.getFactor()*100) + "%\n" + p.killCount + " kills";
+			float textSize = 4000/player.size();
+			textSize/=1000;
+			
+			text.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
+			text.drawText(data, location, 0.008f*textSize, 8f);
+			
+			ID++;
+		}
+
+		Stencil.cylce();
+		GL11.glEnable(GL11.GL_LIGHTING);
+		Stencil.disable();
+		
+	}
+	
+	private Vector3f getHUDLocation(int ID){	
+		Vector3f location = new Vector3f(-2f,-2.0f, -2.5f);
+		location.x -= Camera.getLERPLocation().x;
+		location.y -= Camera.getLERPLocation().y;
+		location.z -= Camera.getLERPLocation().z;
+		
+		float width = 4*10000/(Settings.User.size()+2);
+		width/=10000;
+		location.x+=width*(ID+1);
+		return location;
 	}
 	
 

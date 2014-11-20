@@ -21,9 +21,9 @@ public class Camera {
 	private static float LERPTime = 0;
 	
 	private static float LastUpdate = 0;
-	private static float cameraDepthLimit = 3f;
+	private static float cameraDepthLimit = 5f;
 	
-	public static float r = 0.5f, g = 1f, b = 0.5f;
+	private static float r = 0.5f, g = 1f, b = 0.5f;
 	private static float[] RGBA = {0f,0f,0f,1f};
 	
 	public static float[] getRGBA(){
@@ -54,6 +54,12 @@ public class Camera {
 				RGBA[i] = 0.7f;
 			}
 		}
+	}
+	
+	public static void setRGB(float R, float G, float B){
+		r = R;
+		g = G;
+		b = B;
 	}
 	
 	public static void setLocation(float x, float y, float z){

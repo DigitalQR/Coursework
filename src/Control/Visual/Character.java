@@ -27,7 +27,7 @@ public class Character {
 				0,0,0,  0,1,0,  0.67f,0,0,  0.67f,1,0
 		};
 
-		float width = 1000000000/(Font.CHARACTER_TOTAL+21);
+		float width = 1000000000/64f;
 		float height = 1;
 		width/=1000000000;
 		
@@ -35,9 +35,9 @@ public class Character {
 		float y = 0;
 		
 		float[] text = {
-				x,y,  x,y-height,  x+width,y,  x+width,y-height
+				x,y,  x,y-height,  x+width,y,  x+width,y-height	
 		};
-
+		
 		int[] ind = {
 				0,1,2,  1,3,2
 		};
