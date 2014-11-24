@@ -46,17 +46,16 @@ public class Health extends Component{
 	private float deathTime = 0;
 	private  float respawnTime = 3500;
 	private int deathCount = 0;
-	
-	
-	public void kill(){
-		if(!isDead){
-			isDead = true;
-			deathCount++;
-			deathTime = System.nanoTime();
-			if(lastHit != null){
-				lastHit.killCount++;
-			}
+		
+	public void kill(boolean increaseKills){
+		isDead = true;
+		deathCount++;
+		deathTime = System.nanoTime();
+		if(lastHit != null && increaseKills){
+			lastHit.killCount++;
+			lastHit = null;
 		}
+		
 	}
 	
 	public int getDeathCount(){

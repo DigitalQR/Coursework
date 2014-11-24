@@ -212,7 +212,7 @@ public class Camera {
 	
 	
 			if(Math.round(location.z*100) != Math.round(aimLocation.z*100)){
-				float move = CAMERA_SPEED;
+				float move = CAMERA_SPEED*2;
 				
 				if(Toolkit.Modulus(location.z-aimLocation.z) < CAMERA_SPEED){
 					move = Toolkit.Modulus(location.z-aimLocation.z);

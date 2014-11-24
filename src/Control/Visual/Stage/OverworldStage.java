@@ -63,7 +63,7 @@ public class OverworldStage extends Stage{
 					int n = 0;
 					for(Player pl: Settings.User){
 						if(n != winnerID){
-							pl.kill();
+							pl.kill(false);
 						}
 						n++;
 					}
@@ -101,7 +101,7 @@ public class OverworldStage extends Stage{
 					Camera.setRGB(RGBA[0], RGBA[1], RGBA[2]);
 					
 				}else{
-					p.kill();
+					p.kill(false);
 				}
 				i++;
 			}
@@ -113,7 +113,7 @@ public class OverworldStage extends Stage{
 				winnerID = -1;
 				for(Player p: Settings.User){
 					p.killCount = 0;
-					p.kill();
+					p.kill(false);
 				}
 				Settings.issueCommand("reset_stage");
 			}
