@@ -29,6 +29,8 @@ public class DisplayManager{
 				}
 				if(m.getWidth() == Res.x && m.getHeight() == Res.y && m.isFullscreenCapable()){
 					display = m;
+					System.out.println("\t SET");
+					break;
 				}
 			}
 			

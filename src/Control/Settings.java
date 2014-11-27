@@ -16,7 +16,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.1.8 <UI overhaul>";
+	public static final String Version = "1.2.0 <UI overhaul>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -50,7 +50,6 @@ public class Settings implements Runnable{
 		toggleNames.add("s_noclip");
 		toggleNames.add("s_lerp");
 		toggleNames.add("s_low_settings");
-		toggleNames.add("s_afk_names");
 		
 		for(String s: toggleNames){
 			toggles.put(s, false);
