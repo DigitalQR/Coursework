@@ -10,7 +10,6 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Audio.Sound;
 import Control.Visual.Menu.Assets.Button;
-import Control.Visual.Menu.Assets.DropMenu;
 import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Action;
 import Control.Visual.Menu.Assets.Core.Input;
@@ -42,10 +41,7 @@ public class MenuStage extends Stage implements Action{
 			
 		}
 
-		dm.setTextSize(0.1f);
-		this.add(dm);
 	}
-	DropMenu dm = new DropMenu(new Vector3f(-1.6f+1.6f, 0.6f, -2.5f), new Vector3f(1.2f, 0.3f, 0.5f), "Drop down menu", new String[]{"A of A","Alpha","1 breh"});
 	
 	private void playRandomSong(){
 		try{
@@ -128,7 +124,7 @@ public class MenuStage extends Stage implements Action{
 		
 		//Settings
 		if(ID == button[2].getID() && button[2].hasFocus()){
-			dm.focus();
+			Stage.setStage(Stage.getStage("settings"));
 		}
 		
 		//Exit
