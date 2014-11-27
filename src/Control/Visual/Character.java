@@ -1,72 +1,56 @@
 package Control.Visual;
 
-import Tools.Maths.Cubef;
-import Tools.Maths.Vector3f;
+import RenderEngine.Model.Model;
+import Tools.Maths.Vector2f;
 
 public class Character {
 	
-	private boolean[][] Char;
-	private Cubef[] model;
+	private Vector2f location;
+	private int ID;
+	private Model model;
 	
-	public Character(int size){
-		Char = new boolean[size][size];
-		model = new Cubef[0];
+	public Character(int ID, int totalWidth, int totalHeight){
+		this.ID = ID;
+		genModel();
 	}
 	
-	public void setChar(int x, int y, boolean val){
-		Char[Char.length-y-1][x] = val;
-	} 
-	
-	public boolean getValue(int x, int y){
-		return Char[y][x];
+	public Vector2f getLocation() {
+		return location;
 	}
-	
-	public void flip(){
-		boolean[][] temp = new boolean[Char.length][Char.length];
+
+	public void setLocation(Vector2f location) {
+		this.location = location;
+	}
+
+	private void genModel(){
+		float[] vert = {
+				0,0,0,  0,1,0,  0.67f,0,0,  0.67f,1,0
+		};
+
+		float width = 1000000000/64f;
+		float height = 1;
+		width/=1000000000;
 		
-		for(int i = 0; i<Char.length; i++){
-			temp[i] = Char[Char.length-1-i];
-		}
+		float x =	ID*width;
+		float y = 0;
 		
-		Char = temp;
-	}
-	
-	public void generateModel(){
-		for(int y = 0; y<Char.length; y++){
-			for(int x = 0; x<Char.length; x++){
-				if(getValue(x,y)){
-					addToModel(new Cubef(new Vector3f(x,y,0), new Vector3f(x+1, y+1, 0.01f)));
-				}
-			}
-		}
-	}
-	
-	public int getCubeCount(){
-		return model.length;
-	}
-	
-	private void addToModel(Cubef c){
-		Cubef[] temp = new Cubef[model.length+1];
+		float[] text = {
+				x,y,  x,y-height,  x+width,y,  x+width,y-height	
+		};
 		
-		for(int i = 0; i<model.length; i++){
-			temp[i] = model[i];
-		}
+		int[] ind = {
+				0,1,2,  1,3,2
+		};
+
+		float[] norm = {
+				0,0,-1,  0,0,-1,  0,0,-1,  0,0,-1
+		};
 		
-		temp[temp.length-1] = c;
-		model = temp;
+		model = new Model(vert, text, ind, norm);
 	}
 	
-	public Cubef[] getCubeModel(Vector3f translation, float scale){
-		Cubef[] c = new Cubef[model.length];
-		
-		for(int i = 0; i<model.length; i++){
-			c[i] = new Cubef(model[i].StartLocation, model[i].EndLocation);
-			c[i].enlarge(scale);
-			c[i].translate(translation);
-		}
-		return c;
-	}
-	
-	
+	public Model getModel(){
+		return model.clone();
+	}	
 	
 }

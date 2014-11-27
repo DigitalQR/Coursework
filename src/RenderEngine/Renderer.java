@@ -2,7 +2,7 @@ package RenderEngine;
 
 import org.lwjgl.opengl.GL11;
 
-import Control.Visual.DisplayControl;
+import Control.Camera;
 import RenderEngine.Model.Model;
 import Tools.Maths.Vector3f;
 
@@ -10,19 +10,17 @@ public class Renderer{
 	
 	
 	public static void prepare(){
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		if(DisplayControl.isCurrentStage(DisplayControl.STAGE_OVERWORLD)){
-			float[] RGBA = DisplayControl.getRGBA().clone();
-			for(int i = 0; i<3; i++){
-				RGBA[i]-=0.2f;
-				if(RGBA[i] < 0){
-					RGBA[i] = 0;
-				}
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
+		
+		float[] RGBA = Camera.getRGBA().clone();
+		for(int i = 0; i<3; i++){
+			RGBA[i]-=0.2f;
+			if(RGBA[i] < 0){
+				RGBA[i] = 0;
 			}
-			GL11.glClearColor(RGBA[0], RGBA[1], RGBA[2], 1f);
-		}else{
-			GL11.glClearColor(0.5f, 0.5f, 1f, 1f);
 		}
+		GL11.glClearColor(RGBA[0], RGBA[1], RGBA[2], 1f);
+		
 	}
 	
 	public static void render(Model model){

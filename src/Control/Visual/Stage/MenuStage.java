@@ -1,191 +1,136 @@
 package Control.Visual.Stage;
 
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.opengl.Texture;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import Tools.Maths.Vector3f;
 import Control.MainControl;
 import Control.Settings;
-import Control.Visual.DisplayControl;
-import Control.Visual.Font;
-import Control.Visual.Menu.Button2f;
-import Entities.Player;
-import RenderEngine.textureLoader;
-import RenderEngine.Renderer;
-import RenderEngine.Model.Model;
-import Tools.Maths.Vector2f;
-import Tools.Maths.Vector3f;
+import Control.Audio.Sound;
+import Control.Visual.Menu.Assets.Button;
+import Control.Visual.Menu.Assets.TextBox;
+import Control.Visual.Menu.Assets.Core.Action;
+import Control.Visual.Menu.Assets.Core.Input;
+import Control.Visual.Stage.Core.Stage;
+import Debug.ErrorPopup;
 
-public class MenuStage extends Stage{
+public class MenuStage extends Stage implements Action{
+	
+	private String[] buttonName = {"Start", "Gamepad setup", "Settings", "Exit"};
+	private Button[] button = new Button[4];
+	private int currentButton = 0;
+	
+	public MenuStage(){
+		super();
+		playRandomSong();
+		
+		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), "Untitled Game", null);
+		this.add(header);
 
-	public static boolean locked = false;
-	private static long lastInput = 0;
-	private int selectedButton = 0;
-	private int activeButton = 1;
-	
-	public Font font;
-	public static Texture Button, ButtonSelected;
-	
-	private Button2f[] MainButton;
-	
-	GamepadSetupStage GamepadSetup;
-	SettingStage Setting;
-	
-	public void prepare(){
-		font = new Font("Font/Default");
+		TextBox version = new TextBox(new Vector3f(-1.6f,0.6f,-2.5f),new Vector3f(1f,0.5f,0.5f), "Version: " + Settings.Version, null);
+		version.setHeaderColour(new float[]{0,0,0,0});
+		this.add(version);
 		
-		Button = textureLoader.loadTexture("Button/Grey");
-		ButtonSelected = textureLoader.loadTexture("Button/Grey_selected");
-		
-		MainPrepare();
-		
-		GamepadSetup = new GamepadSetupStage(font);
-		Setting = new SettingStage(font);
-		
-		player = Settings.User.get(0);
-
-	}
-	
-	public static boolean timePassed(){
-		long current = System.nanoTime()/1000000;
-		if((current-lastInput) > 150){
-			return true;
+		for(int i = 0; i<4; i++){
+			button[i] = new Button(new Vector3f(-1.6f, 0.6f-0.4f*i, -2.5f), new Vector3f(1.2f, 0.3f, 0.5f), buttonName[i]);
+			button[i].setTextSize(0.2f);
+			button[i].setAction(this);
+			this.add(button[i]);
+			
 		}
-		return false;
-	}
-	
-	public static void input(){
-		lastInput = System.nanoTime()/1000000;
-	}
-	
-	private static Player player;
-	
-	public void update(){
-		Model m = player.getModel();
-		m.scaleBy(20);
-		m.setLocation(new Vector3f(4, -7, -15));
-		m.setTexture(Button);
-        Renderer.render(m);
-        
-		GL11.glTranslatef(-7.7f, -7.5f, -10);
 
-		MainDraw();
-		
-		switch(activeButton){
-			//Start
-			case 1:
-				break;
-			
-			//Setup Controllers
-			case 2:
-				GamepadSetup.update();
-				break;
-			
-			//Settings
-			case 3:
-				Setting.update();
-				break;
-			
-			//Exit
-			case 4:
-				break;	
-		}
-		
 	}
 	
+	private void playRandomSong(){
+		try{
+			File music = new File("Res/Sounds/Music");
+			List<String> song = new ArrayList<String>();
 	
-	
-	private void MainPrepare(){
-		//Initialise MainButtons
-		MainButton = new Button2f[5];
-		
-		//Set MainButton information
-		MainButton[0] = new Button2f(new Vector2f(0,125), new Vector2f(150,25), "Untitled Game");
-		MainButton[1] = new Button2f(new Vector2f(0,105), new Vector2f(50, 10), "Start");
-		MainButton[2] = new Button2f(new Vector2f(0,90), new Vector2f(50, 10), "Setup Controllers");
-		MainButton[3] = new Button2f(new Vector2f(0,75), new Vector2f(50, 10), "Settings");
-		MainButton[4] = new Button2f(new Vector2f(0,60), new Vector2f(50, 10), "Exit");
-	}
-	
-	private void MainDraw(){
-		//Version number
-		font.drawText("Version: " + Settings.Version, new Vector3f(-0.5f,-0.3f,0), 0.04f, 7f);
-		
-		//Button logic
-		if(activeButton == 1){
-			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_UP)){
-				selectedButton--;
-				input();
+			System.out.println("Music tracks found:");
+			for(String s: music.list()){
+				if(s.endsWith(".wav")){
+					System.out.println("\t" + s);
+					song.add(s);
+				}
 			}
-			if(timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_DOWN)){
-				selectedButton++;
-				input();
+			
+			Collections.shuffle(song);
+			Sound sound = new Sound("Music/" + song.get(0).substring(0, song.get(0).length()-4));
+			sound.setLoop(true);
+			sound.doNotDestroyOnFinish();
+			sound.play();
+		}catch(Exception e){
+			ErrorPopup.createMessage(e, true);
+		}
+	}
+	
+	protected void updateInfo(){
+		if(this.hasFocus()){
+			//Button process
+			if(Input.isKeyPressed(Input.KEY_UP)){
+				currentButton--;
+				Input.recieved();
+			}if(Input.isKeyPressed(Input.KEY_DOWN)){
+				currentButton++;
+				Input.recieved();
+			}
+			if(currentButton < 0){
+				currentButton = button.length-1;
+			}
+			if(currentButton > button.length-1){
+				currentButton = 0;
+			}
+			if(Input.isKeyPressed(Input.KEY_FORWARD)){
+				button[currentButton].focus();
+				Input.recieved();
 			}
 		}
-		if(selectedButton < 1){
-			selectedButton = MainButton.length-1;
-		}		
-		if(selectedButton > MainButton.length-1){
-			selectedButton = 1;
-		}
+
 		
-		//Draw buttons
-		for(int i = 0; i<MainButton.length; i++){
-			
-			Model m = MainButton[i].getModel();
-			if(i == selectedButton){
-				m.setTexture(ButtonSelected);
+		for(int i = 0; i<button.length; i++){
+			//Button colour
+			if(i == currentButton){
+				button[i].setColour(new float[]{1,1,1,1});
 			}else{
-				m.setTexture(Button);
+				button[i].setColour(new float[]{1,1,1,0.5f});
 			}
-			Renderer.render(m);
 			
-			//Draw text
-			if(i != 0){
-				font.drawText(MainButton[i].getMessage(), MainButton[i].getTextLocation(), 0.04f, 7f);
-			}else{
-				font.drawText(MainButton[i].getMessage(), MainButton[i].getTextLocation(), 0.15f, 7.5f);
+			//Button submenu
+			if(button[i].hasFocus()){
+				if(Input.isKeyPressed(Input.KEY_BACK)){
+					button[i].unfocus();
+					Input.recieved();
+				}
 			}
-		}
-		
-		if(!locked){
-			MainProcessMainButton();
 		}
 	}
 	
-	private void MainProcessMainButton(){
-		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_SELECT) && (activeButton == 1 || activeButton == 4)){
-			activeButton = selectedButton;
-			input();
-			switch(selectedButton){
-			
-			//Start
-			case 1:
-					DisplayControl.setStage(DisplayControl.STAGE_OVERWORLD);
-					MainControl.Paused = false;
-				break;
-			
-			//Setup Controllers
-			case 2:
-				break;
-			
-			//Settings
-			case 3:
-				break;
-			
-			//Exit
-			case 4:
-				MainControl.CloseRequest = true;
-				break;	
-			}
-		}else if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_BACK) && !locked){
-			activeButton = 1;
+	protected void updateUI(){
+	}
+
+	public void run(int ID){
+		
+		//Start
+		if(ID == button[0].getID() && button[0].hasFocus()){
+			Stage.setStage(Stage.getStage("overworld"));
+		}
+		
+		//Gamepad setup
+		if(ID == button[1].getID() && button[1].hasFocus()){
+			Stage.setStage(Stage.getStage("gamepadsetup"));
+		}
+		
+		//Settings
+		if(ID == button[2].getID() && button[2].hasFocus()){
+			Stage.setStage(Stage.getStage("settings"));
+		}
+		
+		//Exit
+		if(ID == button[3].getID() && button[3].hasFocus()){
+			MainControl.CloseRequest = true;
 		}
 	}
 
-	public void switchToUpdate(){
-	}
-	
-	public void switchFromUpdate(){
-	}
-	
 }

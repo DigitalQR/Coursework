@@ -159,8 +159,8 @@ public class Player extends Entity{
 		}
 		
 		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
-		if(!bound.AreaIntersect(new Vector2f(this.getLocation().x, this.getLocation().y),  new Vector2f(this.getSize().x, this.getSize().y))){
-			health.kill();
+		if(!bound.AreaIntersect(new Vector2f(this.getLocation().x, this.getLocation().y),  new Vector2f(this.getSize().x, this.getSize().y)) && !health.isDead){
+			health.kill(true);
 		}
 	}
 
@@ -190,8 +190,8 @@ public class Player extends Entity{
 		}
 	}
 	
-	public void kill(){
-		health.kill();
+	public void kill(boolean increaseKills){
+		health.kill(increaseKills);
 	}
 	
 	public float getRespawnTimeRemaining(){

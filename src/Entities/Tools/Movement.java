@@ -15,6 +15,7 @@ public class Movement extends Component{
 	private boolean touchingGround = false;
 	private int touchingWall = 0;
 	private boolean bounce = true;
+	private static final float COLLISION_DEPTH = 0.01f;
 	
 	public Movement(ControlScheme controlScheme){
 		control = controlScheme;
@@ -120,7 +121,7 @@ public class Movement extends Component{
 		if(e.getVelocity().x != 0){
 			float initialVelx = e.getVelocity().x;
 			
-			for(float x = 0; Toolkit.Modulus(x) <= Toolkit.Modulus(initialVelx); x+= Toolkit.Sign(initialVelx)*0.01f){
+			for(float x = 0; Toolkit.Modulus(x) <= Toolkit.Modulus(initialVelx); x+= Toolkit.Sign(initialVelx)*COLLISION_DEPTH){
 				if(insideHitbox(new Vector2f(location.x + x, location.y), new Vector2f(e.getSize().x, e.getSize().y))){
 					
 					//Can the player wall jump?
@@ -186,10 +187,10 @@ public class Movement extends Component{
 		if(e.getVelocity().y != 0){
 			float initialVely = e.getVelocity().y;
 			
-			for(float y = 0; Toolkit.Modulus(y) <= Toolkit.Modulus(initialVely); y+= Toolkit.Sign(initialVely)*0.01f){
+			for(float y = 0; Toolkit.Modulus(y) <= Toolkit.Modulus(initialVely); y+= Toolkit.Sign(initialVely)*COLLISION_DEPTH){
 				if(insideHitbox(new Vector2f(location.x, location.y + y), new Vector2f(e.getSize().x, e.getSize().y))){
 					if(bounce && Toolkit.Modulus(y) > accelerationLimit.x/2 && e.stunned()){
-						afterY = -y-initialVely*0.9f;
+						afterY = -y-initialVely*0.3f;
 					}
 					
 				}else{

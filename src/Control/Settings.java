@@ -8,13 +8,15 @@ import java.util.Scanner;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
-import Control.Visual.DisplayControl;
+import Control.Input.Gamepad;
 import Control.Visual.DisplayManager;
+import Control.Visual.Stage.OverworldStage;
+import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.1.0 <Set the game and listen>";
+	public static final String Version = "1.2.0 <UI overhaul>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static List<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -62,7 +64,7 @@ public class Settings implements Runnable{
 			floats.put(s, 0f);
 		}
 
-		floats.put("s_light_deviation", 0.25f);
+		floats.put("s_light_deviation", 1f);
 		floats.put("s_volume", 0.8f);
 		
 		new Thread(new Settings()).start();
@@ -150,27 +152,28 @@ public class Settings implements Runnable{
 		case "set":
 			if(raw.length == 3){
 				if(raw[1].equals("player_count")){
-					if(!DisplayControl.isCurrentStage(DisplayControl.STAGE_OVERWORLD)){
-						try{
-							int val = Integer.valueOf(raw[2]);
-							ArrayList<Player> player = new ArrayList<Player>();
-							
-							for(int i = 0; i<val; i++){
-								if(i > User.size()-1){
-									player.add(new Player(0,0));
-								}else{
-									player.add(User.get(i));
-								}
+					try{
+						int val = Integer.valueOf(raw[2]);
+						for(int i = val; i<User.size(); i++){
+							final int GPID = User.get(i).getControlScheme().GPID;
+							if(GPID != -1){
+								Gamepad.getGamepad(GPID).assignToPlayer(-1);
 							}
-							
-							User = player;
-						}catch(NumberFormatException e){
-							System.out.println(raw[2] + " is not an integer.");
 						}
 						
-					}else{
-						System.out.println("Cannot change player count in overworld.");
+						ArrayList<Player> player = new ArrayList<Player>();
 						
+						for(int i = 0; i<val; i++){
+							if(i > User.size()-1){
+								player.add(new Player(0,0));
+							}else{
+								player.add(User.get(i));
+							}
+						}
+						
+						User = player;
+					}catch(NumberFormatException e){
+						System.out.println(raw[2] + " is not an integer.");
 					}
 				}else if(floats.containsKey(raw[1])){
 					try{
@@ -192,7 +195,8 @@ public class Settings implements Runnable{
 		case "reset_stage":
 			if(raw.length == 1){
 				randomHitboxGen();
-				DisplayControl.stage[DisplayControl.STAGE_OVERWORLD].prepare();
+				OverworldStage over = (OverworldStage) Stage.getStage("overworld");
+				over.generateHitboxModels();
 			}else{
 				System.out.println("Usage: reset_stage");
 			}

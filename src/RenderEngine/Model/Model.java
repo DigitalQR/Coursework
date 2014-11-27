@@ -8,6 +8,7 @@ import Tools.Maths.Vector3f;
 public class Model {
 	
 	private float[] vertices, texCoords, normal;
+	private float scale = 1f;
 	private int[] indices;
 	private Texture texture;
 	private Vector3f location = new Vector3f(0,0,0);
@@ -38,7 +39,17 @@ public class Model {
 		return new float[]{red, green, blue, alpha};
 	}
 	
+	public Model clone(){Model m = new Model(vertices.clone(), texCoords.clone(), indices.clone(), normal.clone());
+		m.setLocation(getLocation().clone());
+		m.scaleBy(scale);
+		m.setTexture(texture);
+		m.setRGBA(red, green, blue, alpha);
+		
+		return m;
+	}
+	
 	public void scaleBy(float s){
+		scale*=s;
 		for(int i = 0; i<vertices.length; i++){
 			vertices[i] *= s;
 		}

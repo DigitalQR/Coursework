@@ -1,254 +1,333 @@
 package Control.Visual.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
+import RenderEngine.Renderer;
+import RenderEngine.Stencil;
+import RenderEngine.Model.Animation;
+import RenderEngine.Model.Model;
+import Tools.Maths.Vector3f;
+import Control.Camera;
 import Control.Settings;
 import Control.Input.Gamepad;
-import Control.Visual.Font;
-import Control.Visual.Menu.Button2f;
-import RenderEngine.Renderer;
-import RenderEngine.Model.Model;
-import Tools.Maths.Vector2f;
-import Tools.Maths.Vector3f;
+import Control.Visual.Menu.Assets.Button;
+import Control.Visual.Menu.Assets.TextBox;
+import Control.Visual.Menu.Assets.Core.Action;
+import Control.Visual.Menu.Assets.Core.Input;
+import Control.Visual.Stage.Core.Stage;
+import Entities.Player;
 
-public class GamepadSetupStage extends Stage{
-	private Button2f Header;
-	private Button2f[] Controller;
-	private Button2f[][] Arrow;
-	private Button2f[][] ControllerTask;
-	private Font font;
+public class GamepadSetupStage extends Stage implements Action{
 
+	private Vector3f currentFocus = new Vector3f(0,0,0);
+	private Button[] button;
+	private Button[] subButton = new Button[3];
+	private TextBox header;
+	private TextBox playerName;
+	private Animation playerModel;
+	private int currentPad = 0;
 	private int currentButton = 0;
-	private int currentTask = 0;
-	private int assign = -1;
 	
-	private final int TASK_UNASSIGNED = 0, TASK_DELETE = 1, TASK_ASSIGN = 2;
-	
-	public GamepadSetupStage(Font font){
-		Gamepad[] pad = Gamepad.getGamepads();
-		Controller = new Button2f[pad.length];
-		ControllerTask = new Button2f[3][pad.length];
-		Arrow = new Button2f[pad.length][2];
-		
-		this.font = font;
-		
-		for(int i = 0; i<pad.length; i++){
-			Controller[i] = new Button2f(new Vector2f(55, 90-15*i), new Vector2f(60, 10), pad[i].getName());
-			
-			ControllerTask[TASK_UNASSIGNED][i] = new Button2f(new Vector2f(120, 90-15*i), new Vector2f(30, 10), "Create \nProfile");
+	public GamepadSetupStage(){
+		super();
+		playerModel = new Animation("Cube/Spin", 500);
 
-			Arrow[i][0] = new Button2f(new Vector2f(120, 90-15*i), new Vector2f(4, 10), "<");
-			Arrow[i][1] = new Button2f(new Vector2f(148, 90-15*i), new Vector2f(4, 10), ">");
-			ControllerTask[TASK_DELETE][i] = new Button2f(new Vector2f(125, 90-15*i), new Vector2f(20, 10), "Delete \nProfile");
-			ControllerTask[TASK_ASSIGN][i] = new Button2f(new Vector2f(125, 90-15*i), new Vector2f(20, 10), "Assign \nProfile");
+		header = new TextBox(new Vector3f(-0.3f,-0.7f,-2.5f),new Vector3f(1.9f,2f,0.5f), "Gamepad Setup", "Select a controller to \ncontinue.");
+		header.setHeaderTextSize(0.07f);
+		header.setContentColour(new float[]{1,1,1,0.5f});
+		this.add(header);
+		
+		playerName = new TextBox(new Vector3f(0.9f,0.2f,-2.5f),new Vector3f(0.1f,0.1f,0.5f), "1", null);
+		playerName.setHeaderHeight(1);
+		playerName.setHeaderTextSize(0.7f);
+		playerName.setHeaderColour(new float[]{1,1,1,0f});
+		playerName.setDrawn(false);
+		this.add(playerName);
+		
+		String[] names = {"Create profile", "Assign to player" , "Delete profile"};
+		for(int i = 0; i<names.length; i++){
+			subButton[i] = new Button(new Vector3f(-0.3f,0.5f-0.4f*i,-2.5f), new Vector3f(1.2f, 0.3f, 0.5f), names[i]);
+			
+			subButton[i].setTextSize(0.2f);
+			subButton[i].setAction(this);
+			this.add(subButton[i]);
 		}
 		
-		Header = new Button2f(new Vector2f(55,105), new Vector2f(95, 10), "Controller Setup");
+		
+		button = new Button[Gamepad.getGamepads().length];
+		int i = 0;
+		for(Gamepad p: Gamepad.getGamepads()){
+			button[i] = new Button(new Vector3f(0,0,0), new Vector3f(1.0f, 0.3f, 0.5f), p.getName());
+			button[i].setTextSize(0.15f);
+			this.add(button[i]);
+			i++;
+		}
+		
 	}
-
-	public void update(){
-		MenuStage.locked = true;
-		
-		if(Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_BACK) && assign == -1){
-			MenuStage.locked = false;
-		}
-		
-		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_SELECT)){
-			if(assign != -2 && (!Gamepad.Pad[currentButton].getProfileStatus())){				
-				assign = currentButton;
-				MenuStage.input();
-				Gamepad.Pad[assign].startBinding();
-				
-			}else if(currentTask == TASK_ASSIGN){
-				assign = -2;
-				currentTask = 0;
-				MenuStage.locked = false;
-				MenuStage.input();
-			}else if(currentTask == TASK_DELETE){
-				Gamepad.Pad[currentButton].deleteProfileStatus();
-				currentTask = 0;
-				MenuStage.input();
-			}
-		}
-		
-		if(assign == -1){
+	
+	public Vector3f getCameraFocus(){
+		return currentFocus;
+	}
+	
+	protected void updateInfo(){
+		if(this.hasFocus()){
+			header.enableContent();
 			
-			//Main Text
-			Model model = Header.getModel();
-			model.setTexture(MenuStage.Button);
-			Renderer.render(model);
-			font.drawText(Header.getMessage(), Header.getTextLocation(), 0.07f, 8f);
-				
-			//Button movement
-			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_UP)){
-				currentButton--;
-				MenuStage.input();
+			//Back to menu
+			if(Input.isKeyPressed(Input.KEY_BACK)){
+				Stage.setStage(Stage.getStage("menu"));
+				Input.recieved();
 			}
-			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_DOWN)){
+			
+			//Button process
+			if(Input.isKeyPressed(Input.KEY_UP)){
+				currentPad--;
+				Input.recieved();
+			}if(Input.isKeyPressed(Input.KEY_DOWN)){
+				currentPad++;
+				Input.recieved();
+			}
+			if(currentPad < 0){
+				currentPad = button.length-1;
+			}
+			if(currentPad > button.length-1){
+				currentPad = 0;
+			}
+			if(Input.isKeyPressed(Input.KEY_FORWARD)){
+				button[currentPad].focus();
+				currentButton = 0;
+				Input.recieved();
+			}
+		}else{
+			header.disableContent();
+		}
+
+		
+		for(int i = 0; i<button.length; i++){
+			//Button colour
+			if(this.hasFocus()){
+				if(i == currentPad){
+					button[i].setColour(new float[]{1,1,1,1});
+				}else{
+					button[i].setColour(new float[]{1,1,1,0.5f});
+				}
+				
+				button[i].setLocation(new Vector3f(-1.6f, 0.2f-0.4f*(i-currentPad), -2.5f));
+				
+				for(Button b: subButton){
+					b.setDrawn(false);
+				}
+			}else{
+				if(button[i].hasFocus()){
+					button[i].setLocation(new Vector3f(-1.6f, 0.2f-0.4f*(i-i), -2.5f));
+				}
+			}
+			//Button submenu
+			if(button[i].hasFocus()){
+				Gamepad pad = Gamepad.getGamepads()[i];
+				List<Integer> buttons = new ArrayList<Integer>();
+				
+				if(pad.getProfileStatus()){
+					buttons.add(1);
+					buttons.add(2);
+				}else{
+					buttons.add(0);
+				}
+				
+				
+				//Button process
+				currentButton = buttons.indexOf(currentButton);
+				if(Input.isKeyPressed(Input.KEY_UP)){
+					currentButton--;
+					Input.recieved();
+				}if(Input.isKeyPressed(Input.KEY_DOWN)){
+					currentButton++;
+					Input.recieved();
+				}
+				if(currentButton < 0){
+					currentButton = buttons.size()-1;
+				}
+				if(currentButton > buttons.size()-1){
+					currentButton = 0;
+				}
+				currentButton = buttons.get(currentButton);
+				if(Input.isKeyPressed(Input.KEY_FORWARD)){
+					subButton[currentButton].focus();
+					playerName.setDrawn(true);
+					
+					if(currentButton == 0){
+						Gamepad.getGamepads()[currentPad].startBinding();
+					}
+					currentButton = 0;
+					Input.recieved();
+				}
+				
+				for(int n = 0; n<subButton.length; n++){
+					subButton[n].setDrawn(true);
+					if(n == currentButton){
+						subButton[n].setColour(new float[]{1,1,1,1});
+					}else{
+						subButton[n].setColour(new float[]{1,1,1,0.5f});
+					}
+				}
+				
+				if(!pad.getProfileStatus()){
+					float[] RGBA = subButton[1].getColour();
+					RGBA[3] = 0.2f;
+					subButton[1].setColour(RGBA);
+					
+					RGBA = subButton[2].getColour();
+					RGBA[3] = 0.2f;
+					subButton[2].setColour(RGBA);
+				}else{
+					float[] RGBA = subButton[0].getColour();
+					RGBA[3] = 0.2f;
+					subButton[0].setColour(RGBA);
+				}
+				
+				if(Input.isKeyPressed(Input.KEY_BACK)){
+					button[i].unfocus();
+					currentButton = i;
+					Input.recieved();
+				}
+			}
+		}
+		
+		for(int i = 1; i<subButton.length; i++){
+			if(subButton[i].hasFocus() && Input.isKeyPressed(Input.KEY_BACK)){
+				subButton[i].unfocus();
+				currentButton = 0;
+				playerName.setDrawn(false);
+				Input.recieved();
+			}
+		}
+		
+		//Create
+		if(subButton[0].hasFocus()){
+			String text = Gamepad.getGamepads()[currentPad].getCurrentBinding();
+			
+			if(!text.equals("DONE")){
+				playerName.setHeader("Press:\n" + text);
+			}else{
+				subButton[0].unfocus();
+				currentButton = 0;
+				playerName.setDrawn(false);
+				Input.recieved();
+			}
+			
+		}
+		
+		//Assign
+		if(subButton[1].hasFocus()){
+			//Button process
+			if(Input.isKeyPressed(Input.KEY_LEFT)){
+				currentButton--;
+				Input.recieved();
+			}if(Input.isKeyPressed(Input.KEY_RIGHT)){
 				currentButton++;
-				MenuStage.input();
+				Input.recieved();
 			}
 			if(currentButton < 0){
-				currentButton = Controller.length-1;
-			}
-			if(currentButton > Controller.length-1){
 				currentButton = 0;
 			}
+			if(currentButton > Settings.User.size()-1){
+				currentButton = Settings.User.size()-1;
+			}
+			playerName.setHeader("Player:\n" + (currentButton + 1));
 			
-			//Task button movement
-			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_RIGHT)){
-				currentTask++;
-				MenuStage.input();
-			}
-			if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_LEFT)){
-				currentTask--;
-				MenuStage.input();
-			}
-			if(currentTask < 1){
-				currentTask = 2;
-			}
-			if(currentTask > 2){
-				currentTask = 1;
+			if(Input.isKeyPressed(Input.KEY_FORWARD)){
+				Gamepad.getGamepads()[currentPad].assignToPlayer(currentButton);
+				
+				subButton[1].unfocus();
+				currentButton = 0;
+				playerName.setDrawn(false);
+				Input.recieved();
 			}
 			
-			//Draw buttons
-			for(int i = 0; i<Controller.length; i++){
-				//Controller names
-				Model control = Controller[i].getModel();
-				control.setTexture(MenuStage.Button);
-				Renderer.render(control);
-				
-				//Text
-				String Player = "Unassigned";
-				if(Gamepad.Pad[i].assignedPlayer != -1){
-					Player = "" + Gamepad.Pad[i].assignedPlayer;
-				}
-				Vector3f loc = Controller[i].getTextLocation();
-				loc.y+=0.1f;
-				font.drawText(Player + ":\n" +Controller[i].getMessage(), loc, 0.03f, 7f);
-
-				//Task
-				int current = TASK_UNASSIGNED;
-				if(Gamepad.Pad[i].getProfileStatus()){
-					current = currentTask;
-				}
-				
-				Model task = ControllerTask[current][i].getModel();
-				if(currentButton == i){
-					if(Gamepad.Pad[i].getProfileStatus()){						
-						if(current ==  TASK_DELETE){
-							task.setTexture(MenuStage.ButtonSelected);
-							task.setRGBA(1f, 0.2f, 0.2f, 1f);
-						}else{
-							task.setTexture(MenuStage.ButtonSelected);
-						}
-					}else{
-						task.setTexture(MenuStage.ButtonSelected);
-						task.setRGBA(0.2f, 1f, 0.2f, 1f);
-					}
-				}else{
-					if(Gamepad.Pad[i].getProfileStatus()){
-						if(current ==  TASK_DELETE){
-							task.setTexture(MenuStage.Button);
-							task.setRGBA(1f, 0.2f, 0.2f, 1f);
-						}else{
-							task.setTexture(MenuStage.Button);
-						}
-					}else{
-						task.setTexture(MenuStage.Button);
-						task.setRGBA(0.2f, 1f, 0.2f, 1f);
-					}
-				}
-				Renderer.render(task);
-				
-				//Arrows
-				if(Gamepad.Pad[i].getProfileStatus()){
-
-					Model leftArrow = Arrow[i][0].getModel();
-					leftArrow.setTexture(MenuStage.Button);
-					
-					Vector3f Lloc = Arrow[i][0].getTextLocation();
-					Lloc.z-=0.1f;
-					font.drawText(Arrow[i][0].getMessage(), Lloc, 0.05f, 7);
-					Renderer.render(leftArrow);
-
-					Model rightArrow = Arrow[i][1].getModel();
-					rightArrow.setTexture(MenuStage.Button);
-
-					Vector3f Rloc = Arrow[i][1].getTextLocation();
-					Rloc.z-=0.1f;
-					font.drawText(Arrow[i][1].getMessage(), Rloc, 0.05f, 7);
-					Renderer.render(rightArrow);
-				}
-				
-				//Text
-				font.drawText(ControllerTask[current][i].getMessage(), ControllerTask[current][i].getTextLocation(), 0.03f, 7f);
-			}
-			
-		//Assign controller to player
-		}else if(assign == -2){
-			Assign();			
-		}else{
-			drawAssignment();
 		}
 		
-	}
-	
-	public void prepare(){
-	}
-	
-	private int currentPlayer = 0;
-	private void Assign(){
-		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_LEFT)){
-			currentPlayer--;
-			MenuStage.input();
-		}
-		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_RIGHT)){
-			currentPlayer++;
-			MenuStage.input();
-		}
-		
-		if(currentPlayer < 0){
-			currentPlayer = Settings.User.size();
-		}
-		if(currentPlayer >= Settings.User.size()){
-			currentPlayer = 0;
-		}
-		
-		font.drawText("Assign To Player:\n" + currentPlayer, new Vector3f(5.5f, 9, 0), 0.04f, 8f);
-		
-		if(MenuStage.timePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_SELECT)){
-			Settings.User.get(currentPlayer).setControlScheme(Gamepad.Pad[currentButton].getGPID());
-			Gamepad.Pad[currentButton].assignToPlayer(currentPlayer);
-			MenuStage.input();
-			
-			currentPlayer = 0;
-			currentTask = 0;
+		//Delete
+		if(subButton[2].hasFocus()){
+			Gamepad.getGamepads()[currentPad].deleteProfileStatus();
+			subButton[2].unfocus();
 			currentButton = 0;
+			playerName.setDrawn(false);
 			
-			assign = -1;
 		}
+	}
+
+	protected void updateUI(){
+		for(int i = 0; i<button.length; i++){
+			//Draw players
+			Gamepad pad = Gamepad.getGamepads()[i];
+
+			float[] RGBA = {0.5f, 0.5f, 0.5f, 0.5f};
+			if(pad.assignedPlayer != -1){
+				try{
+					RGBA = Settings.User.get(pad.assignedPlayer).getRGBA();
+				}catch(IndexOutOfBoundsException e){}
+			}
+			
+			drawPlayerAt(new Vector3f(-0.5f, button[i].getLocation().y-0.05f,-2.3f), RGBA, pad.assignedPlayer != -1, 0.5f);
+			
+		}
+		
+		//Assign
+		if(subButton[1].hasFocus()){
+			for(int i = 0; i<Settings.User.size(); i++){
+				Player p = Settings.User.get(i);
+				Vector3f location = new Vector3f(0.2f-0.25f*(currentButton-i), -0.8f,-1.0f);
+				
+				if(i == currentButton){
+					location.y += 0.2f;
+				}
+				
+				drawPlayerAt(location, p.getRGBA(), true, 0.5f);
+			}
+		}
+	}
+
+	private void drawPlayerAt(Vector3f location, float[] RGBA, boolean fill, float scale){
+		location.x -= Camera.getLERPLocation().x;
+		location.y -= Camera.getLERPLocation().y;
+		location.z -= Camera.getLERPLocation().z;
+		
+		Stencil.enable();
+		
+		//Outline
+		GL11.glDisable(GL11.GL_LIGHTING);
+
+		Model m = playerModel.getCurrentFrame();
+		m.setLocation(location.clone());
+		m.setRGBA(0, 0, 0, 1);
+		m.getLocation().y-=0.24f*scale;
+		m.scaleBy(1.6f*scale*6);
+		Renderer.render(m);		
+		
+		Model m1 = playerModel.getCurrentFrame();
+		m1.setLocation(location.clone());
+		m1.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+		m1.getLocation().y-=0.2f*scale;
+		m1.scaleBy(1.5f*scale*6);
+		Renderer.render(m1);
+		
+		GL11.glEnable(GL11.GL_LIGHTING);
+		Stencil.cylce();
+
+		if(fill){
+			Model m2 = playerModel.getCurrentFrame();
+			m2.setLocation(location.clone());
+			m2.scaleBy(scale*6);
+			Renderer.render(m2);
+		}
+		
+		Stencil.disable();
 	}
 	
-	private void drawAssignment(){
-		//Name Text
-		Model model = Header.getModel();
-		model.setTexture(MenuStage.Button);
-		Renderer.render(model);
-		font.drawText(Controller[assign].getMessage(), Header.getTextLocation(), 0.07f, 8f);
-		
-		String current = Gamepad.Pad[assign].getCurrentBinding();
-		
-		if(!current.equals("DONE")){
-			font.drawText("Press:\n" + current, new Vector3f(5.5f, 9, 0), 0.07f, 8f);
-		}else{
-			assign = -1;
-		}
-		
-	}
-
-	public void switchToUpdate(){
-	}
-
-	public void switchFromUpdate(){
+	public void run(int ID){
 	}
 
 }
