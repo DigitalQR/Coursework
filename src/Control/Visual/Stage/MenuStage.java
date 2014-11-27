@@ -10,6 +10,7 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Audio.Sound;
 import Control.Visual.Menu.Assets.Button;
+import Control.Visual.Menu.Assets.DropMenu;
 import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Action;
 import Control.Visual.Menu.Assets.Core.Input;
@@ -39,13 +40,12 @@ public class MenuStage extends Stage implements Action{
 			button[i].setAction(this);
 			this.add(button[i]);
 			
-			//text[i] = new TextBox(new Vector3f(-0.3f, -1.3f, -2.5f), new Vector3f(1.9f, 2f, 0.5f), buttonName[i], "This is for testing...\nMhm");
-			//text[i].setHeaderHeight(0.1f);
-			//text[i].setHeaderTextSize(0.05f);
-			//text[i].setContentTextSize(0.02f);
-			//text[i].setContentColour(new float[]{1,1,1,0.5f});
 		}
+
+		dm.setTextSize(0.1f);
+		this.add(dm);
 	}
+	DropMenu dm = new DropMenu(new Vector3f(-1.6f+1.6f, 0.6f, -2.5f), new Vector3f(1.2f, 0.3f, 0.5f), "Drop down menu", new String[]{"A of A","Alpha","1 breh"});
 	
 	private void playRandomSong(){
 		try{
@@ -124,6 +124,11 @@ public class MenuStage extends Stage implements Action{
 		//Gamepad setup
 		if(ID == button[1].getID() && button[1].hasFocus()){
 			Stage.setStage(Stage.getStage("gamepadsetup"));
+		}
+		
+		//Settings
+		if(ID == button[2].getID() && button[2].hasFocus()){
+			dm.focus();
 		}
 		
 		//Exit
