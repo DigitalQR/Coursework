@@ -25,10 +25,6 @@ public class Toolkit {
 		return dif;
 	}
 	
-	public static float Differencef(float a, float b){
-		return (float)b-a;
-	}
-	
 	public static float LERP(Vector2f pos0, Vector2f pos1, float value){
 		return (float)(pos0.y + (pos1.y-pos0.y)*(value-pos0.x)/(pos1.x-pos0.x));
 	}
