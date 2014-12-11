@@ -143,21 +143,25 @@ public class Player extends Entity{
 	public ControlScheme getControlScheme(){
 		return control;
 	}
-
+	
 	public void update(){
-		Vector3f location = this.getLocation();
-		LastLocation = new Vector3f(location.x, location.y, location.z);
+		LastLocation =this.getLocation().clone();
 		this.LastUpdate = System.nanoTime()-MainControl.UPS;
 		
+			
 		if(!health.isDead){
-			this.updateComponents();
+
+			if(!Settings.isClientActive()){
+				this.updateComponents();
+			}
+		
 		}else if(health.canRespawn()){
 			spawn();
 			LastLocation.x = this.getLocation().x;
 			LastLocation.y = this.getLocation().y;
 			health.reset();
 		}
-		
+			
 		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
 		if(!bound.AreaIntersect(new Vector2f(this.getLocation().x, this.getLocation().y),  new Vector2f(this.getSize().x, this.getSize().y)) && !health.isDead){
 			health.kill(true);

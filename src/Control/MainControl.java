@@ -32,7 +32,7 @@ public class MainControl{
 			
 			try{
 				Camera.incrementRandomLighting();
-			}catch(Exception e){}
+			}catch(Exception e){} 
 			
 			Stage.updateCurrentStage();
 			while(true){

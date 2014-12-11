@@ -9,6 +9,8 @@ import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
 import Control.Input.Gamepad;
+import Control.Server.Client;
+import Control.Server.Host;
 import Control.Visual.DisplayManager;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.Core.Stage;
@@ -16,9 +18,9 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.2.1 <You and I customisation>";
+	public static final String Version = "1.2.2 <You and I customisation>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
-	public static List<Hitbox> hb;
+	public static ArrayList<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
 
 	public static List<String> toggleNames = new ArrayList<String>();
@@ -27,7 +29,18 @@ public class Settings implements Runnable{
 	public static List<String> floatNames = new ArrayList<String>();
 	public static HashMap<String,Float> floats = new HashMap<String,Float>();
 	
+	public static Host host;
+	public static Client client;
 
+	public static boolean isClientActive(){
+		if(client == null){
+			return false;
+		}else{
+			return !client.isDestroyed();
+		}
+		
+	}
+	
 	public static List<Vector3f> playerColourProfiles = new ArrayList<Vector3f>();
 	
 	public static void setup(){
@@ -85,7 +98,7 @@ public class Settings implements Runnable{
 	public static void issueCommand(String input){
 		String[] raw = input.split(" ");
 		
-		switch(raw[0]){
+		switch(raw[0].toLowerCase()){
 		//Lists the commands
 		case "help":
 			System.out.println("toggle <variable>");
@@ -205,6 +218,44 @@ public class Settings implements Runnable{
 		//Force stops the JVM
 		case "stop":
 			System.exit(0);
+			break;
+
+		//Connects to a server
+		case "connect":
+			if(raw.length == 3){
+				try{
+					if(client == null || client.isDestroyed()){
+						int port = Integer.valueOf(raw[2]);
+						client = new Client(raw[1], port);
+					}else{
+						System.out.println("Client is already active.");
+					}
+				}catch(NumberFormatException e){
+					System.out.println(raw[2] + " is not a valid port.");
+				}
+			}else{
+				System.out.println("Usage: connect <host> <port>");
+			}
+			break;
+		
+
+		//Connects to a server
+		case "host":
+			if(raw.length == 2){
+				try{
+					if(host == null){
+						int port = Integer.valueOf(raw[1]);
+						host = new Host(port);
+						host.start();
+					}else{
+						System.out.println("Host is already active.");
+					}
+				}catch(NumberFormatException e){
+					System.out.println(raw[1] + " is not a valid port.");
+				}
+			}else{
+				System.out.println("Usage: host <port>");
+			}
 			break;
 			
 		default:

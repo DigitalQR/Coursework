@@ -11,9 +11,9 @@ import Tools.Maths.Vector3f;
 public abstract class Entity{
 	
 	private Component[] component = new Component[0];
-	private Vector3f location;
+	protected Vector3f location;
 	protected float LastUpdate = 0;
-	protected Vector3f LastLocation = new Vector3f(0,0,-1000);
+	protected Vector3f LastLocation = new Vector3f(0,0,0);
 	private Vector3f velocity;
 	
 	public int killCount = 0;
@@ -93,8 +93,6 @@ public abstract class Entity{
 		loc.x/=100;
 		loc.y = Math.round(loc.y*100);
 		loc.y/=100;
-		loc.z = Math.round(loc.z*100);
-		loc.z/=100;
 	}
 
 	private Vector3f LERPLocation = new Vector3f(0,0,0);
@@ -108,9 +106,9 @@ public abstract class Entity{
 			
 			float x = Toolkit.LERPValue(new Vector2f(LastUpdate, LastLocation.x), new Vector2f(CurrentTime, location.x), LookupTime);
 			float y = Toolkit.LERP(new Vector2f(LastUpdate, LastLocation.y), new Vector2f(CurrentTime, location.y), LookupTime);
-			LERPLocation = new Vector3f(x, y, location.z);
+			LERPLocation = new Vector3f(x, y, 0);
 		}else{
-			LERPLocation = new Vector3f(location.x, location.y, location.z);
+			LERPLocation = new Vector3f(location.x, location.y, 0);
 		}
 		
 	}
