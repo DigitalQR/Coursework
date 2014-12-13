@@ -141,6 +141,7 @@ class Connection{
 			public void run(){
 				try{
 					socket = listener.accept();
+					socket.setTcpNoDelay(true);
 					connected = true;
 					output = new PrintWriter(socket.getOutputStream(),true);
 					input = new BufferedReader(new InputStreamReader(socket.getInputStream()));

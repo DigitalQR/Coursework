@@ -27,6 +27,7 @@ public class Client implements Runnable{
 	public Client(String host, int port){
 		try{
 			socket = new Socket(host, port);
+			socket.setTcpNoDelay(true);
 			output = new PrintWriter(socket.getOutputStream(),true);
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			System.out.println("Connected to: " + socket.getInetAddress() + " " + socket.getPort());
