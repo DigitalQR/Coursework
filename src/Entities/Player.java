@@ -198,6 +198,10 @@ public class Player extends Entity{
 		health.kill(increaseKills);
 	}
 	
+	public void setRGBA(float[] rGBA) {
+		RGBA = rGBA;
+	}
+
 	public float getRespawnTimeRemaining(){
 		return health.getTimeRemaining();
 	}

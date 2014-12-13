@@ -105,11 +105,13 @@ public class Client implements Runnable{
 							break;
 						}
 					}
+					String subCommand = s.substring( ("pl" + playerID + "" + action).length());
+
 					switch(action){
 						//Location
 						case 'l':
 							
-							String[] para = s.substring(4).split(",");
+							String[] para = subCommand.split(",");
 							float[] val = {
 									Float.parseFloat(para[0]),
 									Float.parseFloat(para[1])
@@ -120,7 +122,15 @@ public class Client implements Runnable{
 						
 						//Information
 						case 'i':
-							
+							//Colour
+							if(subCommand.startsWith("c")){
+								String[] col = subCommand.substring(1).split(",");
+								float r = Float.parseFloat(col[0]);
+								float g = Float.parseFloat(col[1]);
+								float b = Float.parseFloat(col[2]);
+								
+								Settings.User.get(playerID).setRGBA(new float[]{r,g,b,1});
+							}
 							
 							break;
 					}

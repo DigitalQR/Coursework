@@ -52,7 +52,7 @@ public class Host implements Runnable{
 						String command = "";
 						
 						for(int i = 0; i<player.size(); i++){
-							if(!player.get(i).equals(c.players.get(i))){
+							if(!player.get(i).locationEquals(c.players.get(i))){
 								Player p = player.get(i);
 								command += "pl" + i + "l" + p.getLocation().x + "," + p.getLocation().y + ";"; 
 								//pl - player
@@ -61,6 +61,10 @@ public class Host implements Runnable{
 								//l - location
 								//h - hitbox
 								//i - Information
+							}
+							if(!player.get(i).colourEquals(c.players.get(i))){
+								Player p = player.get(i);
+								command += "pl" + i + "ic" + p.getColour().x + "," + p.getColour().y + "," + p.getColour().z + ";"; 
 							}
 						}
 						c.players = player;
