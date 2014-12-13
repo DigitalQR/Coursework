@@ -29,12 +29,21 @@ public class Client implements Runnable{
 			socket = new Socket(host, port);
 			output = new PrintWriter(socket.getOutputStream(),true);
 			input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			System.out.println("Connected to: " + socket.getInetAddress() + " " + socket.getPort());
 			thread = new Thread(this);
 			thread.start();
 		}catch(IOException e){
 			System.err.println("Error connecting to host:\n" + e.getLocalizedMessage());
 			socket = null;
 		}
+	}
+
+	private boolean waiting = false;
+	private long time;
+	private int ping = 0;
+	
+	public int getPing(){
+		return ping;
 	}
 	
 	public void run(){
@@ -53,12 +62,16 @@ public class Client implements Runnable{
 		}).start();
 		
 		while(!isDestroyed()){
-			sendMessage("Hi");
-			try {
-				TimeUnit.SECONDS.sleep(1);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			sendMessage("ping");
+			time = (long) (System.nanoTime()/1000000.);
+			waiting = true;
+			
+			while(waiting){
+				try {
+					TimeUnit.SECONDS.sleep(1);
+				}catch(InterruptedException e){
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -68,6 +81,14 @@ public class Client implements Runnable{
 			String[] commands = input.split(";");
 			
 			for(String s: commands){
+				if(s.startsWith("ping")){
+					time*=-1;
+					time+=System.nanoTime()/1000000.;
+					ping = Math.round(time);
+					System.out.println("Ping: " + ping);
+					waiting = false;
+				}
+				
 				if(s.startsWith("pl")){
 					
 					String no = "";
@@ -136,6 +157,7 @@ public class Client implements Runnable{
 			return input.readLine();
 		}catch(IOException e){
 			e.printStackTrace();
+			System.exit(0);
 			return "";
 		}
 	}

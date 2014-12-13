@@ -80,6 +80,14 @@ public class Host implements Runnable{
 							}
 							c.hitboxes = Settings.hb;
 						}
+
+						String mes = c.getRecievedMessage();
+						if(mes != ""){
+							if(mes.equals("ping;")){
+								command += "ping;";
+							}
+						}
+						
 						
 						if(!command.equals("")){
 							c.sendMessage(command);
@@ -88,10 +96,6 @@ public class Host implements Runnable{
 					if(c.isDisconnected()){
 						connections.remove(c);
 						System.out.println("Connection " + c.getID() + " removed");
-					}
-					String mes = c.getRecievedMessage();
-					if(mes != ""){
-						System.out.println(mes);
 					}
 				}
 				
