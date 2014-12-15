@@ -130,6 +130,7 @@ class Connection{
 	private static int IDTrack = 0;
 	
 	private final int ID = IDTrack++;
+	private int playerID = ID+1;
 	private boolean connected = false;
 	private boolean disconnected = false;
 	private Socket socket;
@@ -164,6 +165,14 @@ class Connection{
 	
 	public int getID(){
 		return ID;
+	}
+	
+	public void setPlayerID(int id){
+		playerID = id;
+	}
+	
+	public int getPlayerID(){
+		return playerID;
 	}
 	
 	public boolean isDisconnected(){
