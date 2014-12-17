@@ -243,7 +243,7 @@ public class Gamepad{
 	
 	public void assignToPlayer(int i){
 		for(Player p: Settings.User){
-			if(p.getControlScheme().GPID == this.GPID){
+			if(p.getControlScheme().getGPID() == this.GPID){
 				p.getControlScheme().setDefaultControls();
 			}
 		}
@@ -265,7 +265,7 @@ public class Gamepad{
 		new File("Res/GPProfile/" + getName() + ".GPP").delete();
 		
 		for(Player p: Settings.User){
-			if(p.getControlScheme().GPID == this.GPID){
+			if(p.getControlScheme().getGPID() == this.GPID){
 				p.getControlScheme().setDefaultControls();
 			}
 		}

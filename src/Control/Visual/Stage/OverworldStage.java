@@ -243,6 +243,17 @@ public class OverworldStage extends Stage{
 		//Draw HUD
 		Stencil.enable();
 		GL11.glDisable(GL11.GL_LIGHTING);
+		
+		if(Settings.isClientActive()){
+			Vector3f location = new Vector3f(-0.3f,1.5f,-2.5f);
+			location.x -= Camera.getLERPLocation().x;
+			location.y -= Camera.getLERPLocation().y;
+			location.z -= Camera.getLERPLocation().z;
+			
+			text.setRGBA(0, 0, 0, 1);
+			text.drawText("Ping: " + Settings.client.getPing(), location, 0.01f, 8f);
+		}
+		
 		int ID = 0;
 		for(Player p: player){
 			float scale =0.3f;

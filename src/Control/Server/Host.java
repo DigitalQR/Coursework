@@ -13,6 +13,7 @@ import Collision.Hitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Server.Assets.Player;
+import Entities.Tools.ServerControlScheme;
 
 public class Host implements Runnable{
 
@@ -85,10 +86,33 @@ public class Host implements Runnable{
 							c.hitboxes = Settings.hb;
 						}
 
-						String mes = c.getRecievedMessage();
-						if(mes != ""){
-							if(mes.equals("ping;")){
-								command += "ping;";
+						String message = c.getRecievedMessage();
+						if(message != ""){
+							for(String mes: message.split(";")){
+								if(mes.equals("ping")){
+									command += "ping";
+								}
+								if(mes.startsWith("c")){
+									boolean val = false;
+									if(mes.charAt(2) == 't'){
+										val = true;
+									}
+									switch(mes.charAt(1)){
+									case 'j':
+										c.controlScheme.setKeyState(c.controlScheme.KEY_JUMP, val);
+										break;
+									case 'l':
+										c.controlScheme.setKeyState(c.controlScheme.KEY_LEFT, val);
+										break;
+									case 'r':
+										c.controlScheme.setKeyState(c.controlScheme.KEY_RIGHT, val);
+										break;
+									case 'd':
+										c.controlScheme.setKeyState(c.controlScheme.KEY_DUCK, val);
+										break;
+									}
+
+								}
 							}
 						}
 						
@@ -127,7 +151,7 @@ public class Host implements Runnable{
 
 class Connection{
 	
-	private static int IDTrack = 0;
+	private static int IDTrack = 1;
 	
 	private final int ID = IDTrack++;
 	private int playerID = ID+1;
@@ -136,6 +160,7 @@ class Connection{
 	private Socket socket;
 	private PrintWriter output;
 	private BufferedReader input;
+	public ServerControlScheme controlScheme;
 	
 	protected ArrayList<Player> players = Player.getNullList();
 	protected ArrayList<Hitbox> hitboxes = new ArrayList<Hitbox>();
@@ -150,6 +175,9 @@ class Connection{
 					connected = true;
 					output = new PrintWriter(socket.getOutputStream(),true);
 					input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					
+					controlScheme = new ServerControlScheme();
+					Settings.User.get(ID).setControlScheme(controlScheme);
 					
 					while(!disconnected){
 						processMessage();

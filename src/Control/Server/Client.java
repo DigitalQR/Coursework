@@ -13,9 +13,11 @@ import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
 import Collision.SquareHitbox;
+import Control.MainControl;
 import Control.Settings;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.Core.Stage;
+import Entities.Player;
 
 public class Client implements Runnable{
 	
@@ -59,22 +61,54 @@ public class Client implements Runnable{
 						
 					}
 				}
+				System.out.println("Client message decoding thread destroyed.");
 			}
 		}).start();
 		
 		while(!isDestroyed()){
-			sendMessage("ping");
-			time = (long) (System.nanoTime()/1000000.);
-			waiting = true;
+			String command = "";
+			Player player = Settings.User.get(0);
 			
-			while(waiting){
-				try {
-					TimeUnit.SECONDS.sleep(1);
-				}catch(InterruptedException e){
-					e.printStackTrace();
-				}
+			if(player.isKeyPressed(player.getControlScheme().KEY_JUMP)){
+				command += "cjt;";
+			}else{
+				command += "cjf;";
 			}
+			
+			if(player.isKeyPressed(player.getControlScheme().KEY_DUCK)){
+				command += "cdt;";
+			}else{
+				command += "cdf;";
+			}
+			
+			if(player.isKeyPressed(player.getControlScheme().KEY_LEFT)){
+				command += "clt;";
+			}else{
+				command += "clf;";
+			}
+			
+			if(player.isKeyPressed(player.getControlScheme().KEY_RIGHT)){
+				command += "crt;";
+			}else{
+				command += "crf;";
+			}
+
+			if( ( System.nanoTime()/1000000 - time)/1000 >= 1){
+				time = (long) (System.nanoTime()/1000000);
+				waiting = true;
+				command += "ping;";
+			}
+			
+			sendMessage(command);
+			
+			try{
+				TimeUnit.NANOSECONDS.sleep(MainControl.UPS);
+			}catch(InterruptedException e){
+				e.printStackTrace();
+			}
+			
 		}
+		System.out.println("Client message sending thread destroyed.");
 	}
 	
 	public void decodeCommands(String input){
@@ -83,10 +117,7 @@ public class Client implements Runnable{
 			
 			for(String s: commands){
 				if(s.startsWith("ping")){
-					time*=-1;
-					time+=System.nanoTime()/1000000.;
-					ping = Math.round(time);
-					System.out.println("Ping: " + ping);
+					ping = Math.round(System.nanoTime()/1000000-time);
 					waiting = false;
 				}
 				
@@ -160,6 +191,7 @@ public class Client implements Runnable{
 	}
 	
 	public void sendMessage(String message){
+		output.flush();
 		output.println(message);
 	}
 	

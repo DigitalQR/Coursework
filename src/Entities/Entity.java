@@ -63,6 +63,21 @@ public abstract class Entity{
 		component = temp;
 	}
 	
+	public void removeComponent(Component c){
+		Component[] temp = new Component[component.length-1];
+		
+		int track = 0;
+		for(int i = 0; i<component.length; i++){
+			if(!component[i].equals(c)){
+				System.out.println(track + ":" + i);
+				temp[track] = component[i];
+				track++;
+			}
+		}
+		component = temp;
+	}
+	
+	
 	protected void updateComponents(){
 		for(Component c: component){
 			c.update(this);

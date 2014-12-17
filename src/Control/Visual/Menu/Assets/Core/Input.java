@@ -33,7 +33,7 @@ public class Input {
 	
 	public static boolean isKeyPressed(int key){
 		Player p = Settings.User.get(0);
-		if(p.getControlScheme().GPID != -1){
+		if(p.getControlScheme().getGPID() != -1){
 			if(hasTimePassed()){
 				switch(key){
 				case KEY_UP:

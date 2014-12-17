@@ -9,13 +9,17 @@ public class ControlScheme extends Component{
 	
 	public int KEY_JUMP, KEY_DUCK, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,  KEY_PRIMARY, KEY_SECONDARY, KEY_SELECT, KEY_BACK, KEY_START, KEY_BLOCK;
 	public static final int KEY_COUNT = 12;
-	public int GPID;
+	protected int GPID;
 	
 	public ControlScheme(){
 		setDefaultControls();
 	}
 	
-	public void setDefaultControls(){
+	public int getGPID(){
+		return GPID;
+	}
+	
+	public void setDefaultControls(){		
 		this.GPID = -1;
 		KEY_JUMP = 0; 
 		KEY_DUCK = 0;
@@ -35,10 +39,6 @@ public class ControlScheme extends Component{
 		KEY_SECONDARY = 0;
 		
 		KEY_START = 0;
-	}
-
-	public ControlScheme(int GPID){
-		setControlScheme(GPID);
 	}
 	
 	public void setControlScheme(int GPID){
@@ -63,13 +63,21 @@ public class ControlScheme extends Component{
 		KEY_START = Gamepad.BUTTON_PAUSE;
 	}
 	
-	public boolean isKeyPressed(int key){
+	public boolean isKeyPressed(int key){		
 		if(GPID == -1){
 			try{
 				return Keyboard.isKeyDown(key);
 			}catch(IllegalStateException e){
 				return false;
 			}
+		}else if(GPID == -2){
+			try {
+				throw new Exception("SSSS");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
 		}else{
 			return Gamepad.getGamepad(GPID).isButtonPressed(key);
 		}

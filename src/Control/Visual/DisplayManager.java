@@ -17,7 +17,7 @@ public class DisplayManager{
 	public static Vector2f p1080= new Vector2f(1920, 1080);
 	
 	public static void create(){
-		Vector2f Res = p720; 
+		Vector2f Res = p480; 
 		
 		try{
 			DisplayMode display = null;
