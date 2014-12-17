@@ -18,7 +18,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.2.5 <You and I customisation>";
+	public static final String Version = "1.2.6 <You and I customisation>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static ArrayList<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -168,7 +168,7 @@ public class Settings implements Runnable{
 					try{
 						int val = Integer.valueOf(raw[2]);
 						for(int i = val; i<User.size(); i++){
-							final int GPID = User.get(i).getControlScheme().GPID;
+							final int GPID = User.get(i).getControlScheme().getGPID();
 							if(GPID != -1){
 								Gamepad.getGamepad(GPID).assignToPlayer(-1);
 							}
