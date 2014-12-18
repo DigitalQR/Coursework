@@ -3,7 +3,9 @@ package Control.Visual;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
@@ -11,15 +13,17 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Visual.Menu.Assets.Core.FocusableItem;
 import Control.Visual.Stage.Core.Stage;
+import Debug.ErrorPopup;
 import Entities.Player;
 import RenderEngine.Renderer;
 
 public class DisplayControl implements Runnable{
 	
 	public static boolean exists = false;
+	public static DisplayMode display;
 	
-	private static void start(){
-		DisplayManager.create();
+	private static void start() throws LWJGLException{
+		DisplayManager.create(display);
 		FocusableItem.initialise();
 		setupOpenGL();
 		setupLighting();
@@ -67,7 +71,11 @@ public class DisplayControl implements Runnable{
 	}
 	
 	public void run(){
-		start();
+		try{
+			start();
+		}catch(LWJGLException e){
+			ErrorPopup.createMessage(e, true);
+		}
 		exists = true;
 		GLU.gluLookAt(0, 0, 0, 0.0f, 0.0f, -1.0f, 0, 1, 0);
 		

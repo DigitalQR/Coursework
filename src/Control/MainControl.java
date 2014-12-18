@@ -16,7 +16,7 @@ public class MainControl{
 	public final static int UPS = (1000/30)*1000000;
 	
 	
-	public static void main(String[] args){
+	public static void launch(){
 		Settings.setup();
 		Gamepad.setup();
 		Sound.setup();

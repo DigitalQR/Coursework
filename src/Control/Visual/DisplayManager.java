@@ -5,43 +5,19 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-import Debug.ErrorPopup;
-import Tools.Maths.Vector2f;
 
 public class DisplayManager{
 	
 	public static  int FPS = 120;
-	private static boolean fullscreen = false;
-	public static Vector2f p480 = new Vector2f(800, 480);
-	public static Vector2f p720 = new Vector2f(1280, 720);
-	public static Vector2f p1080= new Vector2f(1920, 1080);
+	public static boolean fullscreen = false;
 	
-	public static void create(){
-		Vector2f Res = p480; 
-		
-		try{
-			DisplayMode display = null;
-			DisplayMode[] mod = Display.getAvailableDisplayModes();
+	public static void create(DisplayMode display) throws LWJGLException{
 			
-			for(DisplayMode m:mod){
-				if(m.isFullscreenCapable()){
-					System.out.println("Resolution: " + m.getWidth() + ", " + m.getHeight());
-				}
-				if(m.getWidth() == Res.x && m.getHeight() == Res.y && m.isFullscreenCapable()){
-					display = m;
-					System.out.println("\t SET");
-					break;
-				}
-			}
+		Display.setDisplayMode(display);
+		Display.setFullscreen(fullscreen);
+		Display.create();
 			
-			Display.setDisplayMode(display);
-			Display.setFullscreen(fullscreen);
-			Display.create();
-			
-			Display.setTitle(" S Q U A R E   O F F ");
-		}catch(LWJGLException e){
-			ErrorPopup.createMessage(e, true);
-		}
+		Display.setTitle(" S Q U A R E   O F F ");
 
 	}
 	

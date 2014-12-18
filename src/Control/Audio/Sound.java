@@ -17,54 +17,56 @@ import Debug.ErrorPopup;
 public class Sound{
 
 	private static int IDTrack = 0;
-	private static boolean alive = true;
+	public static boolean alive = false;
 	private static ArrayList<Sound> sounds = new ArrayList<Sound>();
 	
 	public static void setup(){
-		new Thread(new Runnable(){
-					
-					@SuppressWarnings("unchecked")
-					public void run(){
+		if(alive){
+			new Thread(new Runnable(){
 						
-						while(!MainControl.CloseRequest){
-							for(Sound s: (List<Sound>) sounds.clone()){
-								try{
-									s.gainControl.setValue(getActualGain(s.gain));
-									
-									if(s.playing && s.gain*Settings.floats.get("s_volume") != 0f){
-										boolean songFinished = s.clip.getFrameLength() - s.clip.getFramePosition() <= 0;
+						@SuppressWarnings("unchecked")
+						public void run(){
+							
+							while(!MainControl.CloseRequest){
+								for(Sound s: (List<Sound>) sounds.clone()){
+									try{
+										s.gainControl.setValue(getActualGain(s.gain));
 										
-										if(s.loop && songFinished){
-											s.clip.setFramePosition(0);
+										if(s.playing && s.gain*Settings.floats.get("s_volume") != 0f){
+											boolean songFinished = s.clip.getFrameLength() - s.clip.getFramePosition() <= 0;
 											
-										}else if(songFinished){
-											s.stop();
+											if(s.loop && songFinished){
+												s.clip.setFramePosition(0);
+												
+											}else if(songFinished){
+												s.stop();
+											}
+											
+											s.clip.loop(-1);
+										}else if(s.destroyOnFinish){
+											s.cleanup();
 										}
+									}catch(NullPointerException e){
 										
-										s.clip.loop(-1);
-									}else if(s.destroyOnFinish){
-										s.cleanup();
+									}catch(IllegalArgumentException e){
+										ErrorPopup.createMessage(e, true);
 									}
-								}catch(NullPointerException e){
-									
-								}catch(IllegalArgumentException e){
+								}
+								try{
+									TimeUnit.MILLISECONDS.sleep(1);
+								}catch(InterruptedException e){
 									ErrorPopup.createMessage(e, true);
 								}
 							}
-							try{
-								TimeUnit.MILLISECONDS.sleep(1);
-							}catch(InterruptedException e){
-								ErrorPopup.createMessage(e, true);
+							alive = false;
+							
+							for(Sound s: (List<Sound>) sounds.clone()){
+								s.cleanup();
 							}
+							
 						}
-						alive = false;
-						
-						for(Sound s: (List<Sound>) sounds.clone()){
-							s.cleanup();
-						}
-						
-					}
-				}).start();
+					}).start();
+		}
 	}
 	
 	public static float getActualGain(float gain){
