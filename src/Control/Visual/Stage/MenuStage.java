@@ -26,7 +26,8 @@ public class MenuStage extends Stage implements Action{
 		super();
 		playRandomSong();
 		
-		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), "Untitled Game", null);
+		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), " Square off ", null);
+		header.setHeaderTextSize(0.14f);
 		this.add(header);
 
 		TextBox version = new TextBox(new Vector3f(-1.6f,0.6f,-2.5f),new Vector3f(1f,0.5f,0.5f), "Version: " + Settings.Version, null);

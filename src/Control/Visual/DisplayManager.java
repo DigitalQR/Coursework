@@ -38,7 +38,7 @@ public class DisplayManager{
 			Display.setFullscreen(fullscreen);
 			Display.create();
 			
-			Display.setTitle("Untiled Game");
+			Display.setTitle(" S Q U A R E   O F F ");
 		}catch(LWJGLException e){
 			ErrorPopup.createMessage(e, true);
 		}
