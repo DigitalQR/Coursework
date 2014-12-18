@@ -1,9 +1,9 @@
 package Entities.Tools;
 
 public class ServerControlScheme extends ControlScheme{
-	
-	private boolean[] keys = new boolean[14];
-	public static final int KEY_COUNT = 14;
+
+	public boolean[] keys = new boolean[14];
+	public static final int KEY_COUNT = 12;
 	
 	public ServerControlScheme(){
 		super();
@@ -20,16 +20,14 @@ public class ServerControlScheme extends ControlScheme{
 		
 		KEY_UP = 5; 
 		KEY_DOWN = 6;
-		KEY_LEFT = 7;
-		KEY_RIGHT = 8;
 		
-		KEY_SELECT = 9;
-		KEY_BACK = 10;
+		KEY_SELECT = 7;
+		KEY_BACK = 8;
 		
-		KEY_PRIMARY = 11; 
-		KEY_SECONDARY = 12;
+		KEY_PRIMARY = 9; 
+		KEY_SECONDARY = 10;
 		
-		KEY_START = 13;
+		KEY_START = 11;
 	}
 	
 	public boolean isKeyPressed(int key){
@@ -40,4 +38,14 @@ public class ServerControlScheme extends ControlScheme{
 	public void setKeyState(int key, boolean val){
 		keys[key] = val;
 	}
+	
+	public boolean areKeysEqual(ServerControlScheme s){
+		for(int i = 0 ; i<KEY_COUNT; i++){
+			if(s.keys[i] != keys[i]){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 }

@@ -69,7 +69,6 @@ public abstract class Entity{
 		int track = 0;
 		for(int i = 0; i<component.length; i++){
 			if(!component[i].equals(c)){
-				System.out.println(track + ":" + i);
 				temp[track] = component[i];
 				track++;
 			}

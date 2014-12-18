@@ -18,7 +18,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.2.6 <You and I customisation>";
+	public static final String Version = "1.2.7 <You and I customisation>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static ArrayList<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -246,7 +246,6 @@ public class Settings implements Runnable{
 					if(host == null){
 						int port = Integer.valueOf(raw[1]);
 						host = new Host(port);
-						host.start();
 					}else{
 						System.out.println("Host is already active.");
 					}
@@ -269,5 +268,14 @@ public class Settings implements Runnable{
 		int scale = 8;
 		hb = Hitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
 
+	}
+	
+	public static void update(){
+		if(host != null){
+			host.serverUpdate();
+		}
+		if(client != null){
+			client.serverUpdate();
+		}
 	}
 }

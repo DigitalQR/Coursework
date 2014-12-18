@@ -29,8 +29,6 @@ public class ControlScheme extends Component{
 		
 		KEY_UP = 0; 
 		KEY_DOWN = 0;
-		KEY_LEFT = 0;
-		KEY_RIGHT = 0;
 		
 		KEY_SELECT = 0;
 		KEY_BACK = 0;
@@ -51,8 +49,6 @@ public class ControlScheme extends Component{
 		
 		KEY_UP = Gamepad.BUTTON_UP; 
 		KEY_DOWN = Gamepad.BUTTON_DOWN;
-		KEY_LEFT = Gamepad.BUTTON_LEFT;
-		KEY_RIGHT = Gamepad.BUTTON_RIGHT;
 		
 		KEY_SELECT = Gamepad.BUTTON_MENU_FORWARD;
 		KEY_BACK = Gamepad.BUTTON_MENU_BACK;

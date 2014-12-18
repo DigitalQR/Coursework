@@ -7,13 +7,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
 import Collision.SquareHitbox;
-import Control.MainControl;
 import Control.Settings;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.Core.Stage;
@@ -41,7 +39,6 @@ public class Client implements Runnable{
 		}
 	}
 
-	private boolean waiting = false;
 	private long time;
 	private int ping = 0;
 	
@@ -49,66 +46,68 @@ public class Client implements Runnable{
 		return ping;
 	}
 	
-	public void run(){
-		new Thread(new Runnable(){
+	public void serverUpdate(){
+		String command = "";
 			
-			public void run(){
-				while(!isDestroyed()){
-					try{
-						String input = getRecievedMessage();
-						decodeCommands(input);
-					}catch(SocketException e){
-						
-					}
-				}
-				System.out.println("Client message decoding thread destroyed.");
-			}
-		}).start();
-		
-		while(!isDestroyed()){
-			String command = "";
-			Player player = Settings.User.get(0);
-			
-			if(player.isKeyPressed(player.getControlScheme().KEY_JUMP)){
-				command += "cjt;";
-			}else{
-				command += "cjf;";
-			}
-			
-			if(player.isKeyPressed(player.getControlScheme().KEY_DUCK)){
-				command += "cdt;";
-			}else{
-				command += "cdf;";
-			}
-			
-			if(player.isKeyPressed(player.getControlScheme().KEY_LEFT)){
-				command += "clt;";
-			}else{
-				command += "clf;";
-			}
-			
-			if(player.isKeyPressed(player.getControlScheme().KEY_RIGHT)){
-				command += "crt;";
-			}else{
-				command += "crf;";
-			}
+		command += processMovement();
 
-			if( ( System.nanoTime()/1000000 - time)/1000 >= 1){
-				time = (long) (System.nanoTime()/1000000);
-				waiting = true;
-				command += "ping;";
-			}
-			
-			sendMessage(command);
-			
+		if( ( System.nanoTime()/1000000 - time)/1000 >= 1){
+			time = (long) (System.nanoTime()/1000000);
+			command += "ping;";
+		}
+		
+		sendMessage(command);	
+	}
+	
+	public void run(){
+		while(!isDestroyed()){
 			try{
-				TimeUnit.NANOSECONDS.sleep(MainControl.UPS);
-			}catch(InterruptedException e){
+				String input = getRecievedMessage();
+				decodeCommands(input);
+			}catch(SocketException e){
 				e.printStackTrace();
 			}
-			
 		}
-		System.out.println("Client message sending thread destroyed.");
+		System.out.println("Client message decoding thread destroyed.");
+	
+	}
+	
+	private boolean[] keys = new boolean[12];
+	
+	private String processMovement(){
+		String command = "";
+		Player player = Settings.User.get(0);
+		
+		final int[] buttons = {
+				player.getControlScheme().KEY_JUMP,
+				player.getControlScheme().KEY_DUCK,
+				player.getControlScheme().KEY_LEFT,
+				player.getControlScheme().KEY_RIGHT,
+				player.getControlScheme().KEY_UP,
+				player.getControlScheme().KEY_DOWN,
+				player.getControlScheme().KEY_PRIMARY,
+				player.getControlScheme().KEY_SECONDARY,
+				player.getControlScheme().KEY_BLOCK
+		};
+		
+		final char[] prefix = {
+				 'j','d','l','r','u','D','p','s','b'
+				 
+		};
+		
+		for(int i = 0; i <buttons.length; i++){
+			if(player.isKeyPressed(buttons[i]) != keys[i]){
+				keys[i] = player.isKeyPressed(buttons[i]);
+				command += "c"+ prefix[i];
+				
+				if(keys[i]){
+					command += "t;";
+				}else{
+					command += "f;";
+				}
+			}
+		}
+		return command;
 	}
 	
 	public void decodeCommands(String input){
@@ -118,7 +117,6 @@ public class Client implements Runnable{
 			for(String s: commands){
 				if(s.startsWith("ping")){
 					ping = Math.round(System.nanoTime()/1000000-time);
-					waiting = false;
 				}
 				
 				if(s.startsWith("pl")){

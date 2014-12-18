@@ -30,9 +30,9 @@ public class MainControl{
 			overTime = 0;
 			Gamepad.pollPads();
 			
-			try{
-				Camera.incrementRandomLighting();
-			}catch(Exception e){} 
+			Settings.update();
+			
+			Camera.incrementRandomLighting();
 			
 			Stage.updateCurrentStage();
 			while(true){
