@@ -20,6 +20,7 @@ import Debug.ErrorPopup;
 import Entities.Entity;
 import Entities.Player;
 import Entities.Assets.Damage;
+import Entities.Assets.Shield;
 
 public class Client implements Runnable{
 	
@@ -180,6 +181,7 @@ public class Client implements Runnable{
 				}
 				
 				if(s.startsWith("wd")){
+					//Hitboxes
 					if(s.charAt(2) == 'h'){
 						String[] hitboxes = s.substring(3).split(",");
 						ArrayList<Hitbox> hitbox = new ArrayList<Hitbox>();
@@ -196,6 +198,7 @@ public class Client implements Runnable{
 						overworld.generateHitboxModels();
 					}
 					
+					//Damage
 					if(s.charAt(2) == 'd'){
 						String[] para = s.substring(3).split(",");
 						try{
@@ -218,6 +221,24 @@ public class Client implements Runnable{
 							ErrorPopup.createMessage(e, false);
 						}
 						
+					}
+					
+					//Shields
+					if(s.charAt(2) == 's'){
+						String[] para = s.substring(3).split(",");
+						try{
+							int life = (int)Float.parseFloat(para[0]);
+							float r = Float.parseFloat(para[1]);
+							float g = Float.parseFloat(para[2]);
+							float b = Float.parseFloat(para[3]);
+							float a = Float.parseFloat(para[4]);
+							int parent = (int)Float.parseFloat(para[5]);
+							
+							Shield.add(new Shield(life, new float[]{r,g,b,a}, Settings.User.get(parent)));
+							
+						}catch(NumberFormatException e){
+							ErrorPopup.createMessage(e, false);
+						}
 					}
 				}
 				

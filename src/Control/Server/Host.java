@@ -13,6 +13,7 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Server.Assets.Player;
 import Entities.Assets.Damage;
+import Entities.Assets.Shield;
 import Entities.Tools.ServerControlScheme;
 
 public class Host{
@@ -111,6 +112,21 @@ public class Host{
 					}
 					c.damage = Damage.getDamageInfo();
 
+					//Sheild information
+					for(Shield s: Shield.getShieldInfo()){
+						if(!c.shields.contains(s)){
+							int parent = -1;
+							for(int i = 0; i<Settings.User.size(); i++){
+								if(s.getParent().equals( Settings.User.get(i) ) ){
+									parent = i;
+									break;
+								}
+							}
+							command += "wds" + s.getLife() + "," + s.getRGBA()[0] + "," + s.getRGBA()[1] + "," + s.getRGBA()[2] + "," + s.getRGBA()[3] + "," + parent + ";";
+						}
+					}
+					c.shields = Shield.getShieldInfo();
+					
 					String message = c.getRecievedMessage();
 					if(message != ""){
 						for(String mes: message.split(";")){
@@ -196,6 +212,7 @@ class Connection{
 	protected ArrayList<Player> players = Player.getNullList();
 	protected ArrayList<Hitbox> hitboxes = new ArrayList<Hitbox>();
 	protected ArrayList<Damage> damage = new ArrayList<Damage>();
+	protected ArrayList<Shield> shields = new ArrayList<Shield>();
 	
 	public Connection(final ServerSocket listener){
 		new Thread(new Runnable(){
