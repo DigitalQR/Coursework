@@ -115,7 +115,9 @@ public class OverworldStage extends Stage{
 					p.killCount = 0;
 					p.kill(false);
 				}
-				Settings.issueCommand("reset_stage");
+				if(!Settings.isClientActive()){
+					Settings.issueCommand("reset_stage");
+				}
 			}
 			
 		}

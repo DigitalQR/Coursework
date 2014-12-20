@@ -13,9 +13,13 @@ import Tools.Maths.Vector3f;
 import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.Settings;
+import Control.Audio.Sound;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.Core.Stage;
+import Debug.ErrorPopup;
+import Entities.Entity;
 import Entities.Player;
+import Entities.Assets.Damage;
 
 public class Client implements Runnable{
 	
@@ -161,6 +165,16 @@ public class Client implements Runnable{
 								Settings.User.get(playerID).setRGBA(new float[]{r,g,b,1});
 							}
 							
+							//Health
+							if(subCommand.startsWith("h")){
+								String[] par = subCommand.substring(1).split(",");
+								int killCount = (int)Float.parseFloat(par[0]);
+								float factor = Float.parseFloat(par[1]);
+
+								Settings.User.get(playerID).killCount = killCount;
+								Settings.User.get(playerID).health.factor = factor;
+							}
+							
 							break;
 					}
 				}
@@ -180,6 +194,30 @@ public class Client implements Runnable{
 						Settings.hb = hitbox;
 						OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
 						overworld.generateHitboxModels();
+					}
+					
+					if(s.charAt(2) == 'd'){
+						String[] para = s.substring(3).split(",");
+						try{
+							Vector2f location = new Vector2f(Float.parseFloat(para[0]), Float.parseFloat(para[1]));
+							Vector2f size = new Vector2f(Float.parseFloat(para[2]), Float.parseFloat(para[3]));
+							int life = (int)Float.parseFloat(para[4]);
+							float damageValue = Float.parseFloat(para[5]);
+							Entity parent = Settings.User.get((int)Float.parseFloat(para[6]));
+							boolean stuck = false;
+							if(para[7].equals("true")) stuck = true;
+							Vector2f velocity = new Vector2f(Float.parseFloat(para[8]), Float.parseFloat(para[9]));
+							Vector2f damageVelocity = new Vector2f(Float.parseFloat(para[10]), Float.parseFloat(para[11]));
+							
+							Damage d = new Damage(location, size, life, damageValue, parent, stuck, Damage.CUBE, new Sound("Effects/Attack"));
+							d.setVelocity(velocity);
+							d.setDamageVelocity(damageVelocity);
+							Damage.add(d);
+							
+						}catch(NumberFormatException e){
+							ErrorPopup.createMessage(e, false);
+						}
+						
 					}
 				}
 				

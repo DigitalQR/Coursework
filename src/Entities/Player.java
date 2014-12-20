@@ -172,6 +172,8 @@ public class Player extends Entity{
 
 			if(!Settings.isClientActive()){
 				this.updateComponents();
+			}else{
+				health.clientUpdate(this);
 			}
 		
 		}else if(health.canRespawn()){

@@ -12,6 +12,7 @@ import Collision.Hitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Server.Assets.Player;
+import Entities.Assets.Damage;
 import Entities.Tools.ServerControlScheme;
 
 public class Host{
@@ -47,24 +48,29 @@ public class Host{
 					ArrayList<Player> player = Player.getList();
 					String command = "";
 					
+					//Player information
 					for(int i = 0; i<player.size(); i++){
+						Player p = player.get(i);
+						
+						//Location
 						if(!player.get(i).locationEquals(c.players.get(i))){
-							Player p = player.get(i);
 							command += "pl" + i + "l" + p.getLocation().x + "," + p.getLocation().y + ";"; 
-							//pl - player
-							//wd - world
-							
-							//l - location
-							//h - hitbox
-							//i - Information
 						}
+						
+						//Colour
 						if(!player.get(i).colourEquals(c.players.get(i))){
-							Player p = player.get(i);
 							command += "pl" + i + "ic" + p.getColour().x + "," + p.getColour().y + "," + p.getColour().z + ";"; 
 						}
+						
+						//Health
+						if(!player.get(i).combatEquals(c.players.get(i))){
+							command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + ";";
+						}
+						
 					}
 					c.players = player;
 					
+					//World Information
 					if(!c.hitboxes.equals(Settings.hb)){
 						command += "wdh";
 						
@@ -80,6 +86,30 @@ public class Host{
 						}
 						c.hitboxes = Settings.hb;
 					}
+					
+					//Damage information
+					for(Damage d: Damage.getDamageInfo()){
+						if(!c.damage.contains(d)){
+							int parent = -1;
+							for(int i = 0; i<Settings.User.size(); i++){
+								if(d.getParent().equals( Settings.User.get(i) ) ){
+									parent = i;
+									break;
+								}
+							}
+							
+							command += "wdd" + 
+									d.getLocation().x + "," + d.getLocation().y + "," + 
+									d.getSize().x + "," + d.getSize().y + "," + 
+									d.getLife() + "," + 
+									d.getDamageValue() + "," +
+									parent + "," + 
+									d.isStuckToParent() + "," + 
+									d.getVelocity().x + "," + d.getVelocity().y + "," + 
+									d.getDamageVelocity().x + "," + d.getDamageVelocity().y + ";";
+						}
+					}
+					c.damage = Damage.getDamageInfo();
 
 					String message = c.getRecievedMessage();
 					if(message != ""){
@@ -165,6 +195,7 @@ class Connection{
 	
 	protected ArrayList<Player> players = Player.getNullList();
 	protected ArrayList<Hitbox> hitboxes = new ArrayList<Hitbox>();
+	protected ArrayList<Damage> damage = new ArrayList<Damage>();
 	
 	public Connection(final ServerSocket listener){
 		new Thread(new Runnable(){

@@ -27,6 +27,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 import Control.MainControl;
+import Control.Settings;
 import Control.Audio.Sound;
 import Control.Visual.DisplayControl;
 import Control.Visual.DisplayManager;
@@ -34,12 +35,14 @@ import Debug.ErrorPopup;
 
 
 public class Launch {
-	
+
 	protected static BufferedImage header;
+	public static BufferedImage icon;
 	
 	private static void getResources(){
 		try{
 			header = ImageIO.read(new File("Res/Button/Header.png"));
+			icon = ImageIO.read(new File("Res/Button/Icon.png"));
 		}catch(IOException e){
 			ErrorPopup.createMessage(e, true);
 		}
@@ -52,6 +55,7 @@ public class Launch {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setUndecorated(true);
 		window.setBackground(new Color(0.5f, 0.5f, 0.5f, 0));
+		window.setIconImage(icon);
 		window.setOpacity(1f);
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -143,6 +147,21 @@ class Content extends JPanel{
 		});
 		this.add(sound);
 		
+		/*
+		JSlider slider = new JSlider(JSlider.HORIZONTAL, 0, 30, 0);
+		slider.setMinorTickSpacing(10);
+		slider.setMajorTickSpacing(10);
+		//slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		slider.setLocation(130,  260);
+		slider.setSize(200, 40);
+		slider.setBackground(new Color(0.9f,0.9f,0.9f, 0f));
+		slider.setForeground(new Color(0.9f,0.9f,0.9f));
+		slider.setOpaque(false);
+		slider.setPaintTrack(true);
+		this.add(slider);
+		*/
+		
 		//Start/Exit
 		JButton exit = new JButton("E X I T");
 		exit.setBackground(new Color(1f,0f,0f));
@@ -229,14 +248,17 @@ class Content extends JPanel{
 		}
 	}
 	
-	public void paintComponent(Graphics g){
-		g.setColor(new Color(0,0,0,0.05f));
-		for(int i = 0; i<20; i++){
+	private float r = (float)Math.random(), g = (float)Math.random(), b = (float)Math.random();
+	
+	public void paintComponent(Graphics g){		
+		g.setColor(new Color(this.r,this.g,this.b, 0.05f));
+		for(int i = 0; i<100; i++){
 			g.fillRect(i,i,399-i*2,599-i*2);
 		}
 		
 		g.drawImage(header, 10, -10, 390, 135, 0, 0, header.getWidth(), header.getHeight(), null);
 
+		drawText(g, 15, 25, 15, "Version " +Settings.Version);
 		drawText(g, 20, 130, 15, "Launch Options:");
 		drawText(g, 20, 150, 13, "Resolution");
 		drawText(g, 20, 200, 13, "Fullscreen");
