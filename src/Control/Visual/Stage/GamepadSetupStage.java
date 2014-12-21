@@ -18,7 +18,6 @@ import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Action;
 import Control.Visual.Menu.Assets.Core.Input;
 import Control.Visual.Stage.Core.Stage;
-import Entities.Player;
 
 public class GamepadSetupStage extends Stage implements Action{
 
@@ -27,13 +26,12 @@ public class GamepadSetupStage extends Stage implements Action{
 	private Button[] subButton = new Button[3];
 	private TextBox header;
 	private TextBox playerName;
-	private Animation playerModel;
+	private Animation playerModel = new Animation("Cube/Spin", 500);
 	private int currentPad = 0;
 	private int currentButton = 0;
 	
 	public GamepadSetupStage(){
 		super();
-		playerModel = new Animation("Cube/Spin", 500);
 
 		header = new TextBox(new Vector3f(-0.3f,-0.7f,-2.5f),new Vector3f(1.9f,2f,0.5f), "Gamepad Setup", "Select a controller to \ncontinue.");
 		header.setHeaderTextSize(0.07f);
@@ -47,7 +45,7 @@ public class GamepadSetupStage extends Stage implements Action{
 		playerName.setDrawn(false);
 		this.add(playerName);
 		
-		String[] names = {"Create profile", "Assign to player" , "Delete profile"};
+		String[] names = {"Create profile", "Assign to player 1" , "Delete profile"};
 		for(int i = 0; i<names.length; i++){
 			subButton[i] = new Button(new Vector3f(-0.3f,0.5f-0.4f*i,-2.5f), new Vector3f(1.2f, 0.3f, 0.5f), names[i]);
 			
@@ -222,31 +220,9 @@ public class GamepadSetupStage extends Stage implements Action{
 		
 		//Assign
 		if(subButton[1].hasFocus()){
-			//Button process
-			if(Input.isKeyPressed(Input.KEY_LEFT)){
-				currentButton--;
-				Input.recieved();
-			}if(Input.isKeyPressed(Input.KEY_RIGHT)){
-				currentButton++;
-				Input.recieved();
-			}
-			if(currentButton < 0){
-				currentButton = 0;
-			}
-			if(currentButton > Settings.User.size()-1){
-				currentButton = Settings.User.size()-1;
-			}
-			playerName.setHeader("Player:\n" + (currentButton + 1));
-			
-			if(Input.isKeyPressed(Input.KEY_FORWARD)){
-				Gamepad.getGamepads()[currentPad].assignToPlayer(currentButton);
-				
-				subButton[1].unfocus();
-				currentButton = 0;
-				playerName.setDrawn(false);
-				Input.recieved();
-			}
-			
+			Settings.User.get(0).setControlScheme(Gamepad.getGamepads()[currentPad].getGPID());
+			subButton[1].unfocus();
+			playerName.setDrawn(false);
 		}
 		
 		//Delete
@@ -264,30 +240,16 @@ public class GamepadSetupStage extends Stage implements Action{
 			//Draw players
 			Gamepad pad = Gamepad.getGamepads()[i];
 
-			float[] RGBA = {0.5f, 0.5f, 0.5f, 0.5f};
-			if(pad.assignedPlayer != -1){
-				try{
-					RGBA = Settings.User.get(pad.assignedPlayer).getRGBA();
-				}catch(IndexOutOfBoundsException e){}
+			float[] RGBA = {0.5f, 0.5f, 0.5f, 1f};
+			
+			if(Gamepad.getGamepads()[i].getGPID() == Settings.User.get(0).getControlScheme().getGPID()){
+				RGBA = Camera.getInverseRGBA();
 			}
 			
-			drawPlayerAt(new Vector3f(-0.5f, button[i].getLocation().y-0.05f,-2.3f), RGBA, pad.assignedPlayer != -1, 0.5f);
+			drawPlayerAt(new Vector3f(-0.5f, button[i].getLocation().y-0.05f,-2.3f), RGBA, pad.getProfileStatus(), 0.5f);
 			
 		}
 		
-		//Assign
-		if(subButton[1].hasFocus()){
-			for(int i = 0; i<Settings.User.size(); i++){
-				Player p = Settings.User.get(i);
-				Vector3f location = new Vector3f(0.2f-0.25f*(currentButton-i), -0.8f,-1.0f);
-				
-				if(i == currentButton){
-					location.y += 0.2f;
-				}
-				
-				drawPlayerAt(location, p.getRGBA(), true, 0.5f);
-			}
-		}
 	}
 
 	private void drawPlayerAt(Vector3f location, float[] RGBA, boolean fill, float scale){

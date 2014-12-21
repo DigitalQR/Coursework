@@ -42,7 +42,7 @@ public class Launch {
 	private static void getResources(){
 		try{
 			header = ImageIO.read(new File("Res/Button/Header.png"));
-			icon = ImageIO.read(new File("Res/Button/Icon.png"));
+			icon = ImageIO.read(new File("Res/Button/Icon64.png"));
 		}catch(IOException e){
 			ErrorPopup.createMessage(e, true);
 		}

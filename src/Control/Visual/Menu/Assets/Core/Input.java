@@ -59,22 +59,26 @@ public class Input {
 			
 		}else{
 			if(hasTimePassed()){
-				switch(key){
-				case KEY_UP:
-					return Keyboard.isKeyDown(Keyboard.KEY_W);
-				case KEY_DOWN:
-					return Keyboard.isKeyDown(Keyboard.KEY_S);
-				case KEY_LEFT:
-					return Keyboard.isKeyDown(Keyboard.KEY_A);
-				case KEY_RIGHT:
-					return Keyboard.isKeyDown(Keyboard.KEY_D);
-				case KEY_FORWARD:
-					return Keyboard.isKeyDown(Keyboard.KEY_F);
-				case KEY_BACK:
-					return Keyboard.isKeyDown(Keyboard.KEY_H);
-				case KEY_PAUSE:
-					return Keyboard.isKeyDown(Keyboard.KEY_ESCAPE);
-				default:
+				try{
+					switch(key){
+					case KEY_UP:
+						return Keyboard.isKeyDown(Keyboard.KEY_W);
+					case KEY_DOWN:
+						return Keyboard.isKeyDown(Keyboard.KEY_S);
+					case KEY_LEFT:
+						return Keyboard.isKeyDown(Keyboard.KEY_A);
+					case KEY_RIGHT:
+						return Keyboard.isKeyDown(Keyboard.KEY_D);
+					case KEY_FORWARD:
+						return Keyboard.isKeyDown(Keyboard.KEY_F);
+					case KEY_BACK:
+						return Keyboard.isKeyDown(Keyboard.KEY_H);
+					case KEY_PAUSE:
+						return Keyboard.isKeyDown(Keyboard.KEY_ESCAPE);
+					default:
+						return false;
+					}
+				}catch(IllegalStateException e){
 					return false;
 				}
 			}else{

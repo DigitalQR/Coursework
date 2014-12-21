@@ -30,9 +30,7 @@ public class Gamepad{
 	
 	public static void pollPads(){
 		for(Gamepad p: Pad){
-			if(p.assignedPlayer != -1){
-				p.poll();
-			}
+			p.poll();
 		}
 	}
 	
@@ -88,24 +86,25 @@ public class Gamepad{
 		
 		Pad[Temp.length] = g;
 	}
-	private static int T = 0;
+	
+	public static int BUTTON_LENGTH = 0;
 	public static final int 
-	BUTTON_JUMP = T++,
-	BUTTON_DUCK = T++,
-	BUTTON_BLOCK = T++,
-	BUTTON_GRAB = T++,
+	BUTTON_JUMP = BUTTON_LENGTH++,
+	BUTTON_DUCK = BUTTON_LENGTH++,
+	BUTTON_BLOCK = BUTTON_LENGTH++,
+	BUTTON_GRAB = BUTTON_LENGTH++,
 	
-	BUTTON_UP = T++,
-	BUTTON_DOWN = T++,
-	BUTTON_LEFT = T++,
-	BUTTON_RIGHT = T++,
+	BUTTON_UP = BUTTON_LENGTH++,
+	BUTTON_DOWN = BUTTON_LENGTH++,
+	BUTTON_LEFT = BUTTON_LENGTH++,
+	BUTTON_RIGHT = BUTTON_LENGTH++,
 	
-	BUTTON_PRIMARY = T++,
-	BUTTON_SECONDARY = T++,
+	BUTTON_PRIMARY = BUTTON_LENGTH++,
+	BUTTON_SECONDARY = BUTTON_LENGTH++,
 
-	BUTTON_PAUSE = T++,
-	BUTTON_MENU_FORWARD = T++,
-	BUTTON_MENU_BACK = T++;
+	BUTTON_PAUSE = BUTTON_LENGTH++,
+	BUTTON_MENU_FORWARD = BUTTON_LENGTH++,
+	BUTTON_MENU_BACK = BUTTON_LENGTH++;
 		
 	private static String[] KeyName = 
 		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary\nattack", "Secondary\nattack", "Pause", "Menu\nForward", "Menu\nBack"};
@@ -114,7 +113,6 @@ public class Gamepad{
 	private float[] Raw;
 	private Controller Control;
 	private int GPID;
-	public int assignedPlayer = -1;
 	
 	public Gamepad(Controller c){
 		Control = c;
@@ -240,28 +238,9 @@ public class Gamepad{
 			deleteProfileStatus();
 		}
 	}
-	
-	public void assignToPlayer(int i){
-		for(Player p: Settings.User){
-			if(p.getControlScheme().getGPID() == this.GPID){
-				p.getControlScheme().setDefaultControls();
-			}
-		}
-		for(Gamepad p: Pad){
-			if(p.assignedPlayer == i){
-				p.assignedPlayer = -1;
-			}
-		}
-		
-		assignedPlayer = i;
-		if(i > -1){
-			Settings.User.get(i).setControlScheme(this.GPID);
-		}
-	}
 
 	public void deleteProfileStatus(){
 		this.doesProfileExist = false;
-		this.assignedPlayer = -1;
 		new File("Res/GPProfile/" + getName() + ".GPP").delete();
 		
 		for(Player p: Settings.User){

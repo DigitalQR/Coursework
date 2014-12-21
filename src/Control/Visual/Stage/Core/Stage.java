@@ -12,6 +12,7 @@ import Control.Visual.Stage.GamepadSetupStage;
 import Control.Visual.Stage.MenuStage;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.SettingsStage;
+import Control.Visual.Stage.StartStage;
 
 public abstract class Stage extends FocusableItem{
 	
@@ -30,11 +31,13 @@ public abstract class Stage extends FocusableItem{
 		OverworldStage over = new OverworldStage();
 		GamepadSetupStage gamepad = new GamepadSetupStage();
 		SettingsStage settings = new SettingsStage();
+		StartStage start = new StartStage();
 
 		stageID.put("menu", menu.ID);
 		stageID.put("overworld", over.ID);
 		stageID.put("gamepadsetup", gamepad.ID);
 		stageID.put("settings", settings.ID);
+		stageID.put("start", start.ID);
 		
 		menu.setAsCurrentStage();
 	}

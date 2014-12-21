@@ -8,7 +8,6 @@ import java.util.Scanner;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
-import Control.Input.Gamepad;
 import Control.Server.Client;
 import Control.Server.Host;
 import Control.Visual.DisplayManager;
@@ -18,7 +17,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.2.11 <You and I customisation>";
+	public static final String Version = "1.2.13 <You and I customisation>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static ArrayList<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -39,6 +38,17 @@ public class Settings implements Runnable{
 			return !client.isDestroyed();
 		}
 		
+	}
+	
+	public static void destroyConnections(){
+		if(client != null){
+			client.destroy();
+			client = null;
+		}
+		if(host != null){
+			host.destroy();
+			host = null;
+		}
 	}
 	
 	public static List<Vector3f> playerColourProfiles = new ArrayList<Vector3f>();
@@ -77,7 +87,7 @@ public class Settings implements Runnable{
 			floats.put(s, 0f);
 		}
 
-		floats.put("s_light_deviation", 1f);
+		floats.put("s_light_deviation", 1.5f);
 		floats.put("s_volume", 0.8f);
 		
 		new Thread(new Settings()).start();
@@ -167,12 +177,6 @@ public class Settings implements Runnable{
 				if(raw[1].equals("player_count")){
 					try{
 						int val = Integer.valueOf(raw[2]);
-						for(int i = val; i<User.size(); i++){
-							final int GPID = User.get(i).getControlScheme().getGPID();
-							if(GPID != -1){
-								Gamepad.getGamepad(GPID).assignToPlayer(-1);
-							}
-						}
 						
 						ArrayList<Player> player = new ArrayList<Player>();
 						

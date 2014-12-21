@@ -10,7 +10,6 @@ import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.MainControl;
 import Control.Settings;
-import Control.Input.Gamepad;
 import Entities.Tools.Attack;
 import Entities.Tools.ControlScheme;
 import Entities.Tools.Health;
@@ -63,9 +62,6 @@ public class Player extends Entity{
 	
 	public void destroy(){
 		Settings.playerColourProfiles.add(new Vector3f(RGBA[0],RGBA[1],RGBA[2]));
-		if(control.getGPID() != -1){
-			Gamepad.getGamepad(control.getGPID()).assignToPlayer(-1);
-		}
 		Settings.User.remove(this);
 	}
 	

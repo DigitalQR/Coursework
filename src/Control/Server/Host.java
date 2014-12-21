@@ -12,6 +12,7 @@ import Collision.Hitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Server.Assets.Player;
+import Debug.ErrorPopup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 import Entities.Tools.ServerControlScheme;
@@ -27,7 +28,7 @@ public class Host{
 	public Host(int port){
 		try {
 			server = new ServerSocket(port);
-			System.out.println("Server Socket initialised.");
+			System.out.println("Server Socket initialised: " + server.getInetAddress() + " " + port + ".");
 			connections.add(new Connection(server));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -35,6 +36,18 @@ public class Host{
 		
 		active = true;
 	}	
+	
+	public void destroy(){
+		for(Connection c: connections){
+			c.destroy();
+		}
+		try{
+			server.close();
+		}catch(IOException e){
+			ErrorPopup.createMessage(e, true);
+		}
+		System.out.println("ServerSocket closed.");
+	}
 	
 	public void serverUpdate(){
 		if(active){
@@ -179,7 +192,6 @@ public class Host{
 				}
 				if(c.isDisconnected()){
 					connections.remove(c);
-					System.out.println("Connection " + c.getID() + " removed");
 				}
 			}
 		}
@@ -292,15 +304,18 @@ class Connection{
 	}
 	
 	public void destroy(){
-		try{
-			socket.close();
-			output.flush();
-			output.close();
-			input.close();
-			connected = false;
-			disconnected = true;
-		}catch(IOException e){
-			e.printStackTrace();
+		if(connected){
+			try{
+				socket.close();
+				output.flush();
+				output.close();
+				input.close();
+				connected = false;
+				disconnected = true;
+				System.out.println("Connection " + getID() + " removed");
+			}catch(IOException e){
+				e.printStackTrace();
+			}
 		}
 	}
 	

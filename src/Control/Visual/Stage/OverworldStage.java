@@ -125,10 +125,22 @@ public class OverworldStage extends Stage{
 		
 		if(Input.isKeyPressed(Input.KEY_PAUSE)){
 			Stage.setStage(Stage.getStage("menu"));
+			Settings.destroyConnections();
 			Input.recieved();
 		}
 	}
 
+	public void reset(){
+		running = true;
+		winnerID = -1;
+		Settings.issueCommand("reset_stage");
+		for(Player p: Settings.User){
+			p.killCount = 0;
+			p.health.factor = 0;
+			p.kill(false);
+		}
+	}
+	
 	protected void updateUI(){
 		//Gather player data
 		@SuppressWarnings("unchecked")
