@@ -33,6 +33,7 @@ public class Connection {
 	protected ArrayList<Hitbox> hitboxes = new ArrayList<Hitbox>();
 	protected ArrayList<Damage> damage = new ArrayList<Damage>();
 	protected ArrayList<Shield> shields = new ArrayList<Shield>();
+	protected String additions = "";
 	
 	public String USERNAME = "?";
 	
