@@ -15,7 +15,7 @@ import Entities.Assets.Shield;
 public class Host{
 
 	public static final int UPS = MainControl.UPS;
-	private static final int MAX_CONNECTIONS = 8;
+	private static final int MAX_CONNECTIONS = 7;
 	
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
 	private ServerSocket server;
@@ -54,10 +54,14 @@ public class Host{
 		return server != null;
 	}
 	
-	private String additions = "";
 	
 	public void addCommand(String comm){
-		additions += comm;
+		@SuppressWarnings("unchecked")
+		ArrayList<Connection> conn = (ArrayList<Connection>) connections.clone();
+		
+		for(Connection c: conn){
+			c.additions += comm;
+		}
 	}
 	
 	public void serverUpdate(){
@@ -71,8 +75,8 @@ public class Host{
 				
 				if(c.isConnected()){
 					ArrayList<Player> player = Player.getList();
-					String command = additions;
-					additions = "";
+					String command = c.additions;
+					c.additions = "";
 					
 					//Amount of players
 					if(player.size() != c.players.size()){
