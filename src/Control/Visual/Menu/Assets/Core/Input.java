@@ -8,7 +8,7 @@ import Entities.Player;
 public class Input {
 	
 	private static long lastInput = 0;
-	private static int inputDelay = 140;
+	private static int inputDelay = 100;
 	
 	public static boolean hasTimePassed(){
 		long current = System.nanoTime()/1000000;

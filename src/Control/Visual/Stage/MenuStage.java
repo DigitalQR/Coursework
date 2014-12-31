@@ -10,6 +10,7 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Audio.Sound;
 import Control.Input.Gamepad;
+import Control.Server.Host;
 import Control.Visual.Menu.Assets.Button;
 import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Action;
@@ -135,10 +136,12 @@ public class MenuStage extends Stage implements Action{
 				}else{
 					//Host
 					if(currentButton == 4){
+						Settings.issueCommand("host " + Host.DEFAULT_PORT);
+						Stage.setStage(Stage.getStage("server"));
 						
 					//Join
 					}else{
-						
+						Stage.setStage(Stage.getStage("connect"));
 					}
 				}
 				Input.recieved();
@@ -175,7 +178,6 @@ public class MenuStage extends Stage implements Action{
 		
 		//Start
 		if(ID == button[0].getID() && button[0].hasFocus()){
-			//Stage.setStage(Stage.getStage("overworld"));
 		}
 		
 		//Gamepad setup
@@ -197,10 +199,6 @@ public class MenuStage extends Stage implements Action{
 		if(ID == button[4].getID() && button[4].hasFocus()){
 			Settings.destroyConnections();
 			Stage.setStage(Stage.getStage("start"));
-			
-			//final OverworldStage stage = (OverworldStage) Stage.getStage("overworld");
-			//stage.reset();
-			//Stage.setStage(stage);
 		}
 	}
 

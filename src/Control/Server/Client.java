@@ -15,6 +15,7 @@ import Collision.SquareHitbox;
 import Control.Settings;
 import Control.Audio.Sound;
 import Control.Visual.Stage.OverworldStage;
+import Control.Visual.Stage.StartStage;
 import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
 import Entities.Entity;
@@ -46,6 +47,7 @@ public class Client implements Runnable{
 
 	private long time;
 	private int ping = 0;
+	private String name = "";
 	
 	public int getPing(){
 		return ping;
@@ -53,15 +55,22 @@ public class Client implements Runnable{
 	
 	public void serverUpdate(){
 		String command = "";
-			
-		command += processMovement();
-
-		if( ( System.nanoTime()/1000000 - time)/1000 >= 1){
-			time = (long) (System.nanoTime()/1000000);
-			command += "ping;";
-		}
 		
-		sendMessage(command);	
+		if(thread != null){
+			command += processMovement();
+			
+			if(name.equals("")){
+				name = System.getProperty("user.name");
+				command += "si" + name + ";";
+			}
+	
+			if( ( System.nanoTime()/1000000 - time)/1000 >= 1){
+				time = (long) (System.nanoTime()/1000000);
+				command += "ping;";
+			}
+			
+			sendMessage(command);	
+		}
 	}
 	
 	public void run(){
@@ -92,11 +101,13 @@ public class Client implements Runnable{
 				player.getControlScheme().KEY_DOWN,
 				player.getControlScheme().KEY_PRIMARY,
 				player.getControlScheme().KEY_SECONDARY,
-				player.getControlScheme().KEY_BLOCK
+				player.getControlScheme().KEY_BLOCK,
+				player.getControlScheme().KEY_SELECT,
+				player.getControlScheme().KEY_START
 		};
 		
 		final char[] prefix = {
-				 'j','d','l','r','u','D','p','s','b'
+				 'j','d','l','r','u','D','p','s','b','S','x'
 				 
 		};
 		
@@ -120,8 +131,23 @@ public class Client implements Runnable{
 			String[] commands = input.split(";");
 			
 			for(String s: commands){
+				if(s.startsWith("PS")){
+					StartStage st = (StartStage) Stage.getStage("start");
+					st.decode(s.substring(2));
+				}
+				
 				if(s.startsWith("ping")){
 					ping = Math.round(System.nanoTime()/1000000-time);
+				}
+				
+				if(s.startsWith("Sst")){
+					int ID = (int)Float.parseFloat(s.substring(3));
+					Stage.setStage(Stage.getStage(ID));
+				}
+				
+				if(s.startsWith("ps")){
+					int player = (int)Float.parseFloat(s.substring(2));
+					Settings.issueCommand("set player_count " + player);
 				}
 				
 				if(s.startsWith("pl")){
@@ -247,9 +273,9 @@ public class Client implements Runnable{
 		
 	}
 	
-	public void sendMessage(String message){
-		output.flush();
+	private void sendMessage(String message){
 		output.println(message);
+		output.flush();
 	}
 	
 	public String getRecievedMessage() throws SocketException{

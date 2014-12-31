@@ -66,19 +66,18 @@ public class ControlScheme extends Component{
 			}catch(IllegalStateException e){
 				return false;
 			}
-		}else if(GPID == -2){
-			try {
-				throw new Exception("SSSS");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return true;
 		}else{
 			return Gamepad.getGamepad(GPID).isButtonPressed(key);
 		}
 	}
 
+	public boolean isAnyKeyPressed(){
+		return 
+			      (isKeyPressed(KEY_JUMP) || isKeyPressed(KEY_DUCK) || isKeyPressed(KEY_BLOCK) || isKeyPressed(KEY_LEFT) || isKeyPressed(KEY_RIGHT) 
+				|| isKeyPressed(KEY_UP) || isKeyPressed(KEY_DOWN) || isKeyPressed(KEY_SELECT) || isKeyPressed(KEY_BACK) || isKeyPressed(KEY_PRIMARY) 
+				|| isKeyPressed(KEY_SECONDARY) || isKeyPressed(KEY_START));
+	}
+	
 	public void update(Entity e){
 		
 	}

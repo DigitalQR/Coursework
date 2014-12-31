@@ -17,7 +17,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.2.13 <You and I customisation>";
+	public static final String Version = "1.2.14 <You and I customisation>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static ArrayList<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -37,7 +37,14 @@ public class Settings implements Runnable{
 		}else{
 			return !client.isDestroyed();
 		}
-		
+	}
+	
+	public static boolean isHostActive(){
+		if(host == null){
+			return false;
+		}else{
+			return host.isActive();
+		}
 	}
 	
 	public static void destroyConnections(){
@@ -210,12 +217,14 @@ public class Settings implements Runnable{
 			break;
 			
 		case "reset_stage":
-			if(raw.length == 1){
-				randomHitboxGen();
-				OverworldStage over = (OverworldStage) Stage.getStage("overworld");
-				over.generateHitboxModels();
-			}else{
-				System.out.println("Usage: reset_stage");
+			if(!isClientActive()){
+				if(raw.length == 1){
+					randomHitboxGen();
+					OverworldStage over = (OverworldStage) Stage.getStage("overworld");
+					over.generateHitboxModels();
+				}else{
+					System.out.println("Usage: reset_stage");
+				}
 			}
 			break;
 			
@@ -248,6 +257,9 @@ public class Settings implements Runnable{
 			if(raw.length == 2){
 				try{
 					if(host == null){
+						int port = Integer.valueOf(raw[1]);
+						host = new Host(port);
+					}else if(!host.isActive()){
 						int port = Integer.valueOf(raw[1]);
 						host = new Host(port);
 					}else{

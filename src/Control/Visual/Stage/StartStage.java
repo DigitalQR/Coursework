@@ -12,6 +12,7 @@ import Tools.Maths.Vector3f;
 import Control.Camera;
 import Control.Settings;
 import Control.Input.Gamepad;
+import Control.Server.Connection;
 import Control.Visual.Menu.Assets.Button;
 import Control.Visual.Menu.Assets.Slider;
 import Control.Visual.Menu.Assets.TextBox;
@@ -19,16 +20,35 @@ import Control.Visual.Menu.Assets.Core.Component;
 import Control.Visual.Menu.Assets.Core.Input;
 import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
+import Entities.Tools.ControlScheme;
 
 public class StartStage extends Stage{
 	
-	private PlayerSelect[] player = new PlayerSelect[8];
-	private ArrayList<Integer> GPIDs = new ArrayList<Integer>();
+	private PlayerSelect[] player;
+	private ArrayList<Integer> GPIDs;
+	private ArrayList<ControlScheme> controls;
 	
 	public StartStage(){
 		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), "Game setup  ", null);
 		header.setHeaderTextSize(0.10f);
 		this.add(header);
+		
+		reset();
+	}
+	
+	public void reset(){
+
+		if(player != null){
+			for(int i = 0; i<player.length; i++){
+				this.remove(player[i]);
+			}
+		}
+		
+		player = new PlayerSelect[8];
+		GPIDs = new ArrayList<Integer>();
+		controls = new ArrayList<ControlScheme>();
+		countDown = 0;
+		PlayerSelect.IDTrack = 1;
 		
 		for(int i = 0; i<4; i++){
 			player[i]= new PlayerSelect(new Vector3f(-1.6f+0.83f*i, -0.1f, -2.5f));
@@ -43,28 +63,52 @@ public class StartStage extends Stage{
 	
 	private float countDown = 0;
 	
+	
 	protected void updateInfo(){
 		
-		for(Gamepad gp: Gamepad.getGamepads()){
-			if(!GPIDs.contains(gp.getGPID())){
-				buttonSearch: for(int i = 0; i<Gamepad.BUTTON_LENGTH; i++){
-					if(gp.isButtonPressed(i)){
-						for(PlayerSelect p: player){
-							if(p.getGPID() == -1){
-								p.setGPID(gp.getGPID());
-								GPIDs.add(gp.getGPID());
-								break buttonSearch;
+		if(!Settings.isClientActive()){
+			for(Gamepad gp: Gamepad.getGamepads()){
+				
+				if(!GPIDs.contains(gp.getGPID())){
+					buttonSearch: for(int i = 0; i<Gamepad.BUTTON_LENGTH; i++){
+						if(gp.isButtonPressed(i)){
+							
+							for(PlayerSelect p: player){
+								if(p.getGPID() == -1 && p.getControlScheme() == null){
+									p.setGPID(gp.getGPID());
+									GPIDs.add(gp.getGPID());
+									break buttonSearch;
+								}
 							}
+							
 						}
 					}
 				}
 			}
+			if(Settings.isHostActive()){
+				for(Connection c: Settings.host.getConnections()){
+					if(!controls.contains(c.controlScheme) && c.controlScheme.isAnyKeyPressed()){
+						
+						pl : for(PlayerSelect p: player){
+							if(p.getGPID() == -1 && p.getControlScheme() == null){
+								p.setControlScheme(c.controlScheme);
+								controls.add(c.controlScheme);
+								break pl;
+							}
+						}
+						
+					}
+				}
+			}
+		}else{
+			
 		}
+		
 		
 		boolean ready = true;
 		int pCount = 0;
 		for(PlayerSelect p: player){
-			if(p.getGPID() != -1){
+			if(p.getGPID() != -1 || p.getControlScheme() != null || p.multiFlag){
 				pCount++;
 				if(!p.isReady()) ready = false;
 			}
@@ -80,6 +124,38 @@ public class StartStage extends Stage{
 			countDown = 0;
 		}
 		
+		if(Settings.isHostActive()){
+			String message = encode();
+			Settings.host.addCommand(message);
+		}
+	}
+	
+	public String encode(){
+		String command = "PS";
+		
+		for(PlayerSelect p: player){
+			boolean flag = (p.getGPID() != -1 || p.getControlScheme() != null);
+			command += flag + "," +  p.currentButton +"," + p.r + "," + p.g + "," + p.b + "," + p.isReady() + "]";
+		}
+		
+		return command + ";";
+	}
+	
+	public void decode(String message){
+		String[] pl = message.split("]");
+		
+		for(int i = 0; i<pl.length; i++){
+			String[] part = pl[i].split(",");
+			
+			if(player[i] != null){
+				player[i].multiFlag = Boolean.parseBoolean(part[0]);
+				player[i].currentButton = (int)Float.parseFloat(part[1]);
+				player[i].r = Float.parseFloat(part[2]);
+				player[i].g = Float.parseFloat(part[3]);
+				player[i].b = Float.parseFloat(part[4]);
+				player[i].ready = Boolean.parseBoolean(part[5]);
+			}
+		}
 	}
 	
 	private void startGame(int playerCount){
@@ -92,11 +168,21 @@ public class StartStage extends Stage{
 				player.setControlScheme(p.getGPID());
 				player.setRGBA(p.getRGBA());
 				
-				Stage.setStage(Stage.getStage("overworld"));
+				track++;
+			}
+			if(p.getControlScheme() != null){
+				Player player = Settings.User.get(track);
+				player.setControlScheme(p.getControlScheme());
+				player.setRGBA(p.getRGBA());
 				
 				track++;
 			}
 		}
+		
+		OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
+		overworld.reset();
+		Stage.setStage(overworld);
+		reset();
 	}
 	
 	protected void updateUI(){
@@ -107,7 +193,7 @@ public class StartStage extends Stage{
 
 class PlayerSelect extends Component{
 	
-	private static int IDTrack = 1;
+	protected static int IDTrack = 1;
 	private final int ID = IDTrack++;
 		
 	private Slider red = new Slider(new Vector3f(location.x+0.28f, location.y+0.6f, location.z+0.17f), new Vector3f(0.4f,0.5f,0.1f));
@@ -118,12 +204,21 @@ class PlayerSelect extends Component{
 	
 	private Animation playerModel = new Animation("Cube/Spin", 500);
 	private int GPID  = -1;
-	private boolean ready = false;
+	private ControlScheme control = null;
+	boolean ready = false;
+	boolean multiFlag = false;
 	
-	private int currentButton = 0;
+	int currentButton = 0;
 	
 	public PlayerSelect(Vector3f location){
 		super(location, new Vector3f(0.7f, 0.9f, 0.25f));
+	}
+	
+	public void reset(){
+		GPID  = -1;
+		control = null;
+		ready = false;
+		multiFlag = false;
 	}
 	
 	public float[] getRGBA(){
@@ -140,73 +235,117 @@ class PlayerSelect extends Component{
 
 	public void setGPID(int gPID) {
 		GPID = gPID;
+		control = null;
+	}
+	
+	public void setControlScheme(ControlScheme s){
+		control = s;
+		GPID = -1;
+	}
+	
+	public ControlScheme getControlScheme(){
+		return control;
+	}
+	
+	private boolean isButtonPressed(int ID){
+		if(GPID == -1){
+			return control.isKeyPressed(ID);
+		}else{
+			return Gamepad.getGamepad(GPID).isButtonPressed(ID);
+		}
 	}
 
 	protected void process(){
-		if(GPID != -1 && !ready){
-			Gamepad p = Gamepad.getGamepad(GPID);
-			if(p.isButtonPressed(Gamepad.BUTTON_UP) && Input.hasTimePassed()){
-				currentButton--;
-				Input.recieved();
-			}if(p.isButtonPressed(Gamepad.BUTTON_DOWN) && Input.hasTimePassed()){
-				currentButton++;
-				Input.recieved();
-			}
-			
-			float val = 0;
-			if(p.isButtonPressed(Gamepad.BUTTON_LEFT) && Input.hasTimePassed()){
-				val = -0.1f;
-				Input.recieved();
-			}if(p.isButtonPressed(Gamepad.BUTTON_RIGHT) && Input.hasTimePassed()){
-				val = 0.1f;
-				Input.recieved();
-			}
-			
-			if(currentButton < 0){
-				currentButton = 0;
-			}
-			if(currentButton > 3){
-				currentButton = 3;
-			}
-
-			if(currentButton == 3 && p.isButtonPressed(Gamepad.BUTTON_MENU_FORWARD) && Input.hasTimePassed()){
-				ready = true;
-				Input.recieved();
-			}
+		if(!Settings.isClientActive()){
+			if( (GPID != -1 || control != null) && !ready){
+				int UP, DOWN, LEFT, RIGHT, FORWARD;
+				UP = Gamepad.BUTTON_UP;
+				DOWN = Gamepad.BUTTON_DOWN;
+				LEFT = Gamepad.BUTTON_LEFT;
+				RIGHT = Gamepad.BUTTON_RIGHT;
+				FORWARD = Gamepad.BUTTON_MENU_FORWARD;
+				
+				if(GPID == -1){
+					UP = control.KEY_UP;
+					DOWN = control.KEY_DOWN;
+					LEFT = control.KEY_LEFT;
+					RIGHT = control.KEY_RIGHT;
+					FORWARD = control.KEY_SELECT;
+				}
+				
+				if(isButtonPressed(UP) && Input.hasTimePassed()){
+					currentButton--;
+					Input.recieved();
+				}if(isButtonPressed(DOWN) && Input.hasTimePassed()){
+					currentButton++;
+					Input.recieved();
+				}
+				
+				float val = 0;
+				if(isButtonPressed(LEFT) && Input.hasTimePassed()){
+					val = -0.1f;
+					Input.recieved();
+				}if(isButtonPressed(RIGHT) && Input.hasTimePassed()){
+					val = 0.1f;
+					Input.recieved();
+				}
+				
+				
+				if(currentButton < 0){
+					currentButton = 0;
+				}
+				if(currentButton > 3){
+					currentButton = 3;
+				}
 	
-			switch(currentButton){
-			case 0://Red
-				r+=val;
-				r = Math.max(0, Math.min(r, 1));
-				break;
-			case 1://Green
-				g+=val;
-				g = Math.max(0, Math.min(g, 1));
-				break;
-			case 2://Blue
-				b+=val;
-				b = Math.max(0, Math.min(b, 1));
-				break;
-			}			
-			
-			
-			red.setValue(r);
-			green.setValue(g);
-			blue.setValue(b);
-			
-		}else if(ready){
-			Gamepad p = Gamepad.getGamepad(GPID);
-
-			if(currentButton == 3 && p.isButtonPressed(Gamepad.BUTTON_MENU_BACK) && Input.hasTimePassed()){
-				ready = false;
-				Input.recieved();
+				if(currentButton == 3 && isButtonPressed(FORWARD) && Input.hasTimePassed()){
+					ready = true;
+					Input.recieved();
+				}
+		
+				switch(currentButton){
+				case 0://Red
+					r+=val;
+					r = Math.max(0, Math.min(r, 1));
+					break;
+				case 1://Green
+					g+=val;
+					g = Math.max(0, Math.min(g, 1));
+					break;
+				case 2://Blue
+					b+=val;
+					b = Math.max(0, Math.min(b, 1));
+					break;
+				}			
+				
+				
+				red.setValue(r);
+				green.setValue(g);
+				blue.setValue(b);
+				
+			}else if(ready){
+				int BACK = Gamepad.BUTTON_MENU_BACK;
+				
+				if(GPID == -1){
+					BACK = control.KEY_BACK;
+				}
+	
+				if(currentButton == 3 && isButtonPressed(BACK) && Input.hasTimePassed()){
+					ready = false;
+					Input.recieved();
+				}
 			}
+		}else{
+			
 		}
 	}
 
 	protected void updateUI(){
+		red.setValue(r);
+		green.setValue(g);
+		blue.setValue(b);
 		
-		if(GPID != -1 && !ready){
+		if((GPID != -1 || control != null || multiFlag) && !ready){
 			TextBox area = new TextBox(this.location, this.size, "Player " + ID, null);
 			area.setHeaderHeight(0.1f);
 			area.setContentColour(new float[]{1,1,1,0.5f});

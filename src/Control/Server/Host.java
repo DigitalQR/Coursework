@@ -1,11 +1,7 @@
 package Control.Server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 
 import Collision.Hitbox;
@@ -15,23 +11,26 @@ import Control.Server.Assets.Player;
 import Debug.ErrorPopup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
-import Entities.Tools.ServerControlScheme;
 
 public class Host{
 
 	public static final int UPS = MainControl.UPS;
+	private static final int MAX_CONNECTIONS = 8;
 	
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
 	private ServerSocket server;
 	private boolean active = false;
+	private boolean accepting = false;
+	public final static int DEFAULT_PORT = 9798;
+
 	
 	public Host(int port){
 		try {
 			server = new ServerSocket(port);
+			accepting = true;
 			System.out.println("Server Socket initialised: " + server.getInetAddress() + " " + port + ".");
 			connections.add(new Connection(server));
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		
 		active = true;
@@ -43,10 +42,22 @@ public class Host{
 		}
 		try{
 			server.close();
+			server = null;
 		}catch(IOException e){
 			ErrorPopup.createMessage(e, true);
-		}
+		}catch(NullPointerException e){}
+		
 		System.out.println("ServerSocket closed.");
+	}
+	
+	public boolean isActive(){
+		return server != null;
+	}
+	
+	private String additions = "";
+	
+	public void addCommand(String comm){
+		additions += comm;
 	}
 	
 	public void serverUpdate(){
@@ -60,7 +71,13 @@ public class Host{
 				
 				if(c.isConnected()){
 					ArrayList<Player> player = Player.getList();
-					String command = "";
+					String command = additions;
+					additions = "";
+					
+					//Amount of players
+					if(player.size() != c.players.size()){
+						command += "ps" + player.size() + ";";
+					}
 					
 					//Player information
 					for(int i = 0; i<player.size(); i++){
@@ -82,6 +99,8 @@ public class Host{
 						}
 						
 					}
+					
+					
 					c.players = player;
 					
 					//World Information
@@ -143,9 +162,12 @@ public class Host{
 					String message = c.getRecievedMessage();
 					if(message != ""){
 						for(String mes: message.split(";")){
+							//Ping calc
 							if(mes.equals("ping")){
 								command += "ping";
 							}
+							
+							//Control
 							if(mes.startsWith("c")){
 								boolean val = false;
 								if(mes.charAt(2) == 't'){
@@ -179,9 +201,22 @@ public class Host{
 								case 'b':
 									c.controlScheme.setKeyState(c.controlScheme.KEY_BLOCK, val);
 									break;
+								case 'S':
+									c.controlScheme.setKeyState(c.controlScheme.KEY_SELECT, val);
+									break;
+								case 'x':
+									c.controlScheme.setKeyState(c.controlScheme.KEY_START, val);
+									break;
 								}
 
 							}
+							
+							//Username
+							if(mes.startsWith("si")){
+								c.USERNAME = mes.substring(2);
+								System.out.println(c.USERNAME);
+							}
+							
 						}
 					}
 					
@@ -198,125 +233,27 @@ public class Host{
 	}
 	
 	public void connectionHandler(ServerSocket server){
-		if(connections.size() == 0){
-			connections.add(new Connection(server));
-		}
-		if(connections.get(connections.size()-1).isConnected()){
-			connections.add(new Connection(server));
+		if(accepting){
+			if(connections.size() == 0){
+				connections.add(new Connection(server));
+			}
+			if(connections.get(connections.size()-1).isConnected() && connections.size() < MAX_CONNECTIONS){
+				connections.add(new Connection(server));
+			}
 		}
 	}
 	
-}
+	public ArrayList<Connection> getConnections(){
+		@SuppressWarnings("unchecked")
+		ArrayList<Connection> conn = (ArrayList<Connection>) connections.clone();
 
-class Connection{
-	
-	private static int IDTrack = 1;
-	
-	private final int ID = IDTrack++;
-	private int playerID = ID+1;
-	private boolean connected = false;
-	private boolean disconnected = false;
-	private Socket socket;
-	private PrintWriter output;
-	private BufferedReader input;
-	public ServerControlScheme controlScheme;
-	
-	protected ArrayList<Player> players = Player.getNullList();
-	protected ArrayList<Hitbox> hitboxes = new ArrayList<Hitbox>();
-	protected ArrayList<Damage> damage = new ArrayList<Damage>();
-	protected ArrayList<Shield> shields = new ArrayList<Shield>();
-	
-	public Connection(final ServerSocket listener){
-		new Thread(new Runnable(){
-			
-			public void run(){
-				try{
-					socket = listener.accept();
-					socket.setTcpNoDelay(true);
-					connected = true;
-					output = new PrintWriter(socket.getOutputStream(),true);
-					input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					
-					controlScheme = new ServerControlScheme();
-					Settings.User.get(ID).setControlScheme(controlScheme);
-					
-					while(!disconnected){
-						processMessage();
-					}
-					
-				}catch(IOException e){
-					destroy();
-				}
-			}
-			
-		}).start();
-	}
-	
-	public int getID(){
-		return ID;
-	}
-	
-	public void setPlayerID(int id){
-		playerID = id;
-	}
-	
-	public int getPlayerID(){
-		return playerID;
-	}
-	
-	public boolean isDisconnected(){
-		return disconnected;
-	}
-	
-	public boolean isConnected(){
-		return connected && !disconnected;
-	}
-	
-	public void sendMessage(String message){
-		try{
-			output.println(message);
-		}catch(NullPointerException e){
-			destroy();
-		};
-	}
-	
-	public String getRecievedMessage(){
-		if(message == null){
-			message = "";
-		}
-		String mes = message;
-		message = "";
-		if(mes == null){
-			mes = "";
-		}
-		return mes;
-	}
-	
-	private String message = "";
-	
-	private void processMessage() throws IOException{
-		String mes = input.readLine();
-		if(mes == null){
-			destroy();
-		}else{
-			message+= mes + ";";
-		}
-	}
-	
-	public void destroy(){
-		if(connected){
-			try{
-				socket.close();
-				output.flush();
-				output.close();
-				input.close();
-				connected = false;
-				disconnected = true;
-				System.out.println("Connection " + getID() + " removed");
-			}catch(IOException e){
-				e.printStackTrace();
+		if(conn.size() > 0){
+			if(!conn.get(conn.size()-1).isConnected()){
+				conn.remove(conn.size()-1);
 			}
 		}
+		
+		return conn;		
 	}
 	
 }
