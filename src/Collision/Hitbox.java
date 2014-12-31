@@ -1,7 +1,6 @@
 package Collision;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
@@ -43,8 +42,8 @@ public abstract class Hitbox{
 		return !(Math.round(ab.x*100) < Math.round(bt.x*100) || Math.round(bb.x*100)  < Math.round(at.x*100)  || Math.round(ab.y*100)  < Math.round(bt.y*100)  || Math.round(bb.y*100)  < Math.round(at.y*100) );
 	}
 
-	public static List<Hitbox> RandomGeneration(int n, int x, int y, int Width, int Height, int MinSize, int MaxSize){
-		List<Hitbox> Temp = new ArrayList<Hitbox>();
+	public static ArrayList<Hitbox> RandomGeneration(int n, int x, int y, int Width, int Height, int MinSize, int MaxSize){
+		ArrayList<Hitbox> Temp = new ArrayList<Hitbox>();
 		float divisor = 10;
 		
 		if(MaxSize == 0){

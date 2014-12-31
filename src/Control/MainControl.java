@@ -2,7 +2,6 @@ package Control;
 
 import java.util.concurrent.TimeUnit;
 
-import Tools.Maths.Toolkit;
 import Control.Audio.Sound;
 import Control.Input.Gamepad;
 import Control.Visual.DisplayControl;
@@ -17,26 +16,32 @@ public class MainControl{
 	public final static int UPS = (1000/30)*1000000;
 	
 	
-	public static void main(String[] args){
+	public static void launch(){
 		Settings.setup();
 		Gamepad.setup();
 		Sound.setup();
 		setup();
 		new Thread(new DisplayControl()).start();
 		
+		long overTime = 0;
+		
 		while(!CloseRequest){
-			long StartTime = System.nanoTime();
+			long FinishTime = System.nanoTime()+overTime+UPS;
+			overTime = 0;
 			Gamepad.pollPads();
 			
-			try{
-				Camera.incrementRandomLighting();
-			}catch(Exception e){}
+			Settings.update();
+			
+			Camera.incrementRandomLighting();
 			
 			Stage.updateCurrentStage();
-
-			while(Toolkit.Differencef(StartTime, System.nanoTime()) < UPS){
+			while(true){
+				overTime = FinishTime-System.nanoTime();
+				if(overTime <= 0){
+					break;
+				}
 				try{
-					TimeUnit.NANOSECONDS.sleep(100000);
+					TimeUnit.NANOSECONDS.sleep(1000);
 				}catch(InterruptedException e){
 					ErrorPopup.createMessage(e, true);
 				}
@@ -63,9 +68,6 @@ public class MainControl{
 		Settings.User.add(new Player(0,0));
 		Settings.User.add(new Player(0,0));
 		
-		Gamepad.keyboard.assignToPlayer(0);
-		
 	}
 
 }
-

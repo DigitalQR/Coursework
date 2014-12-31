@@ -42,6 +42,19 @@ public class Health extends Component{
 		}
 	}
 	
+	public void clientUpdate(Entity e){
+		float currentTime = System.nanoTime();
+		
+		if(currentTime - lastHitTime >= immuneTime*1000000){
+			Damage damage = Damage.damageTouching(e);
+			
+			if(damage != null){
+				Damage.remove(damage);
+				e.stun(500+Math.round(factor*75));
+			}
+		}
+	}
+	
 	public boolean isDead = false;
 	private float deathTime = 0;
 	private  float respawnTime = 3500;

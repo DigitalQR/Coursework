@@ -22,4 +22,8 @@ public class Vector2f {
 		x = (float) Math.cos(angle);
 		y = (float) Math.sin(angle);
 	}
+	
+	public Vector2f clone(){
+		return new Vector2f(x,y);
+	}
 }

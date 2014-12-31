@@ -10,7 +10,6 @@ import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.MainControl;
 import Control.Settings;
-import Control.Input.Gamepad;
 import Entities.Tools.Attack;
 import Entities.Tools.ControlScheme;
 import Entities.Tools.Health;
@@ -24,6 +23,8 @@ import Tools.Maths.Vector3f;
 public class Player extends Entity{
 	
 	private ControlScheme control;
+	private Movement movement;
+	private Attack attack;
 	public Health health;
 	
 	private float[] RGBA = new float[4];
@@ -50,17 +51,17 @@ public class Player extends Entity{
 		}
 		
 		control = new ControlScheme();
-		this.addComponent(new Movement(control));
-		this.addComponent(new Attack(control));
+		movement = new Movement(control);
+		attack = new Attack(control);
+		
+		this.addComponent(movement);
+		this.addComponent(attack);
 		health = new Health();
 		this.addComponent(health);
 	}	
 	
 	public void destroy(){
 		Settings.playerColourProfiles.add(new Vector3f(RGBA[0],RGBA[1],RGBA[2]));
-		if(control.GPID != -1){
-			Gamepad.getGamepad(control.GPID).assignToPlayer(-1);
-		}
 		Settings.User.remove(this);
 	}
 	
@@ -132,32 +133,52 @@ public class Player extends Entity{
 		control.setControlScheme(GPID);
 	}
 	
+	public void setControlScheme(ControlScheme control){
+		this.control.setDefaultControls();
+		
+		this.control = control;
+		
+		this.removeComponent(attack);
+		this.removeComponent(movement);
+
+		this.attack = new Attack(control);
+		this.movement = new Movement(control);
+		this.addComponent(attack);
+		this.addComponent(movement);
+	}
+	
 	public boolean isKeyPressed(int key){
-		if(control.GPID == -1){
+		if(control.getGPID() == -1){
 			return Keyboard.isKeyDown(key);
 		}else{
-			return Gamepad.getGamepad(control.GPID).isButtonPressed(key);
+			return control.isKeyPressed(key);
 		}
 	}
 	
 	public ControlScheme getControlScheme(){
 		return control;
 	}
-
+	
 	public void update(){
-		Vector3f location = this.getLocation();
-		LastLocation = new Vector3f(location.x, location.y, location.z);
+		LastLocation =this.getLocation().clone();
 		this.LastUpdate = System.nanoTime()-MainControl.UPS;
 		
+			
 		if(!health.isDead){
-			this.updateComponents();
+
+			if(!Settings.isClientActive()){
+				this.updateComponents();
+			}else{
+				health.clientUpdate(this);
+			}
+		
 		}else if(health.canRespawn()){
 			spawn();
 			LastLocation.x = this.getLocation().x;
 			LastLocation.y = this.getLocation().y;
 			health.reset();
 		}
-		
+			
 		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
 		if(!bound.AreaIntersect(new Vector2f(this.getLocation().x, this.getLocation().y),  new Vector2f(this.getSize().x, this.getSize().y)) && !health.isDead){
 			health.kill(true);
@@ -194,6 +215,10 @@ public class Player extends Entity{
 		health.kill(increaseKills);
 	}
 	
+	public void setRGBA(float[] rGBA) {
+		RGBA = rGBA;
+	}
+
 	public float getRespawnTimeRemaining(){
 		return health.getTimeRemaining();
 	}

@@ -100,10 +100,18 @@ public class Damage extends Asset{
 		update();
 	}
 	
+	public boolean isStuckToParent() {
+		return stuckToParent;
+	}
+
 	public void resetLife(){
 		this.birth = System.nanoTime();
 	}
 	
+	public float getLife() {
+		return life;
+	}
+
 	public void setParent(Entity e){
 		this.parent = e;
 	}

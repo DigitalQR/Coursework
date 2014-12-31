@@ -9,13 +9,17 @@ public class ControlScheme extends Component{
 	
 	public int KEY_JUMP, KEY_DUCK, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,  KEY_PRIMARY, KEY_SECONDARY, KEY_SELECT, KEY_BACK, KEY_START, KEY_BLOCK;
 	public static final int KEY_COUNT = 12;
-	public int GPID;
+	protected int GPID;
 	
 	public ControlScheme(){
 		setDefaultControls();
 	}
 	
-	public void setDefaultControls(){
+	public int getGPID(){
+		return GPID;
+	}
+	
+	public void setDefaultControls(){		
 		this.GPID = -1;
 		KEY_JUMP = 0; 
 		KEY_DUCK = 0;
@@ -25,8 +29,6 @@ public class ControlScheme extends Component{
 		
 		KEY_UP = 0; 
 		KEY_DOWN = 0;
-		KEY_LEFT = 0;
-		KEY_RIGHT = 0;
 		
 		KEY_SELECT = 0;
 		KEY_BACK = 0;
@@ -35,10 +37,6 @@ public class ControlScheme extends Component{
 		KEY_SECONDARY = 0;
 		
 		KEY_START = 0;
-	}
-
-	public ControlScheme(int GPID){
-		setControlScheme(GPID);
 	}
 	
 	public void setControlScheme(int GPID){
@@ -51,8 +49,6 @@ public class ControlScheme extends Component{
 		
 		KEY_UP = Gamepad.BUTTON_UP; 
 		KEY_DOWN = Gamepad.BUTTON_DOWN;
-		KEY_LEFT = Gamepad.BUTTON_LEFT;
-		KEY_RIGHT = Gamepad.BUTTON_RIGHT;
 		
 		KEY_SELECT = Gamepad.BUTTON_MENU_FORWARD;
 		KEY_BACK = Gamepad.BUTTON_MENU_BACK;
@@ -63,7 +59,7 @@ public class ControlScheme extends Component{
 		KEY_START = Gamepad.BUTTON_PAUSE;
 	}
 	
-	public boolean isKeyPressed(int key){
+	public boolean isKeyPressed(int key){		
 		if(GPID == -1){
 			try{
 				return Keyboard.isKeyDown(key);
@@ -75,6 +71,13 @@ public class ControlScheme extends Component{
 		}
 	}
 
+	public boolean isAnyKeyPressed(){
+		return 
+			      (isKeyPressed(KEY_JUMP) || isKeyPressed(KEY_DUCK) || isKeyPressed(KEY_BLOCK) || isKeyPressed(KEY_LEFT) || isKeyPressed(KEY_RIGHT) 
+				|| isKeyPressed(KEY_UP) || isKeyPressed(KEY_DOWN) || isKeyPressed(KEY_SELECT) || isKeyPressed(KEY_BACK) || isKeyPressed(KEY_PRIMARY) 
+				|| isKeyPressed(KEY_SECONDARY) || isKeyPressed(KEY_START));
+	}
+	
 	public void update(Entity e){
 		
 	}

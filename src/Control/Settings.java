@@ -8,7 +8,8 @@ import java.util.Scanner;
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
 import Collision.Hitbox;
-import Control.Input.Gamepad;
+import Control.Server.Client;
+import Control.Server.Host;
 import Control.Visual.DisplayManager;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.Core.Stage;
@@ -16,9 +17,9 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.2.0 <UI overhaul>";
+	public static final String Version = "1.3.0 <You and I customisation>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
-	public static List<Hitbox> hb;
+	public static ArrayList<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
 
 	public static List<String> toggleNames = new ArrayList<String>();
@@ -27,7 +28,36 @@ public class Settings implements Runnable{
 	public static List<String> floatNames = new ArrayList<String>();
 	public static HashMap<String,Float> floats = new HashMap<String,Float>();
 	
+	public static Host host;
+	public static Client client;
 
+	public static boolean isClientActive(){
+		if(client == null){
+			return false;
+		}else{
+			return !client.isDestroyed();
+		}
+	}
+	
+	public static boolean isHostActive(){
+		if(host == null){
+			return false;
+		}else{
+			return host.isActive();
+		}
+	}
+	
+	public static void destroyConnections(){
+		if(client != null){
+			client.destroy();
+			client = null;
+		}
+		if(host != null){
+			host.destroy();
+			host = null;
+		}
+	}
+	
 	public static List<Vector3f> playerColourProfiles = new ArrayList<Vector3f>();
 	
 	public static void setup(){
@@ -64,7 +94,7 @@ public class Settings implements Runnable{
 			floats.put(s, 0f);
 		}
 
-		floats.put("s_light_deviation", 1f);
+		floats.put("s_light_deviation", 1.5f);
 		floats.put("s_volume", 0.8f);
 		
 		new Thread(new Settings()).start();
@@ -85,7 +115,7 @@ public class Settings implements Runnable{
 	public static void issueCommand(String input){
 		String[] raw = input.split(" ");
 		
-		switch(raw[0]){
+		switch(raw[0].toLowerCase()){
 		//Lists the commands
 		case "help":
 			System.out.println("toggle <variable>");
@@ -154,12 +184,6 @@ public class Settings implements Runnable{
 				if(raw[1].equals("player_count")){
 					try{
 						int val = Integer.valueOf(raw[2]);
-						for(int i = val; i<User.size(); i++){
-							final int GPID = User.get(i).getControlScheme().GPID;
-							if(GPID != -1){
-								Gamepad.getGamepad(GPID).assignToPlayer(-1);
-							}
-						}
 						
 						ArrayList<Player> player = new ArrayList<Player>();
 						
@@ -193,18 +217,60 @@ public class Settings implements Runnable{
 			break;
 			
 		case "reset_stage":
-			if(raw.length == 1){
-				randomHitboxGen();
-				OverworldStage over = (OverworldStage) Stage.getStage("overworld");
-				over.generateHitboxModels();
-			}else{
-				System.out.println("Usage: reset_stage");
+			if(!isClientActive()){
+				if(raw.length == 1){
+					randomHitboxGen();
+					OverworldStage over = (OverworldStage) Stage.getStage("overworld");
+					over.generateHitboxModels();
+				}else{
+					System.out.println("Usage: reset_stage");
+				}
 			}
 			break;
 			
 		//Force stops the JVM
 		case "stop":
 			System.exit(0);
+			break;
+
+		//Connects to a server
+		case "connect":
+			if(raw.length == 3){
+				try{
+					if(client == null || client.isDestroyed()){
+						int port = Integer.valueOf(raw[2]);
+						client = new Client(raw[1], port);
+					}else{
+						System.out.println("Client is already active.");
+					}
+				}catch(NumberFormatException e){
+					System.out.println(raw[2] + " is not a valid port.");
+				}
+			}else{
+				System.out.println("Usage: connect <host> <port>");
+			}
+			break;
+		
+
+		//Connects to a server
+		case "host":
+			if(raw.length == 2){
+				try{
+					if(host == null){
+						int port = Integer.valueOf(raw[1]);
+						host = new Host(port);
+					}else if(!host.isActive()){
+						int port = Integer.valueOf(raw[1]);
+						host = new Host(port);
+					}else{
+						System.out.println("Host is already active.");
+					}
+				}catch(NumberFormatException e){
+					System.out.println(raw[1] + " is not a valid port.");
+				}
+			}else{
+				System.out.println("Usage: host <port>");
+			}
 			break;
 			
 		default:
@@ -218,5 +284,14 @@ public class Settings implements Runnable{
 		int scale = 8;
 		hb = Hitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
 
+	}
+	
+	public static void update(){
+		if(host != null){
+			host.serverUpdate();
+		}
+		if(client != null){
+			client.serverUpdate();
+		}
 	}
 }

@@ -11,7 +11,7 @@ import Tools.Maths.Vector3f;
 public class Button extends Component{
 
 	private float[] colour = {1,1,1,1};
-	private String message;
+	protected String message;
 	private Texture texture;
 	private float textSize = 0.06f;
 	

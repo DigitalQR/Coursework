@@ -156,8 +156,8 @@ public class Camera {
 					for(Player b :User){
 						if(!a.equals(b) && !b.isDead()){
 							
-							float dx = (float)-Toolkit.Modulus(Toolkit.Differencef(a.getLERPLocation().x, b.getLERPLocation().x))-1f;
-							float dy = (float)-Toolkit.Modulus(Toolkit.Differencef(a.getLERPLocation().y, b.getLERPLocation().y))-1f;
+							float dx = (float)-Toolkit.Modulus(a.getLERPLocation().x - b.getLERPLocation().x)-1f;
+							float dy = (float)-Toolkit.Modulus(a.getLERPLocation().y - b.getLERPLocation().y)-1f;
 							if(dx < Delta){
 								Delta = dx;
 							}if(dy < Delta){

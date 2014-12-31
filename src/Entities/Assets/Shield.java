@@ -49,6 +49,18 @@ public class Shield extends Asset{
 		this.parent = e;
 	}
 	
+	public Entity getParent() {
+		return parent;
+	}
+
+	public int getLife() {
+		return life;
+	}
+
+	public float[] getRGBA() {
+		return RGBA;
+	}
+
 	public Vector3f getLocation(){
 		Vector3f loc = parent.getLERPLocation();
 		

@@ -8,7 +8,7 @@ import Entities.Player;
 public class Input {
 	
 	private static long lastInput = 0;
-	private static int inputDelay = 140;
+	private static int inputDelay = 100;
 	
 	public static boolean hasTimePassed(){
 		long current = System.nanoTime()/1000000;
@@ -33,7 +33,7 @@ public class Input {
 	
 	public static boolean isKeyPressed(int key){
 		Player p = Settings.User.get(0);
-		if(p.getControlScheme().GPID != -1){
+		if(p.getControlScheme().getGPID() != -1){
 			if(hasTimePassed()){
 				switch(key){
 				case KEY_UP:
@@ -59,22 +59,26 @@ public class Input {
 			
 		}else{
 			if(hasTimePassed()){
-				switch(key){
-				case KEY_UP:
-					return Keyboard.isKeyDown(Keyboard.KEY_W);
-				case KEY_DOWN:
-					return Keyboard.isKeyDown(Keyboard.KEY_S);
-				case KEY_LEFT:
-					return Keyboard.isKeyDown(Keyboard.KEY_A);
-				case KEY_RIGHT:
-					return Keyboard.isKeyDown(Keyboard.KEY_D);
-				case KEY_FORWARD:
-					return Keyboard.isKeyDown(Keyboard.KEY_F);
-				case KEY_BACK:
-					return Keyboard.isKeyDown(Keyboard.KEY_H);
-				case KEY_PAUSE:
-					return Keyboard.isKeyDown(Keyboard.KEY_ESCAPE);
-				default:
+				try{
+					switch(key){
+					case KEY_UP:
+						return Keyboard.isKeyDown(Keyboard.KEY_W);
+					case KEY_DOWN:
+						return Keyboard.isKeyDown(Keyboard.KEY_S);
+					case KEY_LEFT:
+						return Keyboard.isKeyDown(Keyboard.KEY_A);
+					case KEY_RIGHT:
+						return Keyboard.isKeyDown(Keyboard.KEY_D);
+					case KEY_FORWARD:
+						return Keyboard.isKeyDown(Keyboard.KEY_F);
+					case KEY_BACK:
+						return Keyboard.isKeyDown(Keyboard.KEY_H);
+					case KEY_PAUSE:
+						return Keyboard.isKeyDown(Keyboard.KEY_ESCAPE);
+					default:
+						return false;
+					}
+				}catch(IllegalStateException e){
 					return false;
 				}
 			}else{
