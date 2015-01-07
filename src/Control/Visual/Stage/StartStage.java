@@ -17,7 +17,6 @@ import Control.Visual.Menu.Assets.Button;
 import Control.Visual.Menu.Assets.Slider;
 import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Component;
-import Control.Visual.Menu.Assets.Core.Input;
 import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 import Entities.Tools.ControlScheme;
@@ -220,6 +219,21 @@ class PlayerSelect extends Component{
 		super(location, new Vector3f(0.7f, 0.9f, 0.25f));
 	}
 	
+	private long lastInput = 0;
+	private int inputDelay = 100;
+	
+	public boolean hasTimePassed(){
+		long current = System.nanoTime()/1000000;
+		if((current-lastInput) > inputDelay){
+			return true;
+		}
+		return false;
+	}
+
+	public void recieved(){
+		lastInput = System.nanoTime()/1000000;	
+	}
+	
 	public void reset(){
 		GPID  = -1;
 		control = null;
@@ -279,21 +293,21 @@ class PlayerSelect extends Component{
 					FORWARD = control.KEY_SELECT;
 				}
 				
-				if(isButtonPressed(UP) && Input.hasTimePassed()){
+				if(isButtonPressed(UP) && hasTimePassed()){
 					currentButton--;
-					Input.recieved();
-				}if(isButtonPressed(DOWN) && Input.hasTimePassed()){
+					recieved();
+				}if(isButtonPressed(DOWN) && hasTimePassed()){
 					currentButton++;
-					Input.recieved();
+					recieved();
 				}
 				
 				float val = 0;
-				if(isButtonPressed(LEFT) && Input.hasTimePassed()){
+				if(isButtonPressed(LEFT) && hasTimePassed()){
 					val = -0.1f;
-					Input.recieved();
-				}if(isButtonPressed(RIGHT) && Input.hasTimePassed()){
+					recieved();
+				}if(isButtonPressed(RIGHT) && hasTimePassed()){
 					val = 0.1f;
-					Input.recieved();
+					recieved();
 				}
 				
 				
@@ -304,9 +318,9 @@ class PlayerSelect extends Component{
 					currentButton = 3;
 				}
 	
-				if(currentButton == 3 && isButtonPressed(FORWARD) && Input.hasTimePassed()){
+				if(currentButton == 3 && isButtonPressed(FORWARD) && hasTimePassed()){
 					ready = true;
-					Input.recieved();
+					recieved();
 				}
 		
 				switch(currentButton){
@@ -336,9 +350,9 @@ class PlayerSelect extends Component{
 					BACK = control.KEY_BACK;
 				}
 	
-				if(currentButton == 3 && isButtonPressed(BACK) && Input.hasTimePassed()){
+				if(currentButton == 3 && isButtonPressed(BACK) && hasTimePassed()){
 					ready = false;
-					Input.recieved();
+					recieved();
 				}
 			}
 		}else{
