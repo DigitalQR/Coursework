@@ -67,7 +67,7 @@ public class ConnectStage extends Stage{
 		}
 		
 		if(Settings.isClientActive()){
-			final Button info = new Button(new Vector3f(-1.6f, 0.25f,-2.5f), new Vector3f(0.2f, 0.3f, 0.5f), " Connected!\n Waiting for host to start.. ");
+			final Button info = new Button(new Vector3f(-1.6f, 0.25f,-2.5f), new Vector3f(0.2f, 0.3f, 0.5f), " Connected!\n Waiting for host to start.. \n Ping: " + Settings.client.getPing());
 			info.setColour(new float[]{0,0,0,0});
 			info.setTextSize(0.25f);
 			info.draw();

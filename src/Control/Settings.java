@@ -17,7 +17,7 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.3.1 <You and I customisation>";
+	public static final String Version = "1.3.2.1 <WAN Mini-update>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static ArrayList<Hitbox> hb;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
@@ -272,7 +272,17 @@ public class Settings implements Runnable{
 				System.out.println("Usage: host <port>");
 			}
 			break;
-			
+		case "ping":
+			if(raw.length == 1){
+				if(isClientActive()){
+					System.out.println("\t" + client.getPing());
+				}else{
+					System.out.println("Client is not active.");
+				}
+			}else{
+				System.out.println("Usage: ping");
+			}
+			break;
 		default:
 			System.out.println("Command " + raw[0] + " is unknown.");
 			System.out.println("Type help for a list of commands.");

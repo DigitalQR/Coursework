@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import Collision.Hitbox;
+import Control.Settings;
 import Control.Server.Assets.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
@@ -20,8 +21,9 @@ public class Connection {
 	private static int IDTrack = 1;
 	
 	private final int ID = IDTrack++;
-	private int playerID = -1;
+	private Entities.Player player;
 	private int stage = -1;
+	public int ping = 0;
 	private boolean connected = false;
 	private boolean disconnected = false;
 	private Socket socket;
@@ -78,12 +80,12 @@ public class Connection {
 		return socket.getInetAddress();
 	}
 	
-	public void setPlayerID(int id){
-		playerID = id;
+	public void setPlayer(Entities.Player player){
+		this.player = player;
 	}
 	
-	public int getPlayerID(){
-		return playerID;
+	public Entities.Player getPlayer(){
+		return player;
 	}
 	
 	public boolean isDisconnected(){
@@ -134,6 +136,11 @@ public class Connection {
 				input.close();
 				connected = false;
 				disconnected = true;
+
+				if(player != null){
+					Settings.User.remove(player);
+				}
+				
 				System.out.println("Connection " + getID() + " removed");
 			}catch(IOException e){
 				e.printStackTrace();

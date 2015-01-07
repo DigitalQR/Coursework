@@ -123,9 +123,14 @@ public class OverworldStage extends Stage{
 		}
 		Camera.process();
 		
-		if(Input.isKeyPressed(Input.KEY_PAUSE)){
-			Stage.setStage(Stage.getStage("menu"));
-			Settings.destroyConnections();
+		if(Input.isKeyPressed(Input.KEY_PAUSE) && !Settings.isClientActive()){
+			if(!Settings.isHostActive()){
+				Stage.setStage(Stage.getStage("menu"));
+			}else{
+				Settings.host.addCommand("Sst" + Stage.getStageID("start") + ";");
+				Stage.setStage(Stage.getStage("start"));
+				
+			}
 			Input.recieved();
 		}
 	}

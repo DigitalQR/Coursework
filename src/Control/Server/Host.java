@@ -8,6 +8,7 @@ import Collision.Hitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Server.Assets.Player;
+import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
@@ -111,6 +112,7 @@ public class Host{
 					if(!c.hitboxes.equals(Settings.hb)){
 						command += "wdh";
 						
+						//Hitboxes
 						int track = 0;
 						for(Hitbox hb: Settings.hb){
 							command += hb.getLocation().x + "," + hb.getLocation().y + "," + hb.getSize().x + "," + hb.getSize().y ;
@@ -122,6 +124,14 @@ public class Host{
 							track++;
 						}
 						c.hitboxes = Settings.hb;
+						
+						//Stage
+						if(c.getStage() != Stage.getCurrentStage().getID()){
+							if(!Stage.isCurrentStage(Stage.getStage("server"))){
+								c.setStage(Stage.getCurrentStageID());
+								command += "Sst" + c.getStage() + ";";
+							}
+						}
 					}
 					
 					//Damage information
@@ -167,9 +177,14 @@ public class Host{
 					if(message != ""){
 						for(String mes: message.split(";")){
 							//Ping calc
-							if(mes.equals("ping")){
+							if(mes.startsWith("ping")){
+								String[] subMes = mes.split(",");
+								c.setStage((int)Float.parseFloat(subMes[1]));
+								c.ping = (int)Float.parseFloat(subMes[2]);
+								
 								command += "ping";
 							}
+							
 							
 							//Control
 							if(mes.startsWith("c")){
@@ -218,7 +233,6 @@ public class Host{
 							//Username
 							if(mes.startsWith("si")){
 								c.USERNAME = mes.substring(2);
-								System.out.println(c.USERNAME);
 							}
 							
 						}
@@ -229,8 +243,9 @@ public class Host{
 						c.sendMessage(command);
 					}
 				}
-				if(c.isDisconnected()){
+				if(c.isDisconnected()){					
 					connections.remove(c);
+					c.destroy();
 				}
 			}
 		}

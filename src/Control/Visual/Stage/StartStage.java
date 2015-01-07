@@ -175,6 +175,12 @@ public class StartStage extends Stage{
 				player.setControlScheme(p.getControlScheme());
 				player.setRGBA(p.getRGBA());
 				
+				for(Connection c: Settings.host.getConnections()){
+					if(c.controlScheme.equals(p.getControlScheme())){
+						c.setPlayer(player);
+					}
+				}
+				
 				track++;
 			}
 		}

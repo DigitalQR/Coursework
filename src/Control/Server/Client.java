@@ -66,7 +66,7 @@ public class Client implements Runnable{
 	
 			if( ( System.nanoTime()/1000000 - time)/1000 >= 1){
 				time = (long) (System.nanoTime()/1000000);
-				command += "ping;";
+				command += "ping," + Stage.getCurrentStageID() + "," + ping + ";";
 			}
 			
 			sendMessage(command);	
@@ -142,7 +142,10 @@ public class Client implements Runnable{
 				
 				if(s.startsWith("Sst")){
 					int ID = (int)Float.parseFloat(s.substring(3));
-					Stage.setStage(Stage.getStage(ID));
+					Stage st = Stage.getStage(ID);
+					System.out.print(s + " : ");
+					System.out.println(ID + "," + st.getID());
+					Stage.setStage(st);
 				}
 				
 				if(s.startsWith("ps")){
