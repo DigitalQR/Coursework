@@ -60,8 +60,7 @@ public class Client implements Runnable{
 			command += processMovement();
 			
 			if(name.equals("")){
-				name = System.getProperty("user.name");
-				command += "si" + name + ";";
+				command += "si" + Settings.USERNAME + ";";
 			}
 	
 			if( ( System.nanoTime()/1000000 - time)/1000 >= 1){

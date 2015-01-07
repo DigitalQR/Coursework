@@ -17,9 +17,10 @@ import Entities.Player;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.3.2.2 <WAN Mini-update>";
+	public static final String Version = "1.3.2.3 <WAN Mini-update>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	public static ArrayList<Hitbox> hb;
+	public static String USERNAME;
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
 
 	public static List<String> toggleNames = new ArrayList<String>();

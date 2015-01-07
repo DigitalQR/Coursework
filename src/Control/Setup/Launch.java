@@ -21,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -162,6 +163,16 @@ class Content extends JPanel{
 		this.add(slider);
 		*/
 		
+		//Username
+		final JTextField name = new JTextField(System.getProperty("user.name"));
+		name.setBackground(new Color(0.9f,0.9f,0.9f));
+		name.setForeground(new Color(0f,0f,0f));
+		name.setLocation(150, 160);
+		name.setSize(100, 20);
+		this.add(name);
+		
+		
+		
 		//Start/Exit
 		JButton exit = new JButton("E X I T");
 		exit.setBackground(new Color(1f,0f,0f));
@@ -211,6 +222,12 @@ class Content extends JPanel{
 					data += "f;";
 				}
 				
+				Settings.USERNAME = System.getProperty("user.name");
+				if(!name.getText().equals("")){
+					Settings.USERNAME = name.getText();
+				}
+				data += Settings.USERNAME + ";";
+				
 				
 				try{
 					Formatter pref = new Formatter("Res/startup.pref");
@@ -235,16 +252,20 @@ class Content extends JPanel{
 				prefScan.close();
 				
 				String[] parts = data.split(";");
-				dropDown.setSelectedIndex(Integer.parseInt(parts[0]));
-
+				int index = Integer.parseInt(parts[0]);
+				dropDown.setSelectedIndex(index);
+					
 				if(parts[1].equals("f")){
 					fullscreen.setText("F A L S E");
 				}
 				if(parts[2].equals("f")){
 					sound.setText("F A L S E");
 				}
+				if(!parts[3].equals("")){
+					name.setText(parts[3]);
+				}
 				
-			}catch(FileNotFoundException | NumberFormatException e){}
+			}catch(FileNotFoundException | IllegalArgumentException | ArrayIndexOutOfBoundsException e){}
 		}
 	}
 	
@@ -261,6 +282,7 @@ class Content extends JPanel{
 		drawText(g, 15, 25, 15, "Version " +Settings.Version);
 		drawText(g, 20, 130, 15, "Launch Options:");
 		drawText(g, 20, 150, 13, "Resolution");
+		drawText(g, 150, 150, 13, "Online Username");
 		drawText(g, 20, 200, 13, "Fullscreen");
 		drawText(g, 20, 250, 13, "Sound");
 	}
