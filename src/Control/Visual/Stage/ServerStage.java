@@ -55,7 +55,7 @@ public class ServerStage extends Stage{
 			for(int i = 0; i<Settings.host.getConnections().size(); i++){
 				Connection c = Settings.host.getConnections().get(i);
 				
-				TextBox tb = new TextBox(new Vector3f(-1.6f, 0.6f-0.3f*i,-2.5f), new Vector3f(1.55f, 0.15f, 0.5f), c.USERNAME, "IP:" + c.getIP());
+				TextBox tb = new TextBox(new Vector3f(-1.6f, 0.6f-0.3f*i,-2.5f), new Vector3f(1.55f, 0.15f, 0.5f), c.USERNAME + " " + c.ping, "IP:" + c.getIP());
 				tb.setContentColour(new float[]{1,1,1,0});
 				tb.setContentColour(new float[]{1,1,1,0});
 				tb.setHeaderTextSize(0.5f);
