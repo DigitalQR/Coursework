@@ -33,22 +33,15 @@ public class Player extends Entity{
 	
 	public Player(float x, float y){
 		super(new Vector3f(x,y,0f), new Vector3f(0.2f, 0.3f, 0.2f));
-		spawn();
-		
-		if(Settings.playerColourProfiles.size() != 0){
-			Collections.shuffle(Settings.playerColourProfiles);
-			Vector3f colour = Settings.playerColourProfiles.get(0);
-			RGBA[0] = colour.x;
-			RGBA[1] = colour.y;
-			RGBA[2] = colour.z;
-			RGBA[3] = 1;
-			Settings.playerColourProfiles.remove(colour);
-		}else{
-			RGBA[0] = (float)Math.random();
-			RGBA[1] = (float)Math.random();
-			RGBA[2] = (float)Math.random();
-			RGBA[3] = 1;
+		if(Settings.doesWorldExist()){
+			spawn();
 		}
+		
+		RGBA[0] = (float)Math.random();
+		RGBA[1] = (float)Math.random();
+		RGBA[2] = (float)Math.random();
+		RGBA[3] = 1;
+		
 		
 		control = new ControlScheme();
 		movement = new Movement(control);
@@ -61,7 +54,6 @@ public class Player extends Entity{
 	}	
 	
 	public void destroy(){
-		Settings.playerColourProfiles.add(new Vector3f(RGBA[0],RGBA[1],RGBA[2]));
 		Settings.User.remove(this);
 	}
 	
@@ -97,7 +89,7 @@ public class Player extends Entity{
 	private void spawn(){
 		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
 		List<Hitbox> hitbox = new ArrayList<Hitbox>();
-		for(Hitbox hb: Settings.hb){
+		for(Hitbox hb: Settings.getWorld().getHitboxList()){
 			hitbox.add(hb);
 		}
 		Collections.shuffle(hitbox);
@@ -149,7 +141,11 @@ public class Player extends Entity{
 	
 	public boolean isKeyPressed(int key){
 		if(control.getGPID() == -1){
-			return Keyboard.isKeyDown(key);
+			try{
+				return Keyboard.isKeyDown(key);
+			}catch(IllegalStateException e){
+				return false;
+			}
 		}else{
 			return control.isKeyPressed(key);
 		}

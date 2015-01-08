@@ -20,7 +20,7 @@ public class MainControl{
 		Settings.setup();
 		Gamepad.setup();
 		Sound.setup();
-		setup();
+		Settings.User.add(new Player(0,0));
 		new Thread(new DisplayControl()).start();
 		
 		long overTime = 0;
@@ -58,16 +58,6 @@ public class MainControl{
 		}
 		System.out.println("Closing down main thread.");
 		System.exit(0);
-	}
-	
-	private static void setup(){
-		Settings.randomHitboxGen();
-		
-		Settings.User.add(new Player(0,0));
-		Settings.User.add(new Player(0,0));
-		Settings.User.add(new Player(0,0));
-		Settings.User.add(new Player(0,0));
-		
 	}
 
 }

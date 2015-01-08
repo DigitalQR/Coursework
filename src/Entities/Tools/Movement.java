@@ -206,7 +206,7 @@ public class Movement extends Component{
 
 	
 	private boolean insideHitbox(Vector2f location, Vector2f size){
-		for(Hitbox hb:Settings.hb){
+		for(Hitbox hb:Settings.getWorld().getHitboxList()){
 			if(hb.AreaIntersect(location, size)){
 				return true;
 			}
@@ -215,7 +215,7 @@ public class Movement extends Component{
 	}
 	
 	private Hitbox getHitboxCollision(Vector2f location, Vector2f size){
-		for(Hitbox hb:Settings.hb){
+		for(Hitbox hb:Settings.getWorld().getHitboxList()){
 			if(hb.AreaIntersect(location, size)){
 				return hb;
 			}

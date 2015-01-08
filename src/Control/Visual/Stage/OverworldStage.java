@@ -1,7 +1,6 @@
 package Control.Visual.Stage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
@@ -13,6 +12,7 @@ import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
+import Level.RandomWorld;
 import RenderEngine.Renderer;
 import RenderEngine.Stencil;
 import RenderEngine.Model.Animation;
@@ -22,31 +22,14 @@ import Tools.Maths.Vector3f;
 
 public class OverworldStage extends Stage{
 
-	private List<Model> hb;
 	private Animation playerModel;
 	
 	public OverworldStage(){
 		super();
 		playerModel = new Animation("Cube/Spin", 500);
 		restartTime = Math.round(System.nanoTime()/1000000000);
-		generateHitboxModels();
-	}
-	
-	public void generateHitboxModels(){
-		hb = new ArrayList<Model>();
-		for(Hitbox h: Settings.hb){
-			if(h.getType() == Hitbox.TYPE_STATIC){
-				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
-				Model m = new Model(temp);
-				hb.add(m);
-			}
-		}
-	}
-	
-	
-	/*
-	 TODO - Make gamemode hierachy 
-	 */
+		Settings.setWorld(new RandomWorld());
+	}	
 	
 	private int winnerID = -1;
 	private boolean running = true;
@@ -81,7 +64,7 @@ public class OverworldStage extends Stage{
 	}
 	
 	protected void updateInfo(){
-		for(Hitbox hb: Settings.hb){
+		for(Hitbox hb: Settings.getWorld().getHitboxList()){
 			hb.update();
 		}
 		Damage.updateDamage();
@@ -116,7 +99,7 @@ public class OverworldStage extends Stage{
 					p.kill(false);
 				}
 				if(!Settings.isClientActive()){
-					Settings.issueCommand("reset_stage");
+					Settings.setWorld(new RandomWorld());
 				}
 			}
 			
@@ -138,7 +121,7 @@ public class OverworldStage extends Stage{
 	public void reset(){
 		running = true;
 		winnerID = -1;
-		Settings.issueCommand("reset_stage");
+		Settings.setWorld(new RandomWorld());
 		for(Player p: Settings.User){
 			p.killCount = 0;
 			p.health.factor = 0;
@@ -172,6 +155,11 @@ public class OverworldStage extends Stage{
 				m.setRGBA(1, 0, 0, 0.7f);
 				Renderer.render(m);
 			}
+		}
+
+		//Draw hitboxes
+		for(Model Box:Settings.getWorld().getBackRenderList()){
+			Renderer.render(Box);
 		}
 		
 		//Player outline
@@ -210,12 +198,12 @@ public class OverworldStage extends Stage{
 			}
 		}
 		Stencil.disable();
-
+	
 		//Draw hitboxes
-		for(Model Box:hb){
+		for(Model Box:Settings.getWorld().getFrontRenderList()){
 			Renderer.render(Box);
 		}
-	
+		
 		//Draw boundary
 		Cubef[] sides = {
 				new Cubef(new Vector3f(-1000,-1000,0.3f), new Vector3f(Settings.boundary.getLocation().x,1000,0.3f)),

@@ -32,8 +32,17 @@ public class Input {
 	KEY_PAUSE = 6;
 	
 	public static boolean isKeyPressed(int key){
-		Player p = Settings.User.get(0);
-		if(p.getControlScheme().getGPID() != -1){
+		int GPID = -1;
+		
+		Player p = null;
+		try{
+			p = Settings.User.get(0);
+			GPID = p.getControlScheme().getGPID();
+		}catch(IndexOutOfBoundsException e){
+			
+		}
+		
+		if(GPID != -1){
 			if(hasTimePassed()){
 				switch(key){
 				case KEY_UP:

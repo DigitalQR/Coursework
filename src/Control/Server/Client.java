@@ -6,15 +6,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
-import Collision.Hitbox;
-import Collision.SquareHitbox;
 import Control.Settings;
 import Control.Audio.Sound;
-import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.StartStage;
 import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
@@ -22,6 +18,7 @@ import Entities.Entity;
 import Entities.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
+import Level.World;
 
 public class Client implements Runnable{
 	
@@ -209,21 +206,10 @@ public class Client implements Runnable{
 				}
 				
 				if(s.startsWith("wd")){
-					//Hitboxes
+					//World
 					if(s.charAt(2) == 'h'){
-						String[] hitboxes = s.substring(3).split(",");
-						ArrayList<Hitbox> hitbox = new ArrayList<Hitbox>();
-						
-						for(int i = 0; i<hitboxes.length; i+=4){
-							float x = Float.parseFloat(hitboxes[i]);
-							float y = Float.parseFloat(hitboxes[i+1]);
-							float width = Float.parseFloat(hitboxes[i+2]);
-							float height = Float.parseFloat(hitboxes[i+3]);
-							hitbox.add(new SquareHitbox(new Vector2f(x,y), new Vector2f(width, height)));
-						}
-						Settings.hb = hitbox;
-						OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
-						overworld.generateHitboxModels();
+						World w = World.decode(s.substring(3));
+						Settings.setWorld(w);
 					}
 					
 					//Damage

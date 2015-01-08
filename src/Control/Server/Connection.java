@@ -9,12 +9,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Collision.Hitbox;
 import Control.Settings;
 import Control.Server.Assets.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 import Entities.Tools.ServerControlScheme;
+import Level.World;
 
 public class Connection {
 
@@ -32,7 +32,7 @@ public class Connection {
 	public ServerControlScheme controlScheme;
 	
 	protected ArrayList<Player> players = Player.getNullList();
-	protected ArrayList<Hitbox> hitboxes = new ArrayList<Hitbox>();
+	protected World world;
 	protected ArrayList<Damage> damage = new ArrayList<Damage>();
 	protected ArrayList<Shield> shields = new ArrayList<Shield>();
 	protected String additions = "";

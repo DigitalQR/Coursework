@@ -242,8 +242,12 @@ public class GamepadSetupStage extends Stage implements Action{
 
 			float[] RGBA = {0.5f, 0.5f, 0.5f, 1f};
 			
-			if(Gamepad.getGamepads()[i].getGPID() == Settings.User.get(0).getControlScheme().getGPID()){
-				RGBA = Camera.getInverseRGBA();
+			try{
+				if(Gamepad.getGamepads()[i].getGPID() == Settings.User.get(0).getControlScheme().getGPID()){
+					RGBA = Camera.getInverseRGBA();
+				}
+			}catch(IndexOutOfBoundsException e){
+				
 			}
 			
 			drawPlayerAt(new Vector3f(-0.5f, button[i].getLocation().y-0.05f,-2.3f), RGBA, pad.getProfileStatus(), 0.5f);
