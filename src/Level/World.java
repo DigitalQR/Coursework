@@ -10,8 +10,6 @@ import Tools.Maths.Vector3f;
 public abstract class World {
 	
 	private ArrayList<Hitbox> hitboxes = new ArrayList<Hitbox>();
-	public ArrayList<Cubef> backgroundCube = new ArrayList<Cubef>();
-	public ArrayList<Cubef> foregroundCube = new ArrayList<Cubef>();
 	
 	private ArrayList<Model> foreground = new ArrayList<Model>();
 	private ArrayList<Model> background = new ArrayList<Model>();
@@ -35,7 +33,7 @@ public abstract class World {
 	}
 	
 	public boolean equals(World w){
-		return hitboxes.equals(w.hitboxes) && backgroundCube.equals(w.backgroundCube) && foregroundCube.equals(w.foregroundCube) && foreground.equals(w.foreground) && background.equals(w.background);
+		return hitboxes.equals(w.hitboxes) && foreground.equals(w.foreground) && background.equals(w.background);
 	}
 	
 	public String encode(){
@@ -171,7 +169,6 @@ public abstract class World {
 		for(Hitbox h: hitboxes){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
-				backgroundCube.add(temp);
 				
 				Model m = new Model(temp);
 				background.add(m);

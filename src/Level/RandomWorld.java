@@ -12,10 +12,10 @@ public class RandomWorld extends World{
 	
 	public RandomWorld(){
 		randomHitboxGen();
-		
+
+		this.generateMaingroundBasedModels();
 		generateBackgroundModels();
 		generateImmediateBackgroundModels();
-		this.generateMaingroundBasedModels();
 		generateImmediateForegroundModels();
 		generateForegroundModels();
 	}
@@ -35,7 +35,6 @@ public class RandomWorld extends World{
 		for(Hitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 0.1f));
-				this.backgroundCube.add(temp);
 				
 				Model m = new Model(temp);
 				m.setRGBA(0.6f, 0.6f, 0.6f, 1);
@@ -51,7 +50,6 @@ public class RandomWorld extends World{
 		for(Hitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0.9f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
-				this.foregroundCube.add(temp);
 				
 				Model m = new Model(temp);
 				m.setRGBA(0.6f, 0.6f, 0.6f, 0.5f);
@@ -67,7 +65,6 @@ public class RandomWorld extends World{
 		for(Hitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 1f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 2f));
-				this.foregroundCube.add(temp);
 				
 				Model m = new Model(temp);
 				m.setRGBA(0.6f, 0.6f, 0.6f, 0.5f);
@@ -83,7 +80,6 @@ public class RandomWorld extends World{
 		for(Hitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, -1f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 0f));
-				this.backgroundCube.add(temp);
 				
 				Model m = new Model(temp);
 				m.setRGBA(0.6f, 0.6f, 0.6f, 0.9f);
