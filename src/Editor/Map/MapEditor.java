@@ -40,7 +40,7 @@ public class MapEditor {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setIconImage(icon);
 		
-		window.setSize(1100,735);
+		window.setSize(1100,760);
 		window.setResizable(false);
 
 		final WorldCanvas w = new WorldCanvas();
