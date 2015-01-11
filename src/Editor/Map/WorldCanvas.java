@@ -24,7 +24,7 @@ public class WorldCanvas extends JPanel{
 	public int GRID_SPACING = 30;
 	public boolean gridSnapping = false;
 	
-	private final int X = 380, Y = 10, WIDTH = 700, HEIGHT = 450;
+	private final int X = 380, Y = 10, WIDTH = 700, HEIGHT = 400;
 	private SquareHitbox canvas = new SquareHitbox(new Vector2f(X, Y), new Vector2f(WIDTH, HEIGHT));
 	
 	private int x = -100, y = -100;
@@ -257,7 +257,7 @@ public class WorldCanvas extends JPanel{
 			int x = Math.round(hb.getLocation().x*WIDTH/worldWidth)+X+WIDTH/2;
 			int y = Math.round(hb.getLocation().y*HEIGHT/worldHeight)+Y+HEIGHT/2;
 			int width = Math.round(hb.getSize().x*WIDTH/worldWidth);
-			int height = Math.round(hb.getSize().y*HEIGHT/worldHeight);
+			int height = Math.round(hb.getSize().y*HEIGHT)/worldHeight;
 			
 			g.setColor(new Color(0f,0f,0f));
 			g.fillRect(x, y, width, height);
