@@ -66,12 +66,11 @@ public class Player extends Entity{
 	}
 	
 	private float IDLETime = -1;
+	
 	public boolean isPlayerIDLE(){
 		boolean x = this.LastLocation.x == this.getLocation().x;
 		boolean y = this.LastLocation.y == this.getLocation().y;
-		
-		
-		
+				
 		if(IDLETime == -1){
 			if(x && y){
 				IDLETime = System.nanoTime();
@@ -158,7 +157,6 @@ public class Player extends Entity{
 	public void update(){
 		LastLocation =this.getLocation().clone();
 		this.LastUpdate = System.nanoTime()-MainControl.UPS;
-		
 			
 		if(!health.isDead){
 
@@ -184,7 +182,7 @@ public class Player extends Entity{
 	public Model getModel(){
 		Model m = spawn.getCurrentFrame();
 		Vector3f loc = getLERPLocation();
-		m.setLocation(new Vector3f(loc.x+this.getSize().x/2, loc.y-0.25f, loc.z+this.getSize().z/2));
+		m.setLocation(new Vector3f(loc.x+this.getSize().x/2, loc.y-0.25f, 0.5f));
 		m.setRGBA(1, 1, 1, 1);
 		m.scaleBy(6);
 		

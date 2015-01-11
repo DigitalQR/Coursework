@@ -15,12 +15,12 @@ import Level.World;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.3.5 <Combat voxel re-vamp>";
+	public static final String Version = "1.3.6 <Combat voxel re-vamp>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	private static World currentWorld; 
 	
 	public static String USERNAME;
-	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
+	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,0f));
 
 	public static List<String> toggleNames = new ArrayList<String>();
 	public static HashMap<String,Boolean> toggles = new HashMap<String,Boolean>();

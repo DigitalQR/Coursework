@@ -23,7 +23,7 @@ public class ParsedWorld extends World{
 				this.addHitbox(new SquareHitbox(new Vector2f(x,y), new Vector2f(width, height)));
 			}
 		}
-		System.out.println(data);
+
 		//Background
 		String[] back = part[1].split("#");
 		for(String b: back){
