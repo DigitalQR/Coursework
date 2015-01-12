@@ -17,9 +17,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import Collision.SquareHitbox;
 import Debug.ErrorPopup;
 import Level.BlankWorld;
 import Level.World;
+import RenderEngine.Model.Model;
+import Tools.Maths.Vector2f;
 
 public class MapEditor {
 	
@@ -112,8 +115,63 @@ public class MapEditor {
 					while(scan.hasNext()) data+= scan.next();
 					scan.close();
 					
+					World world = World.decode(data.substring(3, data.length()-1));
+					
 					w.resetLayers();
-					w.layer.put(2, World.decode(data.substring(3, data.length()-1)).getHitboxList());
+
+					for(Model m: world.getBackRenderList()){
+						int layer = 1;
+						if(m.getVertices()[2] == -1f){
+							layer = 0;
+						}else if(m.getVertices()[14] != 0.1f){
+							continue;
+						}
+						
+						float x = m.getVertices()[0];
+						float y = m.getVertices()[1];
+						float xi = m.getVertices()[3];
+						float yi = m.getVertices()[7];
+
+						if(xi < x){
+							float temp = xi;
+							xi = x;
+							x = temp;
+						}
+						if(yi < y){
+							float temp = y;
+							yi = y;
+							y = temp;
+						}
+						
+						w.layer.get(layer).add(new SquareHitbox(new Vector2f(x,y), new Vector2f(xi-x, yi-y)) );
+					}
+					
+					for(Model m: world.getFrontRenderList()){
+						int layer = 3;
+						if(m.getVertices()[2] == 1f){
+							layer = 4;
+						}
+						
+						float x = m.getVertices()[0];
+						float y = m.getVertices()[1];
+						float xi = m.getVertices()[3];
+						float yi = m.getVertices()[7];
+
+						if(xi < x){
+							float temp = xi;
+							xi = x;
+							x = temp;
+						}
+						if(yi < y){
+							float temp = y;
+							yi = y;
+							y = temp;
+						}
+						
+						w.layer.get(layer).add(new SquareHitbox(new Vector2f(x,y), new Vector2f(xi-x, yi-y)) );
+					}
+					
+					w.layer.put(2, world.getHitboxList());
 
 					window.setTitle(" S Q U A R E   O F F   [   M a p   E d i t o r   ] - '" + name +"' ");
 				}else{
