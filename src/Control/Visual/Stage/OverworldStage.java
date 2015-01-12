@@ -29,8 +29,7 @@ public class OverworldStage extends Stage{
 		super();
 		playerModel = new Animation("Cube/Spin", 500);
 		restartTime = Math.round(System.nanoTime()/1000000000);
-		//Settings.setWorld(new RandomWorld());
-		Settings.setWorld(new LoadedWorld("Test"));
+		Settings.setWorld(new RandomWorld());
 	}	
 	
 	private int winnerID = -1;
@@ -94,6 +93,8 @@ public class OverworldStage extends Stage{
 			
 			//Reset
 			if(Dif < 0){
+				reset();
+				/*
 				running = true;
 				winnerID = -1;
 				for(Player p: Settings.User){
@@ -102,7 +103,7 @@ public class OverworldStage extends Stage{
 				}
 				if(!Settings.isClientActive()){
 					Settings.setWorld(new RandomWorld());
-				}
+				}*/
 			}
 			
 		}
@@ -123,7 +124,7 @@ public class OverworldStage extends Stage{
 	public void reset(){
 		running = true;
 		winnerID = -1;
-		Settings.setWorld(new RandomWorld());
+		//Settings.setWorld(new RandomWorld());
 		Settings.setWorld(new LoadedWorld("Test"));
 		for(Player p: Settings.User){
 			p.killCount = 0;

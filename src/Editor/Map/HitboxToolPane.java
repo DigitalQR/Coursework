@@ -33,8 +33,8 @@ public class HitboxToolPane {
 				if(parent.getCurrentID() < 0){
 					parent.setCurrentID(0);
 				}
-				if(parent.getCurrentID() > parent.world.getHitboxList().size()-1){
-					parent.setCurrentID(parent.world.getHitboxList().size()-1);
+				if(parent.getCurrentID() > parent.layer.get(parent.currentLayer).size()-1){
+					parent.setCurrentID(parent.layer.get(parent.currentLayer).size()-1);
 				}
 			}
 			
@@ -53,8 +53,8 @@ public class HitboxToolPane {
 				if(parent.getCurrentID() < 0){
 					parent.setCurrentID(0);
 				}
-				if(parent.getCurrentID() > parent.world.getHitboxList().size()-1){
-					parent.setCurrentID(parent.world.getHitboxList().size()-1);
+				if(parent.getCurrentID() > parent.layer.get(parent.currentLayer).size()-1){
+					parent.setCurrentID(parent.layer.get(parent.currentLayer).size()-1);
 				}
 			}
 			
@@ -70,9 +70,9 @@ public class HitboxToolPane {
 
 			public void actionPerformed(ActionEvent a){
 				int i = 0;
-				for(Hitbox hb: parent.world.getHitboxList()){
+				for(Hitbox hb: parent.layer.get(parent.currentLayer)){
 					if(i == parent.getCurrentID()){
-						parent.world.removeHitbox(hb);
+						parent.layer.get(parent.currentLayer).remove(hb);
 						parent.setCurrentID(-9897);
 						break;
 					}

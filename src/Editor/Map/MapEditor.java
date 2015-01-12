@@ -56,7 +56,7 @@ public class MapEditor {
 		New.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent arg0){
-				w.world = new BlankWorld();
+				w.resetLayers();
 				window.setTitle(" S Q U A R E   O F F   [   M a p   E d i t o r   ] - '<Untitled>'");
 			}
 		});
@@ -72,7 +72,18 @@ public class MapEditor {
 				 
 				try{
 					Formatter scribe = new Formatter("Res/World/" + name + ".pw");
-					scribe.format("%s", w.world.encode());
+					World world = new BlankWorld();
+					
+					world.setHitboxes(w.layer.get(2));
+					world.generateMaingroundBasedModels();
+					
+					world.generateBackgroundModels(w.layer.get(0));
+					world.generateImmediateBackgroundModels(w.layer.get(1));
+					
+					world.generateImmediateForegroundModels(w.layer.get(3));
+					world.generateForegroundModels(w.layer.get(4));
+					
+					scribe.format("%s", world.encode());
 					scribe.close();
 				}catch(FileNotFoundException e){
 					e.printStackTrace();
@@ -101,7 +112,8 @@ public class MapEditor {
 					while(scan.hasNext()) data+= scan.next();
 					scan.close();
 					
-					w.world = World.decode(data.substring(3, data.length()-1));
+					w.resetLayers();
+					w.layer.put(2, World.decode(data.substring(3, data.length()-1)).getHitboxList());
 
 					window.setTitle(" S Q U A R E   O F F   [   M a p   E d i t o r   ] - '" + name +"' ");
 				}else{

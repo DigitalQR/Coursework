@@ -6,11 +6,11 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 
-import Level.RandomWorld;
-import Level.World;
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 import Collision.Hitbox;
@@ -23,6 +23,10 @@ public class WorldCanvas extends JPanel{
 	public static final int FLOAT_FACTOR = 1000000;
 	private int GRID_SPACING = 32;
 	public boolean gridSnapping = false;
+	
+	public boolean[] drawLayer = {true, true, true, true, true};
+	public int currentLayer = 2;
+	public HashMap<Integer, ArrayList<Hitbox>> layer = new HashMap<Integer, ArrayList<Hitbox>>();
 	
 	private final int X = 380, Y = 10, WIDTH = 700, HEIGHT = 400;
 	private SquareHitbox canvas = new SquareHitbox(new Vector2f(X, Y), new Vector2f(WIDTH, HEIGHT));
@@ -57,7 +61,6 @@ public class WorldCanvas extends JPanel{
 		}
 	}
 
-	World world = new RandomWorld();
 	private MapToolPane toolPane = new MapToolPane(this);
 	private HitboxToolPane toolPane1 = new HitboxToolPane(this);
 	
@@ -75,7 +78,15 @@ public class WorldCanvas extends JPanel{
 		return super.getLocationOnScreen();
 	}
 	
+	public void resetLayers(){
+		for(int i = 0; i<5; i++){
+			layer.put(i, new ArrayList<Hitbox>());
+		}
+	}
+	
 	public WorldCanvas(){
+		resetLayers();
+		
 		this.setLayout(null);
 		this.setOpaque(false);
 		this.setBackground(new Color(0f,0f,0f,0f));
@@ -104,14 +115,14 @@ public class WorldCanvas extends JPanel{
 					locX/=FLOAT_FACTOR;
 					locY/=FLOAT_FACTOR;
 					
-					for(Hitbox hb: world.getHitboxList()){
+					for(Hitbox hb: layer.get(currentLayer) ){
 						if(hb.AreaIntersect(new Vector2f(locX, locY), new Vector2f(0,0))){
 							currentID = i;
 							break;
 						}
 						i++;
 					}
-					if(i >= world.getHitboxList().size()){
+					if(i >= layer.get(currentLayer).size()){
 						currentID = -2;
 					}
 				}
@@ -160,7 +171,7 @@ public class WorldCanvas extends JPanel{
 					locYi = locY;
 					locY = temp;
 				}
-				world.addHitbox(new SquareHitbox(new Vector2f(locX, locY), new Vector2f(locXi-locX, locYi-locY)));
+				layer.get(currentLayer).add(new SquareHitbox(new Vector2f(locX, locY), new Vector2f(locXi-locX, locYi-locY)));
 				
 				currentID = -2;
 			}
@@ -182,8 +193,8 @@ public class WorldCanvas extends JPanel{
 			drawAxis(g);
 		}
 		float[] RGB = getRandomLighting();
-		drawWorld(g, X, Y, WIDTH, HEIGHT, RGB);
-		drawWorld(g, X+WIDTH/2, Y+HEIGHT+10, WIDTH/2, HEIGHT/2, RGB);
+		drawWorld(g, X, Y, WIDTH, HEIGHT, RGB, true);
+		drawWorld(g, X+WIDTH/2, Y+HEIGHT+10, WIDTH/2, HEIGHT/2, RGB, false);
 		
 		drawCurrentElement(g);
 		if(gridSnapping){
@@ -266,21 +277,25 @@ public class WorldCanvas extends JPanel{
 		return RGBA;
 	}
 	
-	public void drawWorld(Graphics g, int X, int Y, int WIDTH, int HEIGHT, float[] RGB){
+	public void drawWorld(Graphics g, int X, int Y, int WIDTH, int HEIGHT, float[] RGB, boolean noticeLayers){
 		drawCanvas(g, X, Y, WIDTH, HEIGHT, RGB);
 		
-		for(Hitbox hb: world.getHitboxList()){
-			int x = Math.round(hb.getLocation().x*WIDTH/worldWidth)+X+WIDTH/2;
-			int y = Math.round(hb.getLocation().y*HEIGHT/worldHeight)+Y+HEIGHT/2;
-			int width = Math.round(hb.getSize().x*WIDTH/worldWidth);
-			int height = Math.round(hb.getSize().y*HEIGHT)/worldHeight;
-			
-			g.setColor(new Color(0f,0f,0f));
-			g.fillRect(x, y, width, height);
+		for(int l = 0; l<5; l++){
+			if(drawLayer[l] || !noticeLayers){
+				for(Hitbox hb: layer.get(l) ){
+					int x = Math.round(hb.getLocation().x*WIDTH/worldWidth)+X+WIDTH/2;
+					int y = Math.round(hb.getLocation().y*HEIGHT/worldHeight)+Y+HEIGHT/2;
+					int width = Math.round(hb.getSize().x*WIDTH/worldWidth);
+					int height = Math.round(hb.getSize().y*HEIGHT)/worldHeight;
+					
+					g.setColor(new Color(0f,0f,0f));
+					g.fillRect(x, y, width, height);
+				}
+			}
 		}
 		
 		int i = 0;
-		for(Hitbox hb: world.getHitboxList()){
+		for(Hitbox hb: layer.get(currentLayer) ){
 			if(i == currentID){
 				int x = Math.round(hb.getLocation().x*WIDTH/worldWidth)+X+WIDTH/2;
 				int y = Math.round(hb.getLocation().y*HEIGHT/worldHeight)+Y+HEIGHT/2;
