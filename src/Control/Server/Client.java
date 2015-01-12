@@ -166,7 +166,7 @@ public class Client implements Runnable{
 					}
 					String subCommand = s.substring( ("pl" + playerID + "" + action).length());
 
-					if(playerID < Settings.User.size()-1){
+					if(playerID < Settings.User.size()){
 						switch(action){
 							//Location
 							case 'l':
