@@ -162,7 +162,7 @@ public class OverworldStage extends Stage{
 		}
 
 		//Draw hitboxes
-		for(Model Box:Settings.getWorld().getBackRenderList()){
+		for(Model Box: Settings.getWorld().getBackRenderList()){
 			Renderer.render(Box);
 		}
 		

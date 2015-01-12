@@ -12,7 +12,6 @@ public class LoadedWorld extends ParsedWorld{
 
 	public LoadedWorld(String name) {
 		super(getData(name));
-		this.generateMaingroundBasedModels();
 	}
 	
 	private static String getData(String name){

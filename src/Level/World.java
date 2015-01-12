@@ -2,6 +2,7 @@ package Level;
 
 import java.util.ArrayList;
 
+import Collision.ColourHitbox;
 import Collision.Hitbox;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
@@ -163,7 +164,7 @@ public abstract class World {
 	public static World decode(String message){
 		return new ParsedWorld(message);
 	}
-	
+
 	public void generateMaingroundBasedModels(){
 		//background = new ArrayList<Model>();
 		for(Hitbox h: hitboxes){
@@ -176,49 +177,61 @@ public abstract class World {
 		}
 	}
 	
-	public void generateImmediateBackgroundModels(ArrayList<Hitbox> hb){		
-		for(Hitbox h: hb){
+	public void generateMaingroundModels(ArrayList<ColourHitbox> hb){
+		for(ColourHitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
-				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 0.1f));
+				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
 				
 				Model m = new Model(temp);
-				m.setRGBA(0.6f, 0.6f, 0.6f, 1);
-				this.addToBackground(m);
+				m.setRGBA(h.getRGBA()[0], h.getRGBA()[1], h.getRGBA()[2], h.getRGBA()[3]);
+				background.add(m);
 			}
 		}
 	}
 	
-	public void generateImmediateForegroundModels(ArrayList<Hitbox> hb){
-		for(Hitbox h: hb){
+	public void generateImmediateForegroundModels(ArrayList<ColourHitbox> hb){
+		for(ColourHitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0.9f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
 				
 				Model m = new Model(temp);
-				m.setRGBA(0.6f, 0.6f, 0.6f, 0.5f);
+				m.setRGBA(h.getRGBA()[0], h.getRGBA()[1], h.getRGBA()[2], h.getRGBA()[3]);
 				this.addToForeground(m);
 			}
 		}
 	}
 	
-	public void generateForegroundModels(ArrayList<Hitbox> hb){
-		for(Hitbox h: hb){
+	public void generateForegroundModels(ArrayList<ColourHitbox> hb){
+		for(ColourHitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 1f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 2f));
 				
 				Model m = new Model(temp);
-				m.setRGBA(0.6f, 0.6f, 0.6f, 0.5f);
+				m.setRGBA(h.getRGBA()[0], h.getRGBA()[1], h.getRGBA()[2], h.getRGBA()[3]);
 				this.addToForeground(m);
 			}
 		}
 	}
+	
+	public void generateImmediateBackgroundModels(ArrayList<ColourHitbox> hb){		
+		for(ColourHitbox h: hb){
+			if(h.getType() == Hitbox.TYPE_STATIC){
+				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 0.1f));
+				
+				Model m = new Model(temp);
+				m.setRGBA(h.getRGBA()[0], h.getRGBA()[1], h.getRGBA()[2], h.getRGBA()[3]);
+				this.addToBackground(m);
+			}
+		}
+	}
 
-	public void generateBackgroundModels(ArrayList<Hitbox> hb){
-		for(Hitbox h: hb){
+	public void generateBackgroundModels(ArrayList<ColourHitbox> hb){
+		for(ColourHitbox h: hb){
 			if(h.getType() == Hitbox.TYPE_STATIC){
 				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, -1f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 0f));
 				
 				Model m = new Model(temp);
-				m.setRGBA(0.6f, 0.6f, 0.6f, 0.9f);
+				m.setRGBA(h.getRGBA()[0], h.getRGBA()[1], h.getRGBA()[2], h.getRGBA()[3]);
 				this.addToBackground(m);
 			}
 		}

@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
+import Collision.ColourHitbox;
 import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.Settings;
@@ -26,7 +27,7 @@ public class WorldCanvas extends JPanel{
 	
 	public boolean[] drawLayer = {true, true, true, true, true};
 	public int currentLayer = 2;
-	public HashMap<Integer, ArrayList<Hitbox>> layer = new HashMap<Integer, ArrayList<Hitbox>>();
+	public HashMap<Integer, ArrayList<ColourHitbox>> layer = new HashMap<Integer, ArrayList<ColourHitbox>>();
 	
 	private final int X = 380, Y = 10, WIDTH = 700, HEIGHT = 400;
 	private SquareHitbox canvas = new SquareHitbox(new Vector2f(X, Y), new Vector2f(WIDTH, HEIGHT));
@@ -71,6 +72,13 @@ public class WorldCanvas extends JPanel{
 	}
 
 	public void setBrushColour(float[] brushColour) {
+		for(int i = 0; i<4; i++){
+			if(brushColour[i] < 0){
+				brushColour[i] = 0;
+			}if(brushColour[i] > 1){
+				brushColour[i] = 1;
+			}
+		}
 		BrushColour = brushColour;
 	}
 
@@ -80,7 +88,7 @@ public class WorldCanvas extends JPanel{
 	
 	public void resetLayers(){
 		for(int i = 0; i<5; i++){
-			layer.put(i, new ArrayList<Hitbox>());
+			layer.put(i, new ArrayList<ColourHitbox>());
 		}
 	}
 	
@@ -132,6 +140,7 @@ public class WorldCanvas extends JPanel{
 			}
 			
 		});
+		
 	}
 	
 	private void mousePress(MouseEvent m){
@@ -171,7 +180,10 @@ public class WorldCanvas extends JPanel{
 					locYi = locY;
 					locY = temp;
 				}
-				layer.get(currentLayer).add(new SquareHitbox(new Vector2f(locX, locY), new Vector2f(locXi-locX, locYi-locY)));
+				
+				ColourHitbox cb = new ColourHitbox(new Vector2f(locX, locY), new Vector2f(locXi-locX, locYi-locY));
+				cb.setRGBA(BrushColour);
+				layer.get(currentLayer).add(cb);
 				
 				currentID = -2;
 			}
@@ -216,7 +228,7 @@ public class WorldCanvas extends JPanel{
 	
 	public void drawCurrentElement(Graphics g){
 		if(currentID == -1){
-			g.setColor(new Color(BrushColour[0], BrushColour[1], BrushColour[2], BrushColour[3]));
+			g.setColor(new Color(1-BrushColour[0], 1-BrushColour[1], 1-BrushColour[2], 0.8f));
 			int width = convert(MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x, X+WIDTH/2)-x;
 			int height = convert(MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y, Y+HEIGHT/2)-y;
 
@@ -282,34 +294,29 @@ public class WorldCanvas extends JPanel{
 		
 		for(int l = 0; l<5; l++){
 			if(drawLayer[l] || !noticeLayers){
-				for(Hitbox hb: layer.get(l) ){
+				int i = 0;
+				for(ColourHitbox hb: layer.get(l) ){
 					int x = Math.round(hb.getLocation().x*WIDTH/worldWidth)+X+WIDTH/2;
 					int y = Math.round(hb.getLocation().y*HEIGHT/worldHeight)+Y+HEIGHT/2;
 					int width = Math.round(hb.getSize().x*WIDTH/worldWidth);
 					int height = Math.round(hb.getSize().y*HEIGHT)/worldHeight;
-					
-					g.setColor(new Color(0f,0f,0f));
+
+					g.setColor(new Color(hb.getRGBA()[0],hb.getRGBA()[1],hb.getRGBA()[2],hb.getRGBA()[3]));
 					g.fillRect(x, y, width, height);
+					
+					if(currentLayer == l && currentID == i){
+						g.setColor(new Color(1-hb.getRGBA()[0],1-hb.getRGBA()[1],1-hb.getRGBA()[2],hb.getRGBA()[3]));
+						g.fillRect(x, y, width, height);
+						
+						g.setColor(new Color(hb.getRGBA()[0],hb.getRGBA()[1],hb.getRGBA()[2],hb.getRGBA()[3]));
+						g.fillRect(x+2, y-2, width-4, height+4);
+					}
+					
+					i++;
 				}
 			}
 		}
 		
-		int i = 0;
-		for(Hitbox hb: layer.get(currentLayer) ){
-			if(i == currentID){
-				int x = Math.round(hb.getLocation().x*WIDTH/worldWidth)+X+WIDTH/2;
-				int y = Math.round(hb.getLocation().y*HEIGHT/worldHeight)+Y+HEIGHT/2;
-				int width = Math.round(hb.getSize().x*WIDTH/worldWidth);
-				int height = Math.round(hb.getSize().y*HEIGHT/worldHeight);
-				
-				g.setColor(new Color(1f,1f,1f));
-				g.drawRect(x-1, y-1, width+2, height+2);
-				g.drawRect(x+1, y+1, width-2, height-2);
-				g.setColor(new Color(0f,0f,0f));
-				g.drawRect(x, y, width, height);
-			}
-			i++;
-		}
 	}
 	
 	public void drawAxis(Graphics g){

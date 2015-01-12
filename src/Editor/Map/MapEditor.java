@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import Collision.SquareHitbox;
+import Collision.ColourHitbox;
+import Collision.Hitbox;
 import Debug.ErrorPopup;
 import Level.BlankWorld;
 import Level.World;
@@ -45,7 +47,7 @@ public class MapEditor {
 		
 		window.setSize(1100,760);
 		window.setResizable(false);
-
+		
 		final WorldCanvas w = new WorldCanvas();
 		window.add(w);
 		
@@ -76,13 +78,16 @@ public class MapEditor {
 				try{
 					Formatter scribe = new Formatter("Res/World/" + name + ".pw");
 					World world = new BlankWorld();
-					
-					world.setHitboxes(w.layer.get(2));
-					world.generateMaingroundBasedModels();
-					
+				
+					ArrayList<Hitbox> hb = new ArrayList<Hitbox>();
+					for(ColourHitbox h: w.layer.get(2)){
+						hb.add(h);
+					}
+					world.setHitboxes(hb);
+										
 					world.generateBackgroundModels(w.layer.get(0));
 					world.generateImmediateBackgroundModels(w.layer.get(1));
-					
+					world.generateMaingroundModels(w.layer.get(2));
 					world.generateImmediateForegroundModels(w.layer.get(3));
 					world.generateForegroundModels(w.layer.get(4));
 					
@@ -124,7 +129,7 @@ public class MapEditor {
 						if(m.getVertices()[2] == -1f){
 							layer = 0;
 						}else if(m.getVertices()[14] != 0.1f){
-							continue;
+							layer = 2;
 						}
 						
 						float x = m.getVertices()[0];
@@ -143,7 +148,9 @@ public class MapEditor {
 							y = temp;
 						}
 						
-						w.layer.get(layer).add(new SquareHitbox(new Vector2f(x,y), new Vector2f(xi-x, yi-y)) );
+						ColourHitbox hb = new ColourHitbox(new Vector2f(x,y), new Vector2f(xi-x, yi-y));
+						hb.setRGBA(m.getRGBA());
+						w.layer.get(layer).add(hb);
 					}
 					
 					for(Model m: world.getFrontRenderList()){
@@ -167,11 +174,11 @@ public class MapEditor {
 							yi = y;
 							y = temp;
 						}
-						
-						w.layer.get(layer).add(new SquareHitbox(new Vector2f(x,y), new Vector2f(xi-x, yi-y)) );
+
+						ColourHitbox hb = new ColourHitbox(new Vector2f(x,y), new Vector2f(xi-x, yi-y));
+						hb.setRGBA(m.getRGBA());
+						w.layer.get(layer).add(hb);
 					}
-					
-					w.layer.put(2, world.getHitboxList());
 
 					window.setTitle(" S Q U A R E   O F F   [   M a p   E d i t o r   ] - '" + name +"' ");
 				}else{
