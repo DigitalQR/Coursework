@@ -118,7 +118,7 @@ public class Damage extends Asset{
 	
 	public Model getModel(){
 		Model m = animation.getCurrentFrame();
-		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y, 0));
+		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y, 0.5f));
 		float[] colour = {0,1,0};
 		m.setRGBA(colour[0], colour[1], colour[2], 1);
 		m.scaleBy(12);

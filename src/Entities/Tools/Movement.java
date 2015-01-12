@@ -15,7 +15,7 @@ public class Movement extends Component{
 	private boolean touchingGround = false;
 	private int touchingWall = 0;
 	private boolean bounce = true;
-	private static final float COLLISION_DEPTH = 0.01f;
+	private static final float COLLISION_DEPTH = 0.001f;
 	
 	public Movement(ControlScheme controlScheme){
 		control = controlScheme;

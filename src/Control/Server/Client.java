@@ -166,42 +166,44 @@ public class Client implements Runnable{
 					}
 					String subCommand = s.substring( ("pl" + playerID + "" + action).length());
 
-					switch(action){
-						//Location
-						case 'l':
-							
-							String[] para = subCommand.split(",");
-							float[] val = {
-									Float.parseFloat(para[0]),
-									Float.parseFloat(para[1])
-							};
-							
-							Settings.User.get(playerID).setLocation(new Vector3f(val[0], val[1], 0));
-							break;
-						
-						//Information
-						case 'i':
-							//Colour
-							if(subCommand.startsWith("c")){
-								String[] col = subCommand.substring(1).split(",");
-								float r = Float.parseFloat(col[0]);
-								float g = Float.parseFloat(col[1]);
-								float b = Float.parseFloat(col[2]);
+					if(playerID < Settings.User.size()-1){
+						switch(action){
+							//Location
+							case 'l':
 								
-								Settings.User.get(playerID).setRGBA(new float[]{r,g,b,1});
-							}
+								String[] para = subCommand.split(",");
+								float[] val = {
+										Float.parseFloat(para[0]),
+										Float.parseFloat(para[1])
+								};
+								
+								Settings.User.get(playerID).setLocation(new Vector3f(val[0], val[1], 0));
+								break;
 							
-							//Health
-							if(subCommand.startsWith("h")){
-								String[] par = subCommand.substring(1).split(",");
-								int killCount = (int)Float.parseFloat(par[0]);
-								float factor = Float.parseFloat(par[1]);
-
-								Settings.User.get(playerID).killCount = killCount;
-								Settings.User.get(playerID).health.factor = factor;
-							}
-							
-							break;
+							//Information
+							case 'i':
+								//Colour
+								if(subCommand.startsWith("c")){
+									String[] col = subCommand.substring(1).split(",");
+									float r = Float.parseFloat(col[0]);
+									float g = Float.parseFloat(col[1]);
+									float b = Float.parseFloat(col[2]);
+									
+									Settings.User.get(playerID).setRGBA(new float[]{r,g,b,1});
+								}
+								
+								//Health
+								if(subCommand.startsWith("h")){
+									String[] par = subCommand.substring(1).split(",");
+									int killCount = (int)Float.parseFloat(par[0]);
+									float factor = Float.parseFloat(par[1]);
+	
+									Settings.User.get(playerID).killCount = killCount;
+									Settings.User.get(playerID).health.factor = factor;
+								}
+								
+								break;
+						}
 					}
 				}
 				
