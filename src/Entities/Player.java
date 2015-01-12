@@ -35,13 +35,7 @@ public class Player extends Entity{
 		super(new Vector3f(x,y,0f), new Vector3f(0.2f, 0.3f, 0.2f));
 		if(Settings.doesWorldExist()){
 			spawn();
-		}
-		
-		RGBA[0] = (float)Math.random();
-		RGBA[1] = (float)Math.random();
-		RGBA[2] = (float)Math.random();
-		RGBA[3] = 1;
-		
+		}		
 		
 		control = new ControlScheme();
 		movement = new Movement(control);
