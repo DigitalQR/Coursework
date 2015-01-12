@@ -15,7 +15,7 @@ public class MapToolPane{
 		final JButton gridSnap = new JButton("O F F");
 		gridSnap.setBackground(new Color(1f,0f,0f));
 		gridSnap.setForeground(new Color(1f,1f,1f));
-		gridSnap.setLocation(390,505);
+		gridSnap.setLocation(390,465);
 		gridSnap.setSize(70,20);
 		gridSnap.addActionListener(new ActionListener(){
 
@@ -38,12 +38,12 @@ public class MapToolPane{
 		final JButton gridMinus = new JButton("-");
 		gridMinus.setBackground(new Color(0.6f,0.6f,0.6f));
 		gridMinus.setForeground(new Color(1f,1f,1f));
-		gridMinus.setLocation(515,505);
+		gridMinus.setLocation(515,465);
 		gridMinus.setSize(50,20);
 		gridMinus.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent a){
-				parent.GRID_SPACING*=2;
+				parent.alterGridSpacing(2);
 			}
 			
 		});
@@ -52,12 +52,12 @@ public class MapToolPane{
 		final JButton gridPlus = new JButton("+");
 		gridPlus.setBackground(new Color(0.6f,0.6f,0.6f));
 		gridPlus.setForeground(new Color(1f,1f,1f));
-		gridPlus.setLocation(570,505);
+		gridPlus.setLocation(570,465);
 		gridPlus.setSize(50,20);
 		gridPlus.addActionListener(new ActionListener(){
 
 			public void actionPerformed(ActionEvent a){
-				parent.GRID_SPACING/=2;
+				parent.alterGridSpacing(-2);
 			}
 			
 		});
@@ -65,8 +65,8 @@ public class MapToolPane{
 	}
 	
 	public void paint(Graphics g){
-		drawText(g, 385, 480, 20, "Map Tools");
-		drawText(g, 385, 500, 15, "Snap to grid:            Grid spacing:");
+		drawText(g, 385, 440, 20, "Map Tools");
+		drawText(g, 385, 460, 15, "Snap to grid:            Grid spacing:");
 	}
 	
 	public static void drawText(Graphics g, int x, int y, int size, String message){

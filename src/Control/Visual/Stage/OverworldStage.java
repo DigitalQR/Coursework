@@ -12,6 +12,7 @@ import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
+import Level.LoadedWorld;
 import Level.RandomWorld;
 import RenderEngine.Renderer;
 import RenderEngine.Stencil;
@@ -28,7 +29,8 @@ public class OverworldStage extends Stage{
 		super();
 		playerModel = new Animation("Cube/Spin", 500);
 		restartTime = Math.round(System.nanoTime()/1000000000);
-		Settings.setWorld(new RandomWorld());
+		//Settings.setWorld(new RandomWorld());
+		Settings.setWorld(new LoadedWorld("Test"));
 	}	
 	
 	private int winnerID = -1;
@@ -122,6 +124,7 @@ public class OverworldStage extends Stage{
 		running = true;
 		winnerID = -1;
 		Settings.setWorld(new RandomWorld());
+		Settings.setWorld(new LoadedWorld("Test"));
 		for(Player p: Settings.User){
 			p.killCount = 0;
 			p.health.factor = 0;

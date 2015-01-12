@@ -21,17 +21,20 @@ public class WorldCanvas extends JPanel{
 	
 	private static final long serialVersionUID = -1718433555125590002L;
 	public static final int FLOAT_FACTOR = 1000000;
-	public int GRID_SPACING = 30;
+	private int GRID_SPACING = 32;
 	public boolean gridSnapping = false;
 	
 	private final int X = 380, Y = 10, WIDTH = 700, HEIGHT = 400;
 	private SquareHitbox canvas = new SquareHitbox(new Vector2f(X, Y), new Vector2f(WIDTH, HEIGHT));
 	
 	private int x = -100, y = -100;
-	
 	private int currentID = -786;
 	
-	public int getCurrentID() {
+
+	private final int worldWidth = Math.round(Settings.boundary.EndLocation.x-Settings.boundary.StartLocation.x);
+	private final int worldHeight = -Math.round(Settings.boundary.EndLocation.y-Settings.boundary.StartLocation.y);
+	
+	public int getCurrentID(){
 		return currentID;
 	}
 
@@ -40,7 +43,20 @@ public class WorldCanvas extends JPanel{
 		HitboxToolPane.change = true;
 	}
 
-	
+	public void alterGridSpacing(int factor){
+		if(factor >= 0){
+			GRID_SPACING *=factor;
+		}else{
+			GRID_SPACING /=-factor;
+		}
+		
+		if(GRID_SPACING > 512){
+			GRID_SPACING = 512;
+		}if(GRID_SPACING < 2){
+			GRID_SPACING = 2;
+		}
+	}
+
 	World world = new RandomWorld();
 	private MapToolPane toolPane = new MapToolPane(this);
 	private HitboxToolPane toolPane1 = new HitboxToolPane(this);
@@ -82,9 +98,6 @@ public class WorldCanvas extends JPanel{
 					int i = 0;
 					int xi = m.getXOnScreen() - getLocationOnScreen().x;
 					int yi = m.getYOnScreen() - getLocationOnScreen().y;
-
-					final int worldWidth = Math.round(Settings.boundary.EndLocation.x-Settings.boundary.StartLocation.x);
-					final int worldHeight = Math.round(Settings.boundary.EndLocation.y-Settings.boundary.StartLocation.y);
 					
 					float locX = Math.round((xi-X-WIDTH/2)*FLOAT_FACTOR)/(WIDTH/worldWidth);
 					float locY = Math.round((yi-Y-HEIGHT/2)*FLOAT_FACTOR)/(HEIGHT/worldHeight);
@@ -114,8 +127,8 @@ public class WorldCanvas extends JPanel{
 		int x = m.getXOnScreen() - this.getLocationOnScreen().x;
 		int y = m.getYOnScreen() - this.getLocationOnScreen().y;
 
-		x = convert(x, X);
-		y = convert(y, Y);
+		x = convert(x, X+WIDTH/2);
+		y = convert(y, Y+HEIGHT/2);
 		
 		if(canvas.AreaIntersect(new Vector2f(x,y), new Vector2f(1,1))){
 			if(currentID != -1){
@@ -123,17 +136,14 @@ public class WorldCanvas extends JPanel{
 				this.y = y;
 				currentID = -1;
 			}else if(currentID == -1){
-				final int worldWidth = Math.round(Settings.boundary.EndLocation.x-Settings.boundary.StartLocation.x);
-				final int worldHeight = Math.round(Settings.boundary.EndLocation.y-Settings.boundary.StartLocation.y);
-				
 				
 				float locX = Math.round((this.x-X-WIDTH/2)*FLOAT_FACTOR)/(WIDTH/worldWidth);
 				float locY = Math.round((this.y-Y-HEIGHT/2)*FLOAT_FACTOR)/(HEIGHT/worldHeight);
 				locX/=FLOAT_FACTOR;
 				locY/=FLOAT_FACTOR;
 				
-				int xi = convert(x, X);
-				int yi = convert(y, Y);
+				int xi = convert(x, X+WIDTH/2);
+				int yi = convert(y, Y+HEIGHT/2);
 
 				float locXi = Math.round((xi-X-WIDTH/2)*FLOAT_FACTOR)/(WIDTH/worldWidth);
 				float locYi = Math.round((yi-Y-HEIGHT/2)*FLOAT_FACTOR)/(HEIGHT/worldHeight);
@@ -180,6 +190,15 @@ public class WorldCanvas extends JPanel{
 			drawAxis(g);
 		}
 		
+		if(gridSnapping){
+			int x = convert(MouseInfo.getPointerInfo().getLocation().x - this.getLocationOnScreen().x, X+WIDTH/2);
+			int y = convert(MouseInfo.getPointerInfo().getLocation().y - this.getLocationOnScreen().y, Y+HEIGHT/2);
+			g.setColor(new Color(1f,0f,0f));
+			g.drawRect(x-1, y-1, 2, 2);
+			g.setColor(new Color(1f,1f,1f));
+			g.drawRect(x-2, y-2, 4, 4);
+		}
+		
 		toolPane.paint(g);
 		toolPane1.paint(g);
 	}
@@ -187,8 +206,8 @@ public class WorldCanvas extends JPanel{
 	public void drawCurrentElement(Graphics g){
 		if(currentID == -1){
 			g.setColor(new Color(BrushColour[0], BrushColour[1], BrushColour[2], BrushColour[3]));
-			int width = convert(MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x, X)-x;
-			int height = convert(MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y, Y)-y;
+			int width = convert(MouseInfo.getPointerInfo().getLocation().x-this.getLocationOnScreen().x, X+WIDTH/2)-x;
+			int height = convert(MouseInfo.getPointerInfo().getLocation().y-this.getLocationOnScreen().y, Y+HEIGHT/2)-y;
 
 			if(x+width < X){
 				width = X-x;
@@ -250,9 +269,6 @@ public class WorldCanvas extends JPanel{
 	public void drawWorld(Graphics g, int X, int Y, int WIDTH, int HEIGHT, float[] RGB){
 		drawCanvas(g, X, Y, WIDTH, HEIGHT, RGB);
 		
-		final int worldWidth = Math.round(Settings.boundary.EndLocation.x-Settings.boundary.StartLocation.x);
-		final int worldHeight = Math.round(Settings.boundary.EndLocation.y-Settings.boundary.StartLocation.y);
-		
 		for(Hitbox hb: world.getHitboxList()){
 			int x = Math.round(hb.getLocation().x*WIDTH/worldWidth)+X+WIDTH/2;
 			int y = Math.round(hb.getLocation().y*HEIGHT/worldHeight)+Y+HEIGHT/2;
@@ -271,10 +287,10 @@ public class WorldCanvas extends JPanel{
 				int width = Math.round(hb.getSize().x*WIDTH/worldWidth);
 				int height = Math.round(hb.getSize().y*HEIGHT/worldHeight);
 				
-				g.setColor(new Color(0f,0f,0f));
+				g.setColor(new Color(1f,1f,1f));
 				g.drawRect(x-1, y-1, width+2, height+2);
 				g.drawRect(x+1, y+1, width-2, height-2);
-				g.setColor(new Color(1f,1f,1f));
+				g.setColor(new Color(0f,0f,0f));
 				g.drawRect(x, y, width, height);
 			}
 			i++;
@@ -283,11 +299,17 @@ public class WorldCanvas extends JPanel{
 	
 	public void drawAxis(Graphics g){
 		g.setColor(new Color(0f, 0f, 0f));
-		for(int x = 0; x<WIDTH; x+=GRID_SPACING){
-			g.drawLine(X+x, Y, X+x, Y+HEIGHT);
+		for(int x = X+WIDTH/2; x<X+WIDTH; x+=GRID_SPACING){
+			g.drawLine(x, Y, x, Y+HEIGHT);
 		}
-		for(int y = 0; y<HEIGHT; y+=GRID_SPACING){
-			g.drawLine(X, Y+y, X+WIDTH, Y+y);
+		for(int x = X+WIDTH/2; x>X; x-=GRID_SPACING){
+			g.drawLine(x, Y, x, Y+HEIGHT);
+		}
+		for(int y = Y+HEIGHT/2; y<Y+HEIGHT; y+=GRID_SPACING){
+			g.drawLine(X, y, X+WIDTH, y);
+		}
+		for(int y = Y+HEIGHT/2; y>Y; y-=GRID_SPACING){
+			g.drawLine(X, y, X+WIDTH, y);
 		}
 	}
 }
