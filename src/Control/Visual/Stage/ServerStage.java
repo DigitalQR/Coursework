@@ -35,8 +35,9 @@ public class ServerStage extends Stage{
 		}
 		
 		if(Settings.host.getConnections().size() > 0 && Input.isKeyPressed(Input.KEY_FORWARD)){
-			Stage.setStage(Stage.getStage("start"));
-			Settings.host.addCommand("Sst" + Stage.getStageID("start") + ";");
+			Stage.setStage(Stage.getStage("gamemode"));
+			Settings.host.addCommand("Sst" + Stage.getStageID("gamemode") + ";");
+			
 			Input.recieved();
 		}
 		

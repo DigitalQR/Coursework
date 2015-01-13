@@ -42,9 +42,11 @@ public class Damage extends Asset{
 	
 	public static Damage damageTouching(Entity e){
 		for(Damage d: getDamageInfo()){
-			if(!d.parent.equals(e) && d.touching(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x, e.getSize().y))){
-				return d;
-			}
+			try{
+				if(!d.parent.equals(e) && d.touching(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x, e.getSize().y))){
+					return d;
+				}
+			}catch(NullPointerException ex){}
 		}
 		return null;
 	}

@@ -15,11 +15,11 @@ import Level.World;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.3.9 <Combat voxel re-vamp>";
+	public static final String Version = "1.3.10 <Combat voxel re-vamp>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
 	private static World currentWorld; 
 	
-	public static String USERNAME;
+	public static String USERNAME = System.getProperty("user.name");
 	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,0f));
 
 	public static List<String> toggleNames = new ArrayList<String>();

@@ -20,7 +20,14 @@ public class MainControl{
 		Settings.setup();
 		Gamepad.setup();
 		Sound.setup();
-		Settings.User.add(new Player(0,0));
+		
+		try{
+			Settings.User.add(new Player(0,0));
+			Settings.User.get(0).setControlScheme(Gamepad.keyboard.getGPID());
+		}catch(NullPointerException e){
+			
+		}
+		
 		new Thread(new DisplayControl()).start();
 		
 		long overTime = 0;

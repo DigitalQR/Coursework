@@ -9,7 +9,7 @@ import Tools.Maths.Vector3f;
 public class Player {
 	
 	private Vector2f location;
-	private Vector3f colour = new Vector3f(0,0,0);
+	private Vector3f colour = new Vector3f(-1,-1,-1);
 	private int killCount = 0;
 	private float factor = 0;
 	

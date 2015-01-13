@@ -196,7 +196,7 @@ public class MenuStage extends Stage implements Action{
 		//Local play
 		if(ID == button[4].getID() && button[4].hasFocus()){
 			Settings.destroyConnections();
-			Stage.setStage(Stage.getStage("start"));
+			Stage.setStage(Stage.getStage("gamemode"));
 		}
 	}
 

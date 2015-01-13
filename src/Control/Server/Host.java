@@ -88,17 +88,17 @@ public class Host{
 							Player p = player.get(i);
 							
 							//Location
-							if(!p.locationEquals(c.players.get(i))){
+							if(!p.locationEquals(c.players.get(i)) ){
 								command += "pl" + i + "l" + p.getLocation().x + "," + p.getLocation().y + ";"; 
 							}
 							
 							//Colour
-							if(!p.colourEquals(c.players.get(i))){
+							if(!p.locationEquals(c.players.get(i)) ){
 								command += "pl" + i + "ic" + p.getColour().x + "," + p.getColour().y + "," + p.getColour().z + ";"; 
 							}
 							
 							//Health
-							if(!p.combatEquals(c.players.get(i))){
+							if(!p.combatEquals(c.players.get(i)) ){
 								command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + ";";
 							}
 						}catch(IndexOutOfBoundsException e){

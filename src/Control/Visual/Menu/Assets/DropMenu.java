@@ -12,6 +12,8 @@ import Control.Visual.Menu.Assets.Core.Input;
 public class DropMenu extends Component{
 
 	private int itemLocation = 0;
+	private int maxEntries = 3;
+	private float[] colour = {1,1,1,1};
 	private ArrayList<String> items = new ArrayList<String>();
 	private float textSize = 0.06f;
 	private String name;
@@ -23,6 +25,12 @@ public class DropMenu extends Component{
 			addItem(s);
 		}
 		this.name = name;
+	}
+	
+	public void setMaxEntries(int i){
+		if(i >= 1){
+			maxEntries = i;
+		}
 	}
 	
 	public void addItem(String item){
@@ -69,13 +77,39 @@ public class DropMenu extends Component{
 		return cube;
 	}
 	
+	public float[] getColour() {
+		return colour;
+	}
+
+	public void setColour(float[] colour) {
+		this.colour = colour;
+	}
+
 	public void updateUI(){
 		if(this.hasFocus()){
 			float gap = 0.05f;
 			Model m = new Model(getCube());
 			Vector3f location = this.getLERPHUDLocation();
+				
+				int start = 0;
+				int end = items.size();
+				if(items.size() > maxEntries){
+					start = itemLocation-(maxEntries)/2;
+					if(start < 0){
+						start = 0;
+					}
+					
+					end = start+maxEntries;
+					if(end > items.size()){
+						end = items.size();
+					}
+				}
 			
-				for(int i = 0; i<items.size(); i++){
+				for(int i = start; i<end; i++){
+					if(i>=items.size()){
+						break;
+					}
+					
 					if(i == itemLocation){
 						m.setRGBA(1, 1, 1, 1);
 					}else{
@@ -92,7 +126,7 @@ public class DropMenu extends Component{
 				}
 			}else{
 			Model m = new Model(getCube());
-			m.setRGBA(1, 1, 1, 1);
+			m.setRGBA(colour[0], colour[1], colour[2], colour[3]);
 			
 			Renderer.render(m);
 			

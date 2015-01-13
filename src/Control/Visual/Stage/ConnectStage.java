@@ -25,7 +25,6 @@ public class ConnectStage extends Stage{
 		ip.setTextSize(0.3f);
 		ip.setMessageMaxLength(22);
 		this.add(ip);
-		
 	}
 	
 	protected void updateInfo(){

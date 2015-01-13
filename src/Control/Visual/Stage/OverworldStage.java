@@ -12,7 +12,6 @@ import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
-import Level.LoadedWorld;
 import Level.RandomWorld;
 import RenderEngine.Renderer;
 import RenderEngine.Stencil;
@@ -24,6 +23,7 @@ import Tools.Maths.Vector3f;
 public class OverworldStage extends Stage{
 
 	private Animation playerModel;
+	private final int RESET_TIME = 5;
 	
 	public OverworldStage(){
 		super();
@@ -89,21 +89,11 @@ public class OverworldStage extends Stage{
 				}
 				i++;
 			}
-			int Dif = 10 + (int) Math.round((restartTime-Camera.getLERPTime())/1000000000);
+			int Dif = RESET_TIME + (int) Math.round((restartTime-Camera.getLERPTime())/1000000000);
 			
 			//Reset
 			if(Dif < 0){
 				reset();
-				/*
-				running = true;
-				winnerID = -1;
-				for(Player p: Settings.User){
-					p.killCount = 0;
-					p.kill(false);
-				}
-				if(!Settings.isClientActive()){
-					Settings.setWorld(new RandomWorld());
-				}*/
 			}
 			
 		}
@@ -113,8 +103,8 @@ public class OverworldStage extends Stage{
 			if(!Settings.isHostActive()){
 				Stage.setStage(Stage.getStage("menu"));
 			}else{
-				Settings.host.addCommand("Sst" + Stage.getStageID("start") + ";");
-				Stage.setStage(Stage.getStage("start"));
+				Settings.host.addCommand("Sst" + Stage.getStageID("gamemode") + ";");
+				Stage.setStage(Stage.getStage("gamemode"));
 				
 			}
 			Input.recieved();
@@ -124,8 +114,12 @@ public class OverworldStage extends Stage{
 	public void reset(){
 		running = true;
 		winnerID = -1;
-		//Settings.setWorld(new RandomWorld());
-		Settings.setWorld(new LoadedWorld("Test"));
+		
+		if(!Settings.isClientActive()){
+			GamemodeStage gm = (GamemodeStage) Stage.getStage("gamemode");
+			gm.cycleWorldQueue();
+		}
+		
 		for(Player p: Settings.User){
 			p.killCount = 0;
 			p.health.factor = 0;
@@ -238,7 +232,7 @@ public class OverworldStage extends Stage{
 		
 		//Game ended
 		if(!running){
-			int Dif = 10 + (int) Math.round((restartTime-Camera.getLERPTime())/1000000000);
+			int Dif = RESET_TIME + (int) Math.round((restartTime-Camera.getLERPTime())/1000000000);
 
 			float[] RGBA = Camera.getInverseRGBA();
 			Vector3f location = new Vector3f(-0.5f,0,-1.5f);
@@ -247,7 +241,7 @@ public class OverworldStage extends Stage{
 			location.z -= Camera.getLERPLocation().z;
 			
 			text.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
-			text.drawText("Restart in:\n     " + Dif, location, 0.01f, 8f);
+			text.drawText("Next Round in:\n     " + Dif, location, 0.01f, 8f);
 		}
 		
 		

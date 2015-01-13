@@ -164,18 +164,6 @@ public abstract class World {
 	public static World decode(String message){
 		return new ParsedWorld(message);
 	}
-
-	public void generateMaingroundBasedModels(){
-		//background = new ArrayList<Model>();
-		for(Hitbox h: hitboxes){
-			if(h.getType() == Hitbox.TYPE_STATIC){
-				Cubef temp = new Cubef(new Vector3f(h.getLocation().x, h.getLocation().y, 0f), new Vector3f(h.getLocation().x+h.getSize().x, h.getLocation().y+h.getSize().y, 1f));
-				
-				Model m = new Model(temp);
-				background.add(m);
-			}
-		}
-	}
 	
 	public void generateMaingroundModels(ArrayList<ColourHitbox> hb){
 		for(ColourHitbox h: hb){
