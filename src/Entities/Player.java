@@ -164,7 +164,7 @@ public class Player extends Entity{
 			spawn();
 			LastLocation.x = this.getLocation().x;
 			LastLocation.y = this.getLocation().y;
-			health.reset();
+			health.spawn();
 		}
 			
 		SquareHitbox bound = new SquareHitbox(new Vector2f(Settings.boundary.getLocation().x,Settings.boundary.getLocation().y), new Vector2f(Settings.boundary.getSize().x, Settings.boundary.getSize().y));
@@ -201,6 +201,17 @@ public class Player extends Entity{
 	
 	public void kill(boolean increaseKills){
 		health.kill(increaseKills);
+	}
+	
+	public int getStock(){
+		return health.stock;
+	}
+	
+	public void reset(){
+		health.reset();
+		killCount = 0;
+		health.factor = 0;
+		kill(false);
 	}
 	
 	public void setRGBA(float[] rGBA) {

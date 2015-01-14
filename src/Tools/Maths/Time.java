@@ -16,6 +16,10 @@ public class Time {
 		StartTime = System.currentTimeMillis();
 	}
 	
+	public static String getSecondAsString(int s){
+		return new Time(0,0,s).getTimeAsString();
+	}
+	
 	private Time(long LaunchTime, int h, int m, int s){
 		setTime(h, m ,s);
 		StartTime = LaunchTime;

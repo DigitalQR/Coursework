@@ -7,12 +7,15 @@ import Level.LoadedWorld;
 import Level.RandomWorld;
 import Level.World;
 import Tools.Maths.Vector3f;
+import Control.Camera;
 import Control.Settings;
 import Control.Visual.Menu.Assets.Button;
 import Control.Visual.Menu.Assets.DropMenu;
 import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Input;
 import Control.Visual.Stage.Core.Stage;
+import Entities.Player;
+import Entities.Tools.Health;
 
 public class GamemodeStage extends Stage{
 	
@@ -22,8 +25,10 @@ public class GamemodeStage extends Stage{
 	private World random = new RandomWorld();
 	private ArrayList<World> maps = new ArrayList<World>();
 		
-	private DropMenu mapList;
-	private Button add, clear, start;
+	private static final String[] modes = {"Deathmatch:Kills","Deathmatch:Stock","Deathmatch:Time"};
+	
+	private DropMenu mapList, modeList;
+	private Button add, clear, start, plus, modeValue, minus;
 	private TextBox queueInfo;
 	
 	public GamemodeStage(){
@@ -48,16 +53,33 @@ public class GamemodeStage extends Stage{
 		header.setHeaderTextSize(0.10f);
 		this.add(header);
 		
-		mapList = new DropMenu(new Vector3f(-1.6f, 0.4f,-2.5f), new Vector3f(1.5f, 0.25f, 0.5f), "map", name);
-		mapList.setTextSize(0.3f);
+		mapList = new DropMenu(new Vector3f(-1.6f, 0.7f,-2.5f), new Vector3f(1.5f, 0.25f, 0.5f), "map", name);
+		mapList.setTextSize(0.25f);
 		mapList.setMaxEntries(7);
 		this.add(mapList);
+		
+		modeList = new DropMenu(new Vector3f(-1.6f, 0.4f,-2.5f), new Vector3f(1.5f, 0.25f, 0.5f), "Mode", modes);
+		modeList.setTextSize(0.25f);
+		modeList.setMaxEntries(6);
+		this.add(modeList);
 
-		add = new Button(new Vector3f(0f, 0.4f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "add");
+		minus = new Button(new Vector3f(0f, 0.4f,-2.5f), new Vector3f(0.25f, 0.25f, 0.5f), " <");
+		minus.setTextSize(0.3f);
+		this.add(minus);
+
+		modeValue = new Button(new Vector3f(0.25f, 0.4f,-2.5f), new Vector3f(0.25f, 0.25f, 0.5f), " 3");
+		modeValue.setTextSize(0.3f);
+		this.add(modeValue);
+		
+		plus = new Button(new Vector3f(0.5f, 0.4f,-2.5f), new Vector3f(0.25f, 0.25f, 0.5f), " >");
+		plus.setTextSize(0.3f);
+		this.add(plus);
+
+		add = new Button(new Vector3f(0f, 0.7f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "add");
 		add.setTextSize(0.3f);
 		this.add(add);
 		
-		clear = new Button(new Vector3f(0.6f, 0.4f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "clear");
+		clear = new Button(new Vector3f(0.6f, 0.7f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "clear");
 		clear.setTextSize(0.3f);
 		this.add(clear);
 		
@@ -108,6 +130,86 @@ public class GamemodeStage extends Stage{
 		}							
 	}
 	
+	public void start(){
+		int val = Integer.parseInt(modeValue.getMessage().trim());
+		
+		switch(modeList.getCurrentItem()){
+		case "Deathmatch:Kills":
+			System.out.println("DM:Kills");
+			Health.stockCap = -1;
+			Health.killCap = val;
+			Health.timeCap = -1;
+			if(Settings.isHostActive()){
+				Settings.host.addCommand("Csk" + val + ";");
+			}
+			break;
+		case "Deathmatch:Stock":
+			System.out.println("DM:Stock");
+			Health.stockCap = val;
+			Health.killCap = -1;
+			Health.timeCap = -1;
+			if(Settings.isHostActive()){
+				Settings.host.addCommand("Css" + val + ";");
+			}
+			Health.startTime = Camera.getLERPTime();
+			
+			break;
+		case "Deathmatch:Time":
+			System.out.println("DM:Time");
+			Health.stockCap = -1;
+			Health.killCap = -1;
+			Health.timeCap = val;
+			if(Settings.isHostActive()){
+				Settings.host.addCommand("Cst" + val + ";");
+			}
+			break;
+		}
+		
+		queue.add(maps.get(mapList.getCurrentItemIndex()));
+		queueInfo.setContent(queueInfo.getContent() + "\n" + mapList.getCurrentItem());
+		if(Settings.isHostActive()){
+			Settings.host.addCommand("Ssg" + mapList.getCurrentItem() + ";");
+		}							
+	}
+	
+	public static int isGameOver(){
+		int i = 0;
+		int stockID = -1;
+		for(Player p: Settings.User){
+			if(Health.killCap != -1 && p.killCount >= Health.killCap){
+				return i;
+			}
+			if(Health.stockCap != -1 && p.getStock() > 0){
+				if(stockID == -1){
+					stockID = i;
+				}else{
+					stockID = -2; 
+				}
+			}
+			i++;
+		}
+
+		i = 0;
+		if(Health.timeCap != -1){
+			int dif = Health.timeCap*60+7 - (int) Math.round((Camera.getLERPTime()-Health.startTime)/1000000000);
+			if(dif <= 0){
+				for(Player p: Settings.User){
+					if(p.killCount > 0){
+						return i;
+					}
+					i++;
+				}
+			}
+		}
+		
+		if(stockID >= 0){
+			return stockID;
+		}
+		
+		
+		return -1;
+	}
+	
 	protected void updateInfo(){	
 		if(this.hasFocus()){
 			if(Input.isKeyPressed(Input.KEY_UP)){
@@ -117,9 +219,9 @@ public class GamemodeStage extends Stage{
 				yi++;
 				Input.recieved();
 			}
-			int bound = 0;
+			int bound = 1;
 			if(queue.size() > 0){
-				bound = 1;
+				bound = 2;
 			}
 			if(yi > bound){
 				yi = bound;
@@ -136,9 +238,12 @@ public class GamemodeStage extends Stage{
 			}
 			bound = 0;
 			switch(yi){
-				case 0:
-					bound = 2;
-					break;
+			case 0:
+				bound = 2;
+				break;
+			case 1:
+				bound = 2;
+				break;
 			}
 			
 			if(xi > bound){
@@ -162,11 +267,7 @@ public class GamemodeStage extends Stage{
 							mapList.focus();
 							break;
 						case 1:
-							queue.add(maps.get(mapList.getCurrentItemIndex()));
-							queueInfo.setContent(queueInfo.getContent() + "\n" + mapList.getCurrentItem());
-							if(Settings.isHostActive()){
-								Settings.host.addCommand("Ssg" + mapList.getCurrentItem() + ";");
-							}							
+							start();
 							break;
 						case 2:
 							reset();
@@ -174,7 +275,32 @@ public class GamemodeStage extends Stage{
 							break;
 						}
 						break;
+						
 					case 1:
+						switch(xi){
+						case 0:
+							modeList.focus();
+							break;
+						case 1:
+							int val = Integer.parseInt(modeValue.getMessage().trim());
+							val--;
+							if(val < 1){
+								val = 1;
+							}
+							modeValue.setMessage(" " + val);
+							break;
+						case 2:
+							int val1 = Integer.parseInt(modeValue.getMessage().trim());
+							val1++;
+							if(val1 > 10){
+								val1 = 10;
+							}
+							modeValue.setMessage(" " + val1);
+							break;
+						}
+						break;
+						
+					case 2:
 						Stage.setStage(Stage.getStage("start"));
 						OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
 						overworld.reset();
@@ -199,19 +325,30 @@ public class GamemodeStage extends Stage{
 			add.setDrawn(true);
 			clear.setDrawn(true);
 			start.setDrawn(true);
+			modeValue.setDrawn(true);
+			plus.setDrawn(true);
+			minus.setDrawn(true);
 			
 			queueInfo.setLocation(new Vector3f(-1.6f, -1f,-2.5f)); 
 			queueInfo.setContentTextSize(0.03f);
-			if(this.hasFocus()){
-				queueInfo.setDrawn(true);
+			if(mapList.hasFocus()){
+				queueInfo.setDrawn(false);
+				modeList.setDrawn(false);
 			}else{
+				queueInfo.setDrawn(true);
+				modeList.setDrawn(true);
+			}
+			if(modeList.hasFocus()){
 				queueInfo.setDrawn(false);
 			}
 
 			mapList.setColour(new float[]{1,1,1,0.5f});
+			modeList.setColour(new float[]{1,1,1,0.5f});
 			add.setColour(new float[]{1,1,1,0.5f});
 			start.setColour(new float[]{1,1,1,0.5f});
 			clear.setColour(new float[]{1,1,1,0.5f});
+			plus.setColour(new float[]{1,1,1,0.5f});
+			minus.setColour(new float[]{1,1,1,0.5f});
 			
 			switch(yi){
 				case 0:
@@ -228,14 +365,32 @@ public class GamemodeStage extends Stage{
 					}
 					break;
 				case 1:
+					switch(xi){
+					case 0:
+						modeList.setColour(new float[]{1,1,1,1});
+						break;
+					case 1:
+						minus.setColour(new float[]{1,1,1,1});
+						break;
+					case 2:
+						plus.setColour(new float[]{1,1,1,1});
+						break;
+				}
+				break;
+					
+				case 2:
 					start.setColour(new float[]{1,1,1,1});
 			}
 			
 		}else{
 			mapList.setDrawn(false);
+			modeList.setDrawn(false);
 			add.setDrawn(false);
 			start.setDrawn(false);
 			clear.setDrawn(false);
+			modeValue.setDrawn(false);
+			plus.setDrawn(false);
+			minus.setDrawn(false);
 			
 			queueInfo.setLocation(new Vector3f(-1.6f, -0.3f,-2.5f)); 
 			queueInfo.setContentTextSize(0.07f);

@@ -12,6 +12,7 @@ import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
+import Entities.Tools.Health;
 import Level.RandomWorld;
 import RenderEngine.Renderer;
 import RenderEngine.Stencil;
@@ -38,27 +39,24 @@ public class OverworldStage extends Stage{
 	
 	private boolean hasFinished(){
 		if(running){
-			int i = 0;
-			for(Player p: Settings.User){
-				if(p.killCount >= 3){
-					winnerID = i;
-					restartTime = Camera.getLERPTime();
-					
-					int n = 0;
-					for(Player pl: Settings.User){
-						if(n != winnerID){
-							pl.kill(false);
-						}
-						n++;
+			winnerID = GamemodeStage.isGameOver();
+			if(winnerID != -1){
+				restartTime = Camera.getLERPTime();
+				
+				int n = 0;
+				for(Player pl: Settings.User){
+					if(n != winnerID){
+						pl.kill(false);
 					}
-					
-					running = false;
-					return true;
+					n++;
 				}
-				i++;
+				
+				running = false;
+				return true;
+			}else{
+				running = true;
+				return false;
 			}
-			running = true;
-			return false;
 		}else{
 			return true;
 		}
@@ -119,12 +117,11 @@ public class OverworldStage extends Stage{
 			GamemodeStage gm = (GamemodeStage) Stage.getStage("gamemode");
 			gm.cycleWorldQueue();
 		}
-		
+
 		for(Player p: Settings.User){
-			p.killCount = 0;
-			p.health.factor = 0;
-			p.kill(false);
+			p.reset();
 		}
+		Health.startTime = Camera.getLERPTime();
 	}
 	
 	protected void updateUI(){
@@ -249,6 +246,27 @@ public class OverworldStage extends Stage{
 		Stencil.enable();
 		GL11.glDisable(GL11.GL_LIGHTING);
 		
+		if(Health.timeCap != -1){
+			Vector3f location = new Vector3f(-0.3f,1.5f,-2.5f);
+			location.x -= Camera.getLERPLocation().x;
+			location.y -= Camera.getLERPLocation().y;
+			location.z -= Camera.getLERPLocation().z;
+			
+			int dif = Health.timeCap*60+7 - (int) Math.round((Camera.getLERPTime()-Health.startTime)/1000000000);
+			if(dif < 0){
+				dif = 0;
+			}
+			
+			int seconds = 0;
+			while(dif > 60){
+				seconds++;
+				dif-=60;
+			}
+			
+			text.setRGBA(0, 0, 0, 1);
+			text.drawText("\n" + String.format("%02d:%02d", seconds, dif), location, 0.015f, 8f);
+		}
+		
 		if(Settings.isClientActive()){
 			Vector3f location = new Vector3f(-0.3f,1.5f,-2.5f);
 			location.x -= Camera.getLERPLocation().x;
@@ -290,7 +308,14 @@ public class OverworldStage extends Stage{
 			location.y+=0.1f;
 
 			float[] RGBA = Camera.getInverseRGBA();
-			String data = "" + Math.round(p.getFactor()*100) + "%\n" + p.killCount + " kills";
+			
+			String data = "" + Math.round(p.getFactor()*100) + "%\n";
+			if(Health.stockCap != -1){
+				data += p.getStock() + " lives";
+			}else{
+				data += p.killCount + " kills";
+			}
+			
 			float textSize = 4000/player.size();
 			textSize/=1000;
 			

@@ -12,6 +12,7 @@ import Tools.Maths.Vector3f;
 import Control.Settings;
 import Control.Audio.Sound;
 import Control.Visual.Stage.GamemodeStage;
+import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.StartStage;
 import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
@@ -19,6 +20,7 @@ import Entities.Entity;
 import Entities.Player;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
+import Entities.Tools.Health;
 import Level.World;
 
 public class Client implements Runnable{
@@ -148,6 +150,27 @@ public class Client implements Runnable{
 					Stage.setStage(st);
 				}
 				
+				if(s.startsWith("Cs")){
+					int ID = (int)Float.parseFloat(s.substring(3));
+					switch(s.substring(2,3)){
+					case "c":
+						Health.killCap = ID;
+						Health.stockCap = -1;
+						Health.timeCap = -1;
+						break;
+					case "s":
+						Health.killCap = -1;
+						Health.stockCap = ID;
+						Health.timeCap = -1;
+						break;
+					case "t":
+						Health.killCap = -1;
+						Health.stockCap = -1;
+						Health.timeCap = ID;
+						break;
+					}
+				}
+				
 				if(s.startsWith("Ssg")){
 					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
 					gm.addToQueueInfo(s.substring(3));
@@ -220,6 +243,9 @@ public class Client implements Runnable{
 					if(s.charAt(2) == 'h'){
 						World w = World.decode(s.substring(3));
 						Settings.setWorld(w);
+						
+						OverworldStage ow = (OverworldStage) Stage.getStage("overworld");
+						ow.reset();
 					}
 					
 					//Damage

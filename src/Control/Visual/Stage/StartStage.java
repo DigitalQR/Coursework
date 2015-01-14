@@ -184,6 +184,9 @@ public class StartStage extends Stage{
 			}
 		}
 		
+		for(Player p: Settings.User){
+			p.reset();
+		}
 		
 		OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
 		Stage.setStage(overworld);

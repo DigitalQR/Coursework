@@ -7,13 +7,26 @@ import Entities.Assets.Damage;
 
 public class Health extends Component{
 
+	public static int killCap = -1;
+	public static int stockCap = -1;
+	public static int timeCap = -1;
+	public static float startTime = 0;
+	
 	public Vector2f scale = new Vector2f(0.3f, 0.4f);
 	public float factor = 0.0f;
 	private float lastHitTime = 0;
 	public Entity lastHit = null;
 	private  float immuneTime = 100;
-	
+
 	public void reset(){
+		if(stockCap != -1){
+			stock = stockCap;
+		}else{
+			stock = -1;
+		}
+	}
+	
+	public void spawn(){
 		factor = 0.0f;
 		lastHitTime = 0;
 		immuneTime = 100;
@@ -56,6 +69,8 @@ public class Health extends Component{
 	}
 	
 	public boolean isDead = false;
+	public int stock = -1;
+	
 	private float deathTime = 0;
 	private  float respawnTime = 3500;
 	private int deathCount = 0;
@@ -64,6 +79,11 @@ public class Health extends Component{
 		isDead = true;
 		deathCount++;
 		deathTime = System.nanoTime();
+		
+		if(stockCap != -1 && increaseKills){
+			stock--;
+		}
+		
 		if(lastHit != null && increaseKills){
 			lastHit.killCount++;
 			lastHit = null;
@@ -76,7 +96,9 @@ public class Health extends Component{
 	}
 	
 	public boolean canRespawn(){
-		if(System.nanoTime() - deathTime >= respawnTime*1000000){
+		if(stockCap != -1 && stock <= 0){
+			return false;
+		}else if(System.nanoTime() - deathTime >= respawnTime*1000000){
 			return true;
 		}else{
 			return false;
