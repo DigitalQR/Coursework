@@ -63,7 +63,7 @@ public class DropMenu extends Component{
 				itemLocation = 0;
 			}
 			
-			if(Input.isKeyPressed(Input.KEY_FORWARD)){
+			if(Input.isKeyPressed(Input.KEY_FORWARD) || Input.isKeyPressed(Input.KEY_BACK)){
 				this.unfocus();
 				Input.recieved();
 			}

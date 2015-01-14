@@ -39,18 +39,22 @@ public class MovementMK2 extends Movement{
 				}
 			}
 			
-			for(int i = 0; i<COLLISION_DEPTH+1; i++){
-				float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x-e.getSize().x/2), i);
-				if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
-					touchingWall = -1;
-					break;
+			if(control.isKeyPressed(control.KEY_LEFT)){
+				for(int i = 0; i<COLLISION_DEPTH+1; i++){
+					float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x-e.getSize().x/2), i);
+					if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
+						touchingWall = -1;
+						break;
+					}
 				}
 			}
-			for(int i = 0; i<COLLISION_DEPTH+1; i++){
-				float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x+e.getSize().x/2), i);
-				if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
-					touchingWall = 1;
-					break;
+			if(control.isKeyPressed(control.KEY_RIGHT)){
+				for(int i = 0; i<COLLISION_DEPTH+1; i++){
+					float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x+e.getSize().x/2), i);
+					if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
+						touchingWall = 1;
+						break;
+					}
 				}
 			}
 		}
