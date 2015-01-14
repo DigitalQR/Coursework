@@ -135,7 +135,6 @@ public class GamemodeStage extends Stage{
 		
 		switch(modeList.getCurrentItem()){
 		case "Deathmatch:Kills":
-			System.out.println("DM:Kills");
 			Health.stockCap = -1;
 			Health.killCap = val;
 			Health.timeCap = -1;
@@ -144,7 +143,6 @@ public class GamemodeStage extends Stage{
 			}
 			break;
 		case "Deathmatch:Stock":
-			System.out.println("DM:Stock");
 			Health.stockCap = val;
 			Health.killCap = -1;
 			Health.timeCap = -1;
@@ -155,7 +153,6 @@ public class GamemodeStage extends Stage{
 			
 			break;
 		case "Deathmatch:Time":
-			System.out.println("DM:Time");
 			Health.stockCap = -1;
 			Health.killCap = -1;
 			Health.timeCap = val;
@@ -165,6 +162,9 @@ public class GamemodeStage extends Stage{
 			break;
 		}
 		
+	}
+	
+	private void addToMap(){
 		queue.add(maps.get(mapList.getCurrentItemIndex()));
 		queueInfo.setContent(queueInfo.getContent() + "\n" + mapList.getCurrentItem());
 		if(Settings.isHostActive()){
@@ -267,7 +267,7 @@ public class GamemodeStage extends Stage{
 							mapList.focus();
 							break;
 						case 1:
-							start();
+							addToMap();
 							break;
 						case 2:
 							reset();

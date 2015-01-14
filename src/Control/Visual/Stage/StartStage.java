@@ -182,6 +182,9 @@ public class StartStage extends Stage{
 				
 				track++;
 			}
+
+			GamemodeStage gm = (GamemodeStage) Stage.getStage("gamemode");
+			gm.start();
 		}
 		
 		for(Player p: Settings.User){
