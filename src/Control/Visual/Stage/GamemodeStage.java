@@ -3,9 +3,11 @@ package Control.Visual.Stage;
 import java.io.File;
 import java.util.ArrayList;
 
+import Level.BlankWorld;
 import Level.LoadedWorld;
 import Level.RandomWorld;
 import Level.World;
+import Tools.Maths.Toolkit;
 import Tools.Maths.Vector3f;
 import Control.Camera;
 import Control.Settings;
@@ -22,7 +24,8 @@ public class GamemodeStage extends Stage{
 	private int yi = 0, xi = 0;
 
 	private ArrayList<World> queue = new ArrayList<World>();
-	private World random = new RandomWorld();
+	private World randomGen = new RandomWorld();
+	private World random = new BlankWorld();
 	private ArrayList<World> maps = new ArrayList<World>();
 		
 	private static final String[] modes = {"Deathmatch:Kills","Deathmatch:Stock","Deathmatch:Time"};
@@ -35,7 +38,9 @@ public class GamemodeStage extends Stage{
 		File worlds = new File("Res/World");
 		ArrayList<String> raw = new ArrayList<String>();
 		maps.add(random);
-		raw.add("Random");
+		raw.add("Random Map");
+		maps.add(randomGen);
+		raw.add("Random Generation");
 		
 		for(String s: worlds.list()){
 			if(s.endsWith(".pw")){
@@ -114,6 +119,9 @@ public class GamemodeStage extends Stage{
 		}else{
 			World w = queue.get(0);
 			if(w.equals(random)){
+				w = maps.get(Toolkit.RandomInt(1, maps.size()-1));
+			}
+			if(w.equals(randomGen)){
 				w = new RandomWorld();
 			}
 			

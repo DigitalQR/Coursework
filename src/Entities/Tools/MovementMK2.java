@@ -27,34 +27,38 @@ public class MovementMK2 extends Movement{
 	
 	private void touchUpdate(Entity e){
 		touchingGround = false;
-		for(int i = 0; i<COLLISION_DEPTH+1; i++){
-			float y = Toolkit.LERP(new Vector2f(0,e.getLocation().y), new Vector2f(COLLISION_DEPTH,e.getLocation().y-e.getSize().y/2), i);
-			if( insideHitbox(new Vector2f(e.getLocation().x+e.getSize().x/4,y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
-				touchingGround = true;
-				e.getVelocity().y = y-e.getLocation().y;
-				break;
-			}
-		}
-		
 		touchingWall = 0;
-		for(int i = 0; i<COLLISION_DEPTH+1; i++){
-			float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x-e.getSize().x/2), i);
-			if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
-				touchingWall = -1;
-				break;
+		
+		if(!e.stunned()){
+			for(int i = 0; i<COLLISION_DEPTH+1; i++){
+				float y = Toolkit.LERP(new Vector2f(0,e.getLocation().y), new Vector2f(COLLISION_DEPTH,e.getLocation().y-e.getSize().y/2), i);
+				if( insideHitbox(new Vector2f(e.getLocation().x+e.getSize().x/4,y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
+					touchingGround = true;
+					e.getVelocity().y = y-e.getLocation().y;
+					break;
+				}
 			}
-		}
-		for(int i = 0; i<COLLISION_DEPTH+1; i++){
-			float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x+e.getSize().x/2), i);
-			if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
-				touchingWall = 1;
-				break;
+			
+			for(int i = 0; i<COLLISION_DEPTH+1; i++){
+				float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x-e.getSize().x/2), i);
+				if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
+					touchingWall = -1;
+					break;
+				}
+			}
+			for(int i = 0; i<COLLISION_DEPTH+1; i++){
+				float x = Toolkit.LERP(new Vector2f(0,e.getLocation().x), new Vector2f(COLLISION_DEPTH,e.getLocation().x+e.getSize().x/2), i);
+				if( insideHitbox(new Vector2f(x+e.getSize().x/4,e.getLocation().y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
+					touchingWall = 1;
+					break;
+				}
 			}
 		}
 	}
 	
 	private void updateDimension(Entity e){
 		Vector3f location = e.getLocation().clone();
+		Vector2f afterVel = new Vector2f(0,0);
 		if(insideHitbox(new Vector2f(location.x, location.y), new Vector2f(e.getSize().x, e.getSize().x))){
 			location.x-=e.getVelocity().x;
 			location.y-=e.getVelocity().y;
@@ -82,6 +86,12 @@ public class MovementMK2 extends Movement{
 				location.x = x;
 			}else{
 				e.getVelocity().x = x-e.getLocation().x;
+				if(e.stunned()){
+					e.getVelocity().x*=-0.9f;
+					if(e.getVelocity().x < 0.05f){
+						e.getVelocity().x*=5;
+					}
+				}
 				break;
 			}
 		}
@@ -93,12 +103,19 @@ public class MovementMK2 extends Movement{
 				location.y =y;
 			}else{
 				e.getVelocity().y = y-e.getLocation().y;
+				if(e.stunned()){
+					e.getVelocity().y*=-0.9;
+					if(e.getVelocity().y < 0.05f){
+						e.getVelocity().y*=5;
+					}
+				}
 				break;
 			}
 		}
 		e.getLocation().y = location.y;
-		
-		
+
+		e.getVelocity().x+=afterVel.x;
+		e.getVelocity().y+=afterVel.y;
 	}
 	
 	protected void processInput(Entity e){
