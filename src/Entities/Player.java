@@ -14,6 +14,7 @@ import Entities.Tools.Attack;
 import Entities.Tools.ControlScheme;
 import Entities.Tools.Health;
 import Entities.Tools.Movement;
+import Entities.Tools.MovementMK2;
 import RenderEngine.Model.Animation;
 import RenderEngine.Model.Model;
 import Tools.Maths.Cubef;
@@ -38,7 +39,7 @@ public class Player extends Entity{
 		}		
 		
 		control = new ControlScheme();
-		movement = new Movement(control);
+		movement = new MovementMK2(control);
 		attack = new Attack(control);
 		
 		this.addComponent(movement);
@@ -127,7 +128,7 @@ public class Player extends Entity{
 		this.removeComponent(movement);
 
 		this.attack = new Attack(control);
-		this.movement = new Movement(control);
+		this.movement = new MovementMK2(control);
 		this.addComponent(attack);
 		this.addComponent(movement);
 	}
