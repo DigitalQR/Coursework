@@ -67,7 +67,6 @@ public class MovementMK2 extends Movement{
 		touchUpdate(e);
 		processInput(e);
 		
-
 		//Slowdown
 		if(Math.round(e.getVelocity().x*10) == 0){
 			e.getVelocity().x = 0;
@@ -88,8 +87,8 @@ public class MovementMK2 extends Movement{
 				e.getVelocity().x = x-e.getLocation().x;
 				if(e.stunned()){
 					e.getVelocity().x*=-0.9f;
-					if(e.getVelocity().x < 0.05f){
-						e.getVelocity().x*=5;
+					if(Toolkit.Modulus(e.getVelocity().y) < 0.05f){
+						e.getVelocity().x*=3;
 					}
 				}
 				break;
@@ -105,8 +104,8 @@ public class MovementMK2 extends Movement{
 				e.getVelocity().y = y-e.getLocation().y;
 				if(e.stunned()){
 					e.getVelocity().y*=-0.9;
-					if(e.getVelocity().y < 0.05f){
-						e.getVelocity().y*=5;
+					if(Toolkit.Modulus(e.getVelocity().y) < 0.03f){
+						e.getVelocity().y*=10;
 					}
 				}
 				break;
@@ -122,8 +121,8 @@ public class MovementMK2 extends Movement{
 		//X
 		//Input
 		if(!e.stunned()){
-			if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.08f;
-			if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.08f;
+			if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.06f;
+			if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.06f;
 		}
 		
 		e.getVelocity().x = Math.round(e.getVelocity().x*DP);
