@@ -11,6 +11,7 @@ import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 import Control.Settings;
 import Control.Audio.Sound;
+import Control.Visual.Stage.GamemodeStage;
 import Control.Visual.Stage.StartStage;
 import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
@@ -139,7 +140,17 @@ public class Client implements Runnable{
 				if(s.startsWith("Sst")){
 					int ID = (int)Float.parseFloat(s.substring(3));
 					Stage st = Stage.getStage(ID);
+					if(st.equals(Stage.getStage("gamemode"))){
+						GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+						gm.reset();
+					}
+					
 					Stage.setStage(st);
+				}
+				
+				if(s.startsWith("Ssg")){
+					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+					gm.addToQueueInfo(s.substring(3));
 				}
 				
 				if(s.startsWith("ps")){
@@ -163,10 +174,6 @@ public class Client implements Runnable{
 						}
 					}
 					String subCommand = s.substring( ("pl" + playerID + "" + action).length());
-
-					//while(Settings.User.size() < playerID){
-						//Settings.User.add(new Player(0,0));
-					//}
 					
 					switch(action){
 					//Location

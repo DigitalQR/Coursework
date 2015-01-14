@@ -23,7 +23,7 @@ public class GamemodeStage extends Stage{
 	private ArrayList<World> maps = new ArrayList<World>();
 		
 	private DropMenu mapList;
-	private Button add, start;
+	private Button add, clear, start;
 	private TextBox queueInfo;
 	
 	public GamemodeStage(){
@@ -57,6 +57,10 @@ public class GamemodeStage extends Stage{
 		add.setTextSize(0.3f);
 		this.add(add);
 		
+		clear = new Button(new Vector3f(0.6f, 0.4f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "clear");
+		clear.setTextSize(0.3f);
+		this.add(clear);
+		
 		start = new Button(new Vector3f(1.1f, -1.4f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "start");
 		start.setTextSize(0.3f);
 		this.add(start);
@@ -68,6 +72,14 @@ public class GamemodeStage extends Stage{
 		this.add(queueInfo);
 		
 		reset();
+	}
+	
+	public void addToQueueInfo(String name){
+		if(!name.equals("R?!")){
+			queueInfo.setContent(queueInfo.getContent()+"\n" +name);
+		}else{
+			reset();
+		}
 	}
 	
 	public void cycleWorldQueue(){
@@ -90,6 +102,10 @@ public class GamemodeStage extends Stage{
 	
 	public void reset(){
 		queueInfo.setContent("\nMap Queue:");
+
+		if(Settings.isHostActive()){
+			Settings.host.addCommand("SsgR?!;");
+		}							
 	}
 	
 	protected void updateInfo(){	
@@ -121,7 +137,7 @@ public class GamemodeStage extends Stage{
 			bound = 0;
 			switch(yi){
 				case 0:
-					bound = 1;
+					bound = 2;
 					break;
 			}
 			
@@ -148,12 +164,20 @@ public class GamemodeStage extends Stage{
 						case 1:
 							queue.add(maps.get(mapList.getCurrentItemIndex()));
 							queueInfo.setContent(queueInfo.getContent() + "\n" + mapList.getCurrentItem());
-							
+							if(Settings.isHostActive()){
+								Settings.host.addCommand("Ssg" + mapList.getCurrentItem() + ";");
+							}							
+							break;
+						case 2:
+							reset();
+							queue = new ArrayList<World>();
 							break;
 						}
 						break;
 					case 1:
 						Stage.setStage(Stage.getStage("start"));
+						OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
+						overworld.reset();
 						
 						if(Settings.isHostActive()){
 							Settings.host.addCommand("Sst" + Stage.getStageID("start") + ";");
@@ -173,7 +197,11 @@ public class GamemodeStage extends Stage{
 		if(!Settings.isClientActive()){
 			mapList.setDrawn(true);
 			add.setDrawn(true);
+			clear.setDrawn(true);
 			start.setDrawn(true);
+			
+			queueInfo.setLocation(new Vector3f(-1.6f, -1f,-2.5f)); 
+			queueInfo.setContentTextSize(0.03f);
 			if(this.hasFocus()){
 				queueInfo.setDrawn(true);
 			}else{
@@ -183,6 +211,7 @@ public class GamemodeStage extends Stage{
 			mapList.setColour(new float[]{1,1,1,0.5f});
 			add.setColour(new float[]{1,1,1,0.5f});
 			start.setColour(new float[]{1,1,1,0.5f});
+			clear.setColour(new float[]{1,1,1,0.5f});
 			
 			switch(yi){
 				case 0:
@@ -192,6 +221,9 @@ public class GamemodeStage extends Stage{
 							break;
 						case 1:
 							add.setColour(new float[]{1,1,1,1});
+							break;
+						case 2:
+							clear.setColour(new float[]{1,1,1,1});
 							break;
 					}
 					break;
@@ -203,7 +235,11 @@ public class GamemodeStage extends Stage{
 			mapList.setDrawn(false);
 			add.setDrawn(false);
 			start.setDrawn(false);
-			queueInfo.setDrawn(false);
+			clear.setDrawn(false);
+			
+			queueInfo.setLocation(new Vector3f(-1.6f, -0.3f,-2.5f)); 
+			queueInfo.setContentTextSize(0.07f);
+			queueInfo.setDrawn(true);
 			
 		}
 	}

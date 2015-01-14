@@ -186,7 +186,6 @@ public class StartStage extends Stage{
 		
 		
 		OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
-		overworld.reset();
 		Stage.setStage(overworld);
 		reset();
 	}

@@ -8,6 +8,7 @@ import Tools.Maths.Vector2f;
 public abstract class Hitbox{
 	protected Vector2f location;
 	protected Vector2f size;
+	private static final int DP = 100;
 	
 	public static final int TYPE_STATIC = 0, TYPE_DYNAMIC = 1;
 	private int type;
@@ -39,7 +40,7 @@ public abstract class Hitbox{
 		Vector2f bt = new Vector2f(a.x, a.y);
 		Vector2f bb = new Vector2f(a.x+s.x, a.y+s.y);
 		
-		return !(Math.round(ab.x*100) < Math.round(bt.x*100) || Math.round(bb.x*100)  < Math.round(at.x*100)  || Math.round(ab.y*100)  < Math.round(bt.y*100)  || Math.round(bb.y*100)  < Math.round(at.y*100) );
+		return !(Math.round(ab.x*DP) <= Math.round(bt.x*DP) || Math.round(bb.x*DP)  <= Math.round(at.x*DP)  || Math.round(ab.y*DP)  <= Math.round(bt.y*DP)  || Math.round(bb.y*DP)  <= Math.round(at.y*DP) );
 	}
 
 	public static ArrayList<Hitbox> RandomGeneration(int n, int x, int y, int Width, int Height, int MinSize, int MaxSize){
