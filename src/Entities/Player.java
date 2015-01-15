@@ -109,6 +109,10 @@ public class Player extends Entity{
 				}
 			}
 		}
+		
+		if(Settings.isHostActive()){
+			Settings.host.forcePlayerUpdate();
+		}
 	}
 	
 	public static void loadResources(){
@@ -162,7 +166,9 @@ public class Player extends Entity{
 			}
 		
 		}else if(health.canRespawn()){
-			spawn();
+			if(!Settings.isClientActive()){
+				spawn();
+			}
 			LastLocation.x = this.getLocation().x;
 			LastLocation.y = this.getLocation().y;
 			health.spawn();

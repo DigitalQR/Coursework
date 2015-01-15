@@ -63,6 +63,14 @@ public class Host{
 		}
 	}
 	
+	public void forcePlayerUpdate(){
+		for(Connection c: connections){
+			for(Player p: c.players){
+				p.resetFlag = true;
+			}
+		}
+	}
+	
 	public void serverUpdate(){
 		if(active){
 				
@@ -99,7 +107,7 @@ public class Host{
 							
 							//Health
 							if(!p.combatEquals(c.players.get(i)) ){
-								command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + ";";
+								command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + "," + p.getStock() + ";";
 							}
 						}catch(IndexOutOfBoundsException e){
 							

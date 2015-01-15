@@ -153,17 +153,23 @@ public class Client implements Runnable{
 				if(s.startsWith("Cs")){
 					int ID = (int)Float.parseFloat(s.substring(3));
 					switch(s.substring(2,3)){
-					case "c":
+					case "k":
+						System.out.println("CsKills");
 						Health.killCap = ID;
 						Health.stockCap = -1;
 						Health.timeCap = -1;
 						break;
 					case "s":
+						System.out.println("CsStock");
 						Health.killCap = -1;
 						Health.stockCap = ID;
 						Health.timeCap = -1;
+						for(Player p: Settings.User){
+							p.health.stock = ID;
+						}
 						break;
 					case "t":
+						System.out.println("CsTime");
 						Health.killCap = -1;
 						Health.stockCap = -1;
 						Health.timeCap = ID;
@@ -228,9 +234,11 @@ public class Client implements Runnable{
 							String[] par = subCommand.substring(1).split(",");
 							int killCount = (int)Float.parseFloat(par[0]);
 							float factor = Float.parseFloat(par[1]);
+							int stock = (int)Float.parseFloat(par[2]);
 
 							Settings.User.get(playerID).killCount = killCount;
 							Settings.User.get(playerID).health.factor = factor;
+							Settings.User.get(playerID).health.stock = stock;
 						}
 						
 						break;

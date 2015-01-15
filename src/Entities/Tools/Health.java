@@ -2,6 +2,7 @@ package Entities.Tools;
 
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
+import Control.Settings;
 import Entities.Entity;
 import Entities.Assets.Damage;
 
@@ -80,7 +81,7 @@ public class Health extends Component{
 		deathCount++;
 		deathTime = System.nanoTime();
 		
-		if(stockCap != -1 && increaseKills){
+		if(!Settings.isClientActive() && stockCap != -1 && increaseKills){
 			stock--;
 		}
 		

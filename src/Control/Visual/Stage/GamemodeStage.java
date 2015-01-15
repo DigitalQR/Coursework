@@ -169,6 +169,9 @@ public class GamemodeStage extends Stage{
 			}
 			break;
 		}
+		if(Settings.isHostActive()){
+			Settings.host.forcePlayerUpdate();
+		}
 		
 	}
 	
