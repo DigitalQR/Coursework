@@ -25,9 +25,14 @@ public class Camera {
 	
 	private static float r = 0.5f, g = 1f, b = 0.5f;
 	private static float[] RGBA = {0f,0f,0f,1f};
+	private static float[] clearColour = {0f,0f,0f,1f};
 	
 	public static float[] getRGBA(){
 		return RGBA;
+	}
+	
+	public static float[] getClearColour(){
+		return clearColour;
 	}
 
 	public static float[] getInverseRGBA(){
@@ -49,9 +54,14 @@ public class Camera {
 		RGBA[1] = Toolkit.Modulus((float)Math.sin(g));
 		RGBA[2] = Toolkit.Modulus((float)Math.sin(b));
 		
+		
 		for(int i = 0; i<3; i++){
-			if(RGBA[i] > 0.7f){
-				RGBA[i] = 0.7f;
+			clearColour[i] = RGBA[i];
+			if(RGBA[i] > 0.4f){
+				RGBA[i] = 0.4f;
+			}
+			if(clearColour[i] > 0.7f){
+				clearColour[i] = 0.7f;
 			}
 		}
 	}
