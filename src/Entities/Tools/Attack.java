@@ -30,13 +30,13 @@ public class Attack extends Component{
 				Vector2f size = new Vector2f(0.3f, 0.6f);
 	
 				if(control.isKeyPressed(control.KEY_UP)){
-					velocity.y+=0.5f;
+					velocity.y+=0.4f;
 				}if(control.isKeyPressed(control.KEY_DOWN)){
-					velocity.y-=0.5f;
+					velocity.y-=0.4f;
 				}if(control.isKeyPressed(control.KEY_LEFT)){
-					velocity.x-=0.25f;
+					velocity.x-=0.2f;
 				}if(control.isKeyPressed(control.KEY_RIGHT)){
-					velocity.x+=0.25f;
+					velocity.x+=0.2f;
 				}
 
 				Sound attackSound = new Sound("Effects/Attack");
@@ -54,16 +54,16 @@ public class Attack extends Component{
 				Vector2f size = new Vector2f(0.3f, 0.6f);
 				
 				if(control.isKeyPressed(control.KEY_UP)){
-					velocity.y+=size.y-0.3f;
+					velocity.y+=0.5f;
 					e.getVelocity().y-=0.125f;
 				}if(control.isKeyPressed(control.KEY_DOWN)){
-					velocity.y-=size.y-0.3f;
+					velocity.y-=0.5f;
 					e.getVelocity().y+=0.25f;
 				}if(control.isKeyPressed(control.KEY_LEFT)){
-					velocity.x-=size.x;
+					velocity.x-=0.25f;
 					e.getVelocity().x+=0.3f;
 				}if(control.isKeyPressed(control.KEY_RIGHT)){
-					velocity.x+=size.x;
+					velocity.x+=0.25f;
 					e.getVelocity().x-=0.3f;
 				}
 				

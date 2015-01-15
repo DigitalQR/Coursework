@@ -33,7 +33,7 @@ public class Player extends Entity{
 	private static Animation spawn;
 	
 	public Player(float x, float y){
-		super(new Vector3f(x,y,0f), new Vector3f(0.3f, 0.3f*1.5f, 0.2f));
+		super(new Vector3f(x,y,0f), new Vector3f(0.24f, 0.24f*1.5f, 0.2f));
 		if(Settings.doesWorldExist()){
 			spawn();
 		}		

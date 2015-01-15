@@ -2,6 +2,8 @@ package Entities.Assets;
 
 import java.util.ArrayList;
 
+import Collision.Hitbox;
+import Control.Settings;
 import Control.Audio.Sound;
 import Entities.Entity;
 import RenderEngine.Model.Animation;
@@ -12,7 +14,7 @@ import Tools.Maths.Vector3f;
 public class Damage extends Asset{
 
 	private static ArrayList<Damage> damage = new ArrayList<Damage>();
-	public final static Animation CUBE = new Animation("Cube/Spin", 10);
+	public final static Animation CUBE = new Animation("Cube/Damage", 10);
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Damage> getDamageInfo(){
@@ -184,6 +186,12 @@ public class Damage extends Asset{
 		}else{
 			location.x+=velocity.x;
 			location.y+=velocity.y;
+		}
+		for(Hitbox hb: Settings.getWorld().getHitboxList()){
+			if(hb.AreaIntersect(new Vector2f(location.x+size.x/2, location.y+size.y/2), new Vector2f(0,0))){
+				damage.remove(this);
+				break;
+			}
 		}
 	}
 

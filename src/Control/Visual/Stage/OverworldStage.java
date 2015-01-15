@@ -124,31 +124,43 @@ public class OverworldStage extends Stage{
 		Health.startTime = Camera.getLERPTime();
 	}
 	
+	float track = 0;
+	
 	protected void updateUI(){
 		//Gather player data
 		@SuppressWarnings("unchecked")
 		ArrayList<Player> player = (ArrayList<Player>) Settings.User.clone();
-		
-		//Draw damage
-		for(Damage d: Damage.getDamageInfo()){
-			Renderer.render(d.getModel());
+
+		//Draw shield
+		for(Shield s: Shield.getShieldInfo()){
+			Player p = (Player) s.getParent();
+			float[] RGBA = p.getRGBA();
+			Model m = s.getModel();
+			m.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+			Renderer.render(m);
+			
 			
 			if(Settings.toggles.get("d_hitbox")){
-				Cubef temp = new Cubef(new Vector3f(d.getLocation().x, d.getLocation().y, 0f), new Vector3f(d.getLocation().x+d.getSize().x, d.getLocation().y+d.getSize().y, 1f));
-				Model m = new Model(temp);
-				m.setRGBA(1, 0, 0, 0.7f);
-				Renderer.render(m);
+				Cubef temp = new Cubef(new Vector3f(s.getLocation().x, s.getLocation().y, 0f), new Vector3f(s.getLocation().x+s.getSize().x, s.getLocation().y+s.getSize().y, 1f));
+				Model m1 = new Model(temp);
+				m1.setRGBA(1, 0, 0, 0.7f);
+				Renderer.render(m1);
 			}
 		}
 		
-		//Draw shield
-		for(Shield s: Shield.getShieldInfo()){
-			Renderer.render(s.getModel());
+		//Draw damage
+		for(Damage d: Damage.getDamageInfo()){
+			Player p = (Player) d.getParent();
+			float[] RGBA = p.getRGBA();
+			Model m = d.getModel();
+			m.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+			Renderer.render(m);
+			
 			if(Settings.toggles.get("d_hitbox")){
-				Cubef temp = new Cubef(new Vector3f(s.getLocation().x, s.getLocation().y, 0f), new Vector3f(s.getLocation().x+s.getSize().x, s.getLocation().y+s.getSize().y, 1f));
-				Model m = new Model(temp);
-				m.setRGBA(1, 0, 0, 0.7f);
-				Renderer.render(m);
+				Cubef temp = new Cubef(new Vector3f(d.getLocation().x, d.getLocation().y, 0f), new Vector3f(d.getLocation().x+d.getSize().x, d.getLocation().y+d.getSize().y, 1f));
+				Model m1 = new Model(temp);
+				m1.setRGBA(1, 0, 0, 0.7f);
+				Renderer.render(m1);
 			}
 		}
 
@@ -193,7 +205,21 @@ public class OverworldStage extends Stage{
 			}
 		}
 		Stencil.disable();
-	
+
+		
+		//Draw IDLE player name
+		int playerTrack = 0;
+		for(Player p: player){
+			playerTrack++;
+				if(!p.isDead() && p.isPlayerIDLE()){
+					Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, 1.5f);
+					
+					float[] RGBA = Camera.getInverseRGBA();
+					text.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
+					text.drawText("PLAYER " + playerTrack, location, 0.04f, 8f);
+
+			}
+		}
 		//Draw hitboxes
 		for(Model Box:Settings.getWorld().getFrontRenderList()){
 			Renderer.render(Box);
@@ -211,20 +237,6 @@ public class OverworldStage extends Stage{
 			Model m = new Model(c);
 			m.setRGBA(0, 0, 0, 0.6f);
 			Renderer.render(m);
-		}
-		
-		//Draw IDLE player name
-		int playerTrack = 0;
-		for(Player p: player){
-			playerTrack++;
-				if(!p.isDead() && p.isPlayerIDLE()){
-					Vector3f location = new Vector3f(p.getLERPLocation().x-0.8f, p.getLERPLocation().y+0.3f, 1.5f);
-					
-					float[] RGBA = Camera.getInverseRGBA();
-					text.setRGBA(RGBA[0], RGBA[1], RGBA[2], 1);
-					text.drawText("PLAYER " + playerTrack, location, 0.04f, 8f);
-
-			}
 		}
 		
 		//Game ended
@@ -311,9 +323,17 @@ public class OverworldStage extends Stage{
 			
 			String data = "" + Math.round(p.getFactor()*100) + "%\n";
 			if(Health.stockCap != -1){
-				data += p.getStock() + " lives";
+				if(p.getStock() < 10){
+					data += p.getStock() + " lives";
+				}else{
+					data += p.getStock() + "lives";
+				}
 			}else{
-				data += p.killCount + " kills";
+				if(p.killCount < 10){
+					data += p.killCount + " kills";
+				}else{
+					data += p.killCount + "kills";
+				}
 			}
 			
 			float textSize = 4000/player.size();

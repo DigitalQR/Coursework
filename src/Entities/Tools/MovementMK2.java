@@ -10,7 +10,8 @@ public class MovementMK2 extends Movement{
 	
 	protected static final int COLLISION_DEPTH = 10;
 	protected static final int DP = 100000;
-
+	private boolean canJump = false;
+	
 	public MovementMK2(ControlScheme controlScheme) {
 		super(controlScheme);
 	}
@@ -123,7 +124,6 @@ public class MovementMK2 extends Movement{
 	
 	protected void processInput(Entity e){
 		//X
-		//Input
 		if(!e.stunned()){
 			if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.06f;
 			if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.06f;
@@ -133,15 +133,18 @@ public class MovementMK2 extends Movement{
 		e.getVelocity().x/=DP;
 		
 		//Y
-		if(!e.stunned() && control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y && (touchingGround || touchingWall != 0)){
+		if(!e.stunned() && control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y && (touchingGround || touchingWall != 0) && canJump){
 			e.getVelocity().y = 0.3f;
+			canJump = false;
 			
-			touchingGround = false;
-			if(touchingWall != 0){
+			if(!touchingGround && touchingWall != 0){
 				e.getVelocity().x+=0.6f*-touchingWall;
 			}
+			touchingGround = false;
 		}
 		if(control.isKeyPressed(control.KEY_DUCK)) e.getVelocity().y = -0.5f;
+		
+		if(!control.isKeyPressed(control.KEY_JUMP)) canJump = true;
 		
 		e.getVelocity().y = Math.round(e.getVelocity().y*DP);
 		e.getVelocity().y/=DP;
