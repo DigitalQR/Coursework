@@ -100,6 +100,11 @@ public class Damage extends Asset{
 		this.animation = animation;
 		sound.play();
 		update();
+		
+		if(!stuckToParent){
+			location.x = parent.getLocation().x-size.x/2+parent.getSize().x/2+velocity.x;
+			location.y = parent.getLocation().y-size.y/2+parent.getSize().y/2+velocity.y;
+		}
 	}
 	
 	public boolean isStuckToParent() {
@@ -121,9 +126,9 @@ public class Damage extends Asset{
 	public Model getModel(){
 		Model m = animation.getCurrentFrame();
 		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y, 0.5f));
-		float[] colour = {0,1,0};
+		float[] colour = {1,1,1};
 		m.setRGBA(colour[0], colour[1], colour[2], 1);
-		m.scaleBy(12);
+		m.scaleBy(30*((size.x+size.y)/2));
 		
 		return m;
 	}
@@ -174,8 +179,8 @@ public class Damage extends Asset{
 
 	public void update(){
 		if(stuckToParent){
-			location.x = parent.getLocation().x+velocity.x;
-			location.y = parent.getLocation().y+velocity.y;
+			location.x = parent.getLocation().x-size.x/2+parent.getSize().x/2+velocity.x;
+			location.y = parent.getLocation().y-size.y/2+parent.getSize().y/2+velocity.y;
 		}else{
 			location.x+=velocity.x;
 			location.y+=velocity.y;

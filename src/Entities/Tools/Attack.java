@@ -27,16 +27,16 @@ public class Attack extends Component{
 		if(canAttack && !e.stunned()){
 			if(control.isKeyPressed(control.KEY_PRIMARY)){
 				Vector2f velocity = new Vector2f(0,0);
-				Vector2f size = new Vector2f(0.25f, 0.5f);
+				Vector2f size = new Vector2f(0.3f, 0.6f);
 	
 				if(control.isKeyPressed(control.KEY_UP)){
-					velocity.y+=size.y-0.2f;
+					velocity.y+=0.5f;
 				}if(control.isKeyPressed(control.KEY_DOWN)){
-					velocity.y-=size.y;
+					velocity.y-=0.5f;
 				}if(control.isKeyPressed(control.KEY_LEFT)){
-					velocity.x-=size.x;
+					velocity.x-=0.25f;
 				}if(control.isKeyPressed(control.KEY_RIGHT)){
-					velocity.x+=size.x;
+					velocity.x+=0.25f;
 				}
 
 				Sound attackSound = new Sound("Effects/Attack");
