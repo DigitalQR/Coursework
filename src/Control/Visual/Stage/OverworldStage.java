@@ -10,6 +10,7 @@ import Control.Settings;
 import Control.Visual.Menu.Assets.Core.Input;
 import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 import Entities.Tools.Health;
@@ -68,6 +69,7 @@ public class OverworldStage extends Stage{
 		}
 		Damage.updateDamage();
 		Shield.updateShields();
+		Powerup.updatePowerups();
 		
 		//Has game ended
 		if(!hasFinished()){
@@ -147,7 +149,7 @@ public class OverworldStage extends Stage{
 				Renderer.render(m1);
 			}
 		}
-		
+
 		//Draw damage
 		for(Damage d: Damage.getDamageInfo()){
 			Player p = (Player) d.getParent();
@@ -167,6 +169,19 @@ public class OverworldStage extends Stage{
 		//Draw hitboxes
 		for(Model Box: Settings.getWorld().getBackRenderList()){
 			Renderer.render(Box);
+		}
+		
+		//Draw powerups
+		for(Powerup p: Powerup.getPowerUps()){
+			Model m = p.getModel();
+			Renderer.render(m);
+			
+			if(Settings.toggles.get("d_hitbox")){
+				Cubef temp = new Cubef(new Vector3f(p.getLocation().x, p.getLocation().y, 0f), new Vector3f(p.getLocation().x+p.getSize().x, p.getLocation().y+p.getSize().y, 1f));
+				Model m1 = new Model(temp);
+				m1.setRGBA(1, 0, 0, 0.7f);
+				Renderer.render(m1);
+			}
 		}
 		
 		//Player outline

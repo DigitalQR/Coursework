@@ -107,6 +107,7 @@ public class Damage extends Asset{
 			location.x = parent.getLocation().x-size.x/2+parent.getSize().x/2+velocity.x;
 			location.y = parent.getLocation().y-size.y/2+parent.getSize().y/2+velocity.y;
 		}
+		
 	}
 	
 	public boolean isStuckToParent() {
