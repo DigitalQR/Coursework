@@ -189,6 +189,7 @@ public class OverworldStage extends Stage{
 		GL11.glDisable(GL11.GL_LIGHTING);
 		for(Player p: player){
 			if(!p.isDead()){
+				//Black outline
 				Model m = p.getModel();
 				m.getLocation().y-=0.24f;
 				m.scaleBy(1.6f);
@@ -198,13 +199,34 @@ public class OverworldStage extends Stage{
 					m.setRGBA(0, 0, 0, 1);
 				}
 				Renderer.render(m);
-
+				
+				Model pow = p.getPowerUpModel();
+				if(pow != null){
+					pow.scaleBy(1.6f);
+					pow.getLocation().y-=0.24f;
+					if(p.stunned()){
+						pow.setRGBA(1, 1, 1, 1);
+					}else{
+						pow.setRGBA(0, 0, 0, 1);
+					}
+					Renderer.render(pow);
+				}
+				
+				//RGBA outline
 				float[] RGBA = p.getRGBA();
 				Model m1 = p.getModel();
 				m1.getLocation().y-=0.2f;
 				m1.scaleBy(1.5f);
 				m1.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 				Renderer.render(m1);
+
+				Model pow1 = p.getPowerUpModel();
+				if(pow1 != null){
+					pow1.scaleBy(1.5f);
+					pow1.getLocation().y-=0.2f;
+					pow1.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
+					Renderer.render(pow1);
+				}
 			}
 		}
 		GL11.glEnable(GL11.GL_LIGHTING);
@@ -214,6 +236,7 @@ public class OverworldStage extends Stage{
 		for(Player p: player){
 			if(!p.isDead()){
 				Renderer.render(p.getModel());
+				
 				if(Settings.toggles.get("d_hitbox")){
 					Renderer.render(p.getHitbox());
 				}

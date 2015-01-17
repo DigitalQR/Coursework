@@ -7,14 +7,17 @@ import java.util.List;
 import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.Settings;
+import Entities.Powerups.PowerPowerUp;
 import Entities.Powerups.SpeedPowerUp;
 import RenderEngine.Model.Model;
+import Tools.Maths.Toolkit;
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 
 public abstract class Powerup extends Entity{
 	
 	protected static ArrayList<Powerup> powerups = new ArrayList<Powerup>();
+	private static long cooldown = -1;
 	
 	public static ArrayList<Powerup> getPowerUps(){
 		@SuppressWarnings("unchecked")
@@ -26,9 +29,15 @@ public abstract class Powerup extends Entity{
 		for(Powerup p: getPowerUps()){
 			p.update();
 		}
-		while(powerups.size() < 10){
-			powerups.add(new SpeedPowerUp());
+		while(powerups.size() < 20 && cooldown < 0){
+			if(Math.random() <= 0.5){
+				powerups.add(new SpeedPowerUp());
+			}else{
+				powerups.add(new PowerPowerUp());
+			}
+			cooldown = Toolkit.RandomInt(0, 5)*30L;
 		}
+		cooldown--;
 	}
 	
 	private float birth = System.nanoTime();
@@ -42,8 +51,15 @@ public abstract class Powerup extends Entity{
 	}
 	
 	public abstract Model getModel();
+
+	public abstract void updateInfo();
 	
-	public abstract void update();
+	public void update(){
+		updateInfo();
+		if(this.getLifeLeft() < 0){
+			powerups.remove(this);
+		}
+	}
 	
 	public float getLifeLeft(){
 		final float currentTime = System.nanoTime();
@@ -81,5 +97,16 @@ public abstract class Powerup extends Entity{
 		}
 		return new Vector2f(-10000,-10000);
 	}
+
+	public void attach(Player p){
+		powerups.remove(this);
+		attachEffects(p);
+	}
 	
+	public void dettach(Player p){
+		dettachEffects(p);
+	}
+	
+	protected abstract void attachEffects(Player p);
+	protected abstract void dettachEffects(Player p);
 }

@@ -7,12 +7,12 @@ import Tools.Maths.Vector3f;
 import Entities.Player;
 import Entities.Powerup;
 
-public class SpeedPowerUp extends Powerup{
+public class PowerPowerUp extends Powerup{
 
-	private static Animation animation = new Animation("Powerup/Speed", 100);
+	private static Animation animation = new Animation("Powerup/Power", 100);
 	private static final int LIFE = 3000;
 	
-	public SpeedPowerUp() {
+	public PowerPowerUp() {
 		super(new Vector2f(-10000, -10000), LIFE);
 		Vector2f location = getSpawn();
 		this.location.x = location.x;
@@ -39,15 +39,13 @@ public class SpeedPowerUp extends Powerup{
 	}
 
 	protected void attachEffects(Player p){
-		p.health.setDamageFactor(3);
-		p.getMovement().setAccelerationFactor(1.5f);
-		p.getMovement().setJumpCap(2);
+		p.health.setDamageFactor(0.75f);
+		p.getMovement().setAccelerationFactor(0.85f);
 	}
 
 	protected void dettachEffects(Player p){
 		p.health.setDamageFactor(1);
 		p.getMovement().setAccelerationFactor(1f);
-		p.getMovement().setJumpCap(1);
 	}
 
 }

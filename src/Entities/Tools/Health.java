@@ -15,6 +15,7 @@ public class Health extends Component{
 	
 	public Vector2f scale = new Vector2f(0.3f, 0.4f);
 	public float factor = 0.0f;
+	private float factorFactor = 1;
 	private float lastHitTime = 0;
 	public Entity lastHit = null;
 	private  float immuneTime = 100;
@@ -42,7 +43,7 @@ public class Health extends Component{
 			Damage damage = Damage.damageTouching(e);
 			
 			if(damage != null){				
-				factor+=damage.getDamageValue();
+				factor+=damage.getDamageValue()*factorFactor;
 				lastHitTime = currentTime;
 				lastHit = damage.getParent();
 				Damage.remove(damage);
@@ -54,6 +55,10 @@ public class Health extends Component{
 				e.setVelocity(new Vector3f(x, y, 0));
 			}
 		}
+	}
+	
+	public void setDamageFactor(float f){
+		factorFactor = f;
 	}
 	
 	public void clientUpdate(Entity e){

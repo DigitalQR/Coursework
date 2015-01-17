@@ -8,7 +8,7 @@ import Tools.Maths.Vector3f;
 
 public class MovementMK2 extends Movement{
 	
-	protected static final int COLLISION_DEPTH = 10;
+	protected static final int COLLISION_DEPTH = 100;
 	protected static final int DP = 100000;
 	private boolean canJump = false;
 	
@@ -35,6 +35,7 @@ public class MovementMK2 extends Movement{
 				float y = Toolkit.LERP(new Vector2f(0,e.getLocation().y), new Vector2f(COLLISION_DEPTH,e.getLocation().y-e.getSize().y/2), i);
 				if( insideHitbox(new Vector2f(e.getLocation().x+e.getSize().x/4,y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
 					touchingGround = true;
+					jumpCount = 0;
 					e.getVelocity().y = y-e.getLocation().y;
 					break;
 				}
@@ -58,6 +59,10 @@ public class MovementMK2 extends Movement{
 					}
 				}
 			}
+		}
+		
+		if(!touchingGround && jumpCount < 1){
+			jumpCount = 1;
 		}
 	}
 	
@@ -125,20 +130,22 @@ public class MovementMK2 extends Movement{
 	protected void processInput(Entity e){
 		//X
 		if(!e.stunned()){
-			if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x) e.getVelocity().x+=0.06f;
-			if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x) e.getVelocity().x-=0.06f;
+			if(control.isKeyPressed(control.KEY_RIGHT) && e.getVelocity().x < accelerationLimit.x*accelerationFactor) e.getVelocity().x+=0.06f;
+			if(control.isKeyPressed(control.KEY_LEFT) && e.getVelocity().x > -accelerationLimit.x*accelerationFactor) e.getVelocity().x-=0.06f;
 		}
 		
 		e.getVelocity().x = Math.round(e.getVelocity().x*DP);
 		e.getVelocity().x/=DP;
 		
 		//Y
-		if(!e.stunned() && control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y && (touchingGround || touchingWall != 0) && canJump){
+		if(!e.stunned() && control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y*accelerationFactor && (touchingGround || touchingWall != 0 || jumpCount < jumpCap) && canJump){
 			e.getVelocity().y = 0.3f;
+			jumpCount ++;
 			canJump = false;
 			
 			if(!touchingGround && touchingWall != 0){
 				e.getVelocity().x+=0.6f*-touchingWall;
+				jumpCount = 1;
 			}
 			touchingGround = false;
 		}

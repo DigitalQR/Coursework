@@ -11,11 +11,19 @@ public class Movement extends Component{
 
 	protected ControlScheme control;
 	protected Vector2f accelerationLimit = new Vector2f(0.2f, 40f);
+	protected float accelerationFactor = 1;
 	protected boolean touchingGround = false;
 	protected int touchingWall = 0;
 	protected boolean bounce = true;
 	protected static final float COLLISION_DEPTH = 0.001f;
 	protected static final int DP = 1000;
+
+	protected int jumpCount = 0;
+	protected int jumpCap = 1;
+	
+	public void setJumpCap(int i){
+		jumpCap = i;
+	}
 	
 	public Movement(ControlScheme controlScheme){
 		control = controlScheme;
@@ -25,6 +33,10 @@ public class Movement extends Component{
 		return touchingWall;
 	}
 	
+	public void setAccelerationFactor(float accelerationFactor) {
+		this.accelerationFactor = accelerationFactor;
+	}
+
 	public boolean getTouchingGround(){
 		return touchingGround;
 	}

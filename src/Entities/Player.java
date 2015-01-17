@@ -27,6 +27,7 @@ public class Player extends Entity{
 	private Movement movement;
 	private Attack attack;
 	public Health health;
+	private Powerup powerup;
 	
 	private float[] RGBA = new float[4];
 
@@ -149,6 +150,35 @@ public class Player extends Entity{
 		}
 	}
 	
+	public void setPowerUp(Powerup p){
+		if(powerup != null){
+			powerup.dettach(this);
+		}
+		p.attach(this);
+		powerup = p;
+	}
+	
+	public Movement getMovement(){
+		return movement;
+	}
+
+	public Model getPowerUpModel(){
+		if(powerup != null){
+			Model m = powerup.getModel();
+			Vector3f location = this.getLERPLocation().clone();
+			location.x += powerup.getSize().x/2;
+			location.y += powerup.getSize().y;
+			location.z = 0.2f;
+			
+			m.setLocation(location);
+			m.scaleBy(0.75f);
+			
+			return m;
+		}else{
+			return null;
+		}
+	}
+	
 	public ControlScheme getControlScheme(){
 		return control;
 	}
@@ -219,6 +249,11 @@ public class Player extends Entity{
 		killCount = 0;
 		health.factor = 0;
 		kill(false);
+		
+		if(powerup != null){
+			powerup.dettach(this);
+			powerup = null;
+		}
 	}
 	
 	public void setRGBA(float[] rGBA) {

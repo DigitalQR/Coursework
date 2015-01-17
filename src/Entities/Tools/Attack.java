@@ -1,7 +1,10 @@
 package Entities.Tools;
 
+import Collision.SquareHitbox;
 import Control.Audio.Sound;
 import Entities.Entity;
+import Entities.Player;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 import Tools.Maths.Vector2f;
@@ -16,7 +19,6 @@ public class Attack extends Component{
 	
 	public Attack(ControlScheme control){		
 		this.control = control;
-		
 	}
 	
 	public void update(Entity e){
@@ -85,6 +87,15 @@ public class Attack extends Component{
 	
 				lastAttack = currentTime;
 				lastShield = currentTime;
+			}else if(control.isKeyPressed(control.KEY_GRAB)){
+				for(Powerup p: Powerup.getPowerUps()){
+					SquareHitbox hb = new SquareHitbox(new Vector2f(p.getLocation().x, p.getLocation().y), new Vector2f(p.getSize().x, p.getSize().y));
+					if(hb.AreaIntersect(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x, e.getSize().y))){
+						Player pl = (Player) e;
+						pl.setPowerUp(p);
+						break;
+					}
+				}
 			}
 		}
 	}
