@@ -15,6 +15,7 @@ public class ConnectStage extends Stage{
 	
 	private TextField ip;
 	private String attempt = "";
+	private String addition = "";
 	
 	public ConnectStage(){
 		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), "Online  ", null);
@@ -46,10 +47,16 @@ public class ConnectStage extends Stage{
 		}catch(IllegalStateException e){}
 		
 		if(!Settings.isClientActive()){
-			if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_START)){
+			if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_START) || Input.isKeyPressed(Input.KEY_PAUSE) ){
 				Stage.setStage(Stage.getStage("menu"));
 				Input.recieved();
 			}
+		}
+		
+		if(Input.usingDefaultInput()){
+			addition = "\n\nWarning: No profile is assigned to player 1.\n         You will be able to spectate, but\n         you will not be able to play.";
+		}else{
+			addition = "";
 		}
 	}
 
@@ -58,19 +65,19 @@ public class ConnectStage extends Stage{
 		IPText.setTextSize(0.25f);
 		IPText.draw();
 		
+		String data = "";
 		if(!attempt.equals("") && !Settings.isClientActive()){
-			final Button error = new Button(new Vector3f(-1.6f, 0.25f,-2.5f), new Vector3f(0.2f, 0.3f, 0.5f), " Error connecting to " + attempt);
-			error.setColour(new float[]{0,0,0,0});
-			error.setTextSize(0.25f);
-			error.draw();
+			data = " Error connecting to " + attempt;
 		}
-		
 		if(Settings.isClientActive()){
-			final Button info = new Button(new Vector3f(-1.6f, 0.25f,-2.5f), new Vector3f(0.2f, 0.3f, 0.5f), " Connected!\n Waiting for host to start.. \n Ping: " + Settings.client.getPing());
-			info.setColour(new float[]{0,0,0,0});
-			info.setTextSize(0.25f);
-			info.draw();
+			data = " Connected!\n Waiting for host to start.. \n Ping: " + Settings.client.getPing();
 		}
+		data += addition;
+		
+		final Button info = new Button(new Vector3f(-1.6f, 0.25f,-2.5f), new Vector3f(0.2f, 0.3f, 0.5f), data);
+		info.setColour(new float[]{0,0,0,0});
+		info.setTextSize(0.25f);
+		info.draw();
 	}
 
 }

@@ -1,6 +1,8 @@
 package Control.Visual.Stage;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -221,6 +223,15 @@ public class GamepadSetupStage extends Stage implements Action{
 		//Assign
 		if(subButton[1].hasFocus()){
 			Settings.User.get(0).setControlScheme(Gamepad.getGamepads()[currentPad].getGPID());
+			
+			try{
+				Formatter pref = new Formatter("Res/p1.pref");
+				pref.format("%s", Gamepad.getGamepads()[currentPad].getName());
+				pref.close();
+			}catch(FileNotFoundException e){
+				e.printStackTrace();
+			}
+			
 			subButton[1].unfocus();
 			playerName.setDrawn(false);
 		}

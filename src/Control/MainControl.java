@@ -1,5 +1,8 @@
 package Control;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import Control.Audio.Sound;
@@ -23,7 +26,28 @@ public class MainControl{
 		
 		try{
 			Settings.User.add(new Player(0,0));
-			Settings.User.get(0).setControlScheme(Gamepad.keyboard.getGPID());
+			
+			File GPIDfile = new File("Res/p1.pref");
+			if(GPIDfile.exists()){
+				Scanner prefScan;
+				try {
+					prefScan = new Scanner(GPIDfile);
+					String data = "";
+					while(prefScan.hasNext()) data+= prefScan.next();
+					prefScan.close();
+					
+					for(Gamepad gp: Gamepad.getGamepads()){
+						if(gp.getName().equals(data) && gp.getProfileStatus()){
+							Settings.User.get(0).setControlScheme(gp.getGPID());
+							break;
+						}					
+					}
+				}catch(FileNotFoundException e){
+					
+				}
+			}
+			
+			
 		}catch(NullPointerException e){
 			
 		}

@@ -14,7 +14,7 @@ import Tools.Maths.Vector3f;
 public class Damage extends Asset{
 
 	private static ArrayList<Damage> damage = new ArrayList<Damage>();
-	public final static Animation CUBE = new Animation("Cube/Damage", 10);
+	public final static Animation CUBE = new Animation("Cube/Damage", 50);
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Damage> getDamageInfo(){

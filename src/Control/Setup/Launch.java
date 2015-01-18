@@ -34,7 +34,6 @@ import Control.Visual.DisplayControl;
 import Control.Visual.DisplayManager;
 import Debug.ErrorPopup;
 
-
 public class Launch {
 
 	protected static BufferedImage header;
