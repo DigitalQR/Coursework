@@ -9,8 +9,8 @@ import Entities.Powerup;
 
 public class PowerPowerUp extends Powerup{
 
-	private static Animation animation = new Animation("Powerup/Power", 100);
-	private static final int LIFE = 3000;
+	private static Animation animation = new Animation("Powerup/Power", 110);
+	private static final int LIFE = STANDARD_LIFE;
 	
 	public PowerPowerUp() {
 		super(new Vector2f(-10000, -10000), LIFE);

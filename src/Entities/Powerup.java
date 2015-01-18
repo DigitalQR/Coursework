@@ -18,6 +18,7 @@ public abstract class Powerup extends Entity{
 	
 	protected static ArrayList<Powerup> powerups = new ArrayList<Powerup>();
 	private static long cooldown = -1;
+	protected static final int STANDARD_LIFE = 5000;
 	
 	public static ArrayList<Powerup> getPowerUps(){
 		@SuppressWarnings("unchecked")

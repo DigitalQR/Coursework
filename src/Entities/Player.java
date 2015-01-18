@@ -168,7 +168,7 @@ public class Player extends Entity{
 			Vector3f location = this.getLERPLocation().clone();
 			location.x += powerup.getSize().x/2;
 			location.y += powerup.getSize().y;
-			location.z = 0.2f;
+			location.z = 0.5f;
 			
 			m.setLocation(location);
 			m.scaleBy(0.75f);
