@@ -30,15 +30,19 @@ public abstract class Powerup extends Entity{
 		for(Powerup p: getPowerUps()){
 			p.update();
 		}
-		while(powerups.size() < 20 && cooldown < 0){
-			if(Math.random() <= 0.5){
-				powerups.add(new SpeedPowerUp());
-			}else{
-				powerups.add(new PowerPowerUp());
+		
+		//Spawn
+		if(!Settings.isClientActive()){
+			while(powerups.size() < 20 && cooldown < 0){
+				if(Math.random() <= 0.5){
+					powerups.add(new SpeedPowerUp());
+				}else{
+					powerups.add(new PowerPowerUp());
+				}
+				cooldown = Toolkit.RandomInt(0, 5)*30L;
 			}
-			cooldown = Toolkit.RandomInt(0, 5)*30L;
+			cooldown--;
 		}
-		cooldown--;
 	}
 	
 	private float birth = System.nanoTime();

@@ -165,6 +165,10 @@ public class Player extends Entity{
 		return movement;
 	}
 
+	public Attack getAttack() {
+		return attack;
+	}
+
 	public Model getPowerUpModel(){
 		if(powerup != null){
 			Model m = powerup.getModel();

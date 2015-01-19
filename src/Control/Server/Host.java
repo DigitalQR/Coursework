@@ -220,6 +220,8 @@ public class Host{
 									break;
 								case 'x':
 									c.controlScheme.setKeyState(c.controlScheme.KEY_START, val);
+								case 'g':
+									c.controlScheme.setKeyState(c.controlScheme.KEY_GRAB, val);
 									break;
 								}
 

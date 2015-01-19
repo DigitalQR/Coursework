@@ -16,9 +16,14 @@ public class Attack extends Component{
 	private float lastShield = 0;
 	private int attackCoolDown = 800;
 	private int blockCoolDown = 2000;
+	private float damageFactor = 1;
 	
 	public Attack(ControlScheme control){		
 		this.control = control;
+	}
+	
+	public void setDamageFactor(float f){
+		damageFactor = f;
 	}
 	
 	public void update(Entity e){
@@ -44,7 +49,7 @@ public class Attack extends Component{
 
 				Sound attackSound = new Sound("Effects/Attack");
 				
-				Damage d = new Damage(new Vector2f(0,0), size, 600, 0.2f, e, true, Damage.CUBE, attackSound);
+				Damage d = new Damage(new Vector2f(0,0), size, 600, 0.2f*damageFactor, e, true, Damage.CUBE, attackSound);
 				d.setVelocity(velocity);
 				d.setDamageVelocity(new Vector2f(velocity.x*0.8f, velocity.y*0.8f));
 				Damage.add(d);
@@ -74,7 +79,7 @@ public class Attack extends Component{
 				
 				Sound rangeSound = new Sound("Effects/Shoot");
 				
-				Damage d = new Damage(location, size, 500, 0.05f, e, false, Damage.CUBE, rangeSound);
+				Damage d = new Damage(location, size, 500, 0.05f*damageFactor, e, false, Damage.CUBE, rangeSound);
 				d.setVelocity(velocity);
 				d.setDamageVelocity(new Vector2f(velocity.x*0.8f, velocity.y*0.8f));
 				Damage.add(d);

@@ -103,11 +103,12 @@ public class Client implements Runnable{
 				player.getControlScheme().KEY_SECONDARY,
 				player.getControlScheme().KEY_BLOCK,
 				player.getControlScheme().KEY_SELECT,
-				player.getControlScheme().KEY_START
+				player.getControlScheme().KEY_START,
+				player.getControlScheme().KEY_GRAB
 		};
 		
 		final char[] prefix = {
-				 'j','d','l','r','u','D','p','s','b','S','x'
+				 'j','d','l','r','u','D','p','s','b','S','x','g'
 				 
 		};
 		

@@ -71,11 +71,6 @@ public class MovementMK2 extends Movement{
 		Vector3f location = e.getLocation().clone();
 		Vector2f afterVel = new Vector2f(0,0);
 		
-		if(insideHitbox(new Vector2f(location.x, location.y), new Vector2f(e.getSize().x, e.getSize().x))){
-			//location.x-=e.getVelocity().x;
-			//location.y-=e.getVelocity().y;
-		}
-		
 		touchUpdate(e);
 		processInput(e);
 		
@@ -106,7 +101,11 @@ public class MovementMK2 extends Movement{
 				break;
 			}
 		}
-		e.getLocation().x = location.x;
+		if(!insideHitbox(new Vector2f(location.x, location.y), new Vector2f(e.getSize().x, e.getSize().x))){
+			e.getLocation().x = location.x;
+		}else{
+			e.getVelocity().x = 0;
+		}
 		
 		for(int i = 0; i<COLLISION_DEPTH+1; i++){
 			float y = Toolkit.LERP(new Vector2f(0,e.getLocation().y), new Vector2f(COLLISION_DEPTH,e.getLocation().y+e.getVelocity().y), i);
@@ -123,7 +122,11 @@ public class MovementMK2 extends Movement{
 				break;
 			}
 		}
-		e.getLocation().y = location.y;
+		if(!insideHitbox(new Vector2f(location.x, location.y), new Vector2f(e.getSize().x, e.getSize().x))){
+			e.getLocation().y = location.y;
+		}else{
+			e.getVelocity().y = 0;
+		}
 
 		e.getVelocity().x+=afterVel.x;
 		e.getVelocity().y+=afterVel.y;
@@ -145,6 +148,12 @@ public class MovementMK2 extends Movement{
 			if(jumpState == 0){
 				jumpState = System.nanoTime()/1000000;
 				jumpCount ++;
+				
+				if(!touchingGround && touchingWall != 0){
+					e.getVelocity().x+=0.6f*-touchingWall;
+					jumpCount = 1;
+				}
+				touchingGround = false;
 			}
 			
 			if((float)(System.nanoTime()/1000000) - jumpState <= 90){
@@ -162,18 +171,12 @@ public class MovementMK2 extends Movement{
 			if(e.getVelocity().y < 0){
 				e.getVelocity().y = 0;
 			}
-			
 			e.getVelocity().y += 0.12f;
-			
-			if(!touchingGround && touchingWall != 0){
-				e.getVelocity().x+=0.6f*-touchingWall;
-				jumpCount = 1;
-			}
-			touchingGround = false;
 		}
+		
 		if(control.isKeyPressed(control.KEY_DUCK)) e.getVelocity().y = -0.5f;
 		
-		if(!control.isKeyPressed(control.KEY_JUMP) && (touchingGround || touchingWall != 0 || jumpCount < jumpCap)){
+		if(!control.isKeyPressed(control.KEY_JUMP) && (touchingGround || touchingWall != 0 || jumpCount < jumpCap) && e.getVelocity().y <= 0){
 			canJump = true;
 			jumpState = 0;
 		}else if(jumpState == 0){

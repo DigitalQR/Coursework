@@ -418,12 +418,12 @@ class PlayerSelect extends Component{
 			
 		}else if(!ready){
 
-			TextBox area = new TextBox(this.location, this.size, "", "\n\n\n Press any\n button to join");
+			TextBox area = new TextBox(this.location, this.size, "", "\n\n\n Press any bound\n button to join");
 			area.setHeaderHeight(-0.2f);
 			area.setHeaderColour(new float[]{1,1,1,0});
 			area.setContentColour(new float[]{1,1,1,0.5f});
 			area.setHeaderTextSize(0.06f);
-			area.setContentTextSize(0.05f);
+			area.setContentTextSize(0.045f);
 			area.draw();
 			
 		}else{
