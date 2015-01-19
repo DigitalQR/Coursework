@@ -11,6 +11,7 @@ import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 import Control.Settings;
 import Control.Audio.Sound;
+import Control.Visual.Stage.ConnectStage;
 import Control.Visual.Stage.GamemodeStage;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.StartStage;
@@ -314,8 +315,10 @@ public class Client implements Runnable{
 		try{
 			return input.readLine();
 		}catch(IOException e){
-			e.printStackTrace();
-			System.exit(0);
+			ConnectStage cs = (ConnectStage) Stage.getStage("connect");
+			Stage.setStage(cs);
+			cs.disconnect = true;
+			destroy();
 			return "";
 		}
 	}

@@ -16,6 +16,7 @@ public class ConnectStage extends Stage{
 	private TextField ip;
 	private String attempt = "";
 	private String addition = "";
+	public boolean disconnect = false;
 	
 	public ConnectStage(){
 		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), "Online  ", null);
@@ -43,6 +44,7 @@ public class ConnectStage extends Stage{
 			if(Keyboard.isKeyDown(Keyboard.KEY_RETURN) && !ip.getMessage().equals(attempt)){
 				Settings.issueCommand("connect " + ip.getMessage() + " " + Host.DEFAULT_PORT);
 				attempt = ip.getMessage();
+				disconnect = false;
 			}
 		}catch(IllegalStateException e){}
 		
@@ -57,6 +59,9 @@ public class ConnectStage extends Stage{
 			addition = "\n\nWarning: No profile is assigned to player 1.\n         You will be able to spectate, but\n         you will not be able to play.";
 		}else{
 			addition = "";
+		}
+		if(disconnect){
+			addition += "\n\n\n  You have been disconnected!";
 		}
 	}
 
