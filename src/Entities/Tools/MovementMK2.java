@@ -8,9 +8,10 @@ import Tools.Maths.Vector3f;
 
 public class MovementMK2 extends Movement{
 	
-	protected static final int COLLISION_DEPTH = 20;
+	protected static final int COLLISION_DEPTH = 10;
 	protected static final int DP = 100000;
 	private boolean canJump = false;
+	private float jumpState = 0;
 	
 	public MovementMK2(ControlScheme controlScheme) {
 		super(controlScheme);
@@ -33,7 +34,7 @@ public class MovementMK2 extends Movement{
 		if(!e.stunned()){
 			for(int i = 0; i<COLLISION_DEPTH+1; i++){
 				float y = Toolkit.LERP(new Vector2f(0,e.getLocation().y), new Vector2f(COLLISION_DEPTH,e.getLocation().y-e.getSize().y/2), i);
-				if( insideHitbox(new Vector2f(e.getLocation().x+e.getSize().x/4,y+e.getSize().y/4), new Vector2f(e.getSize().x/2, e.getSize().y/2)) ){
+				if( insideHitbox(new Vector2f(e.getLocation().x,y+e.getSize().y/4), new Vector2f(e.getSize().x, e.getSize().y/2)) ){
 					touchingGround = true;
 					jumpCount = 0;
 					e.getVelocity().y = y-e.getLocation().y;
@@ -69,9 +70,10 @@ public class MovementMK2 extends Movement{
 	private void updateDimension(Entity e){
 		Vector3f location = e.getLocation().clone();
 		Vector2f afterVel = new Vector2f(0,0);
+		
 		if(insideHitbox(new Vector2f(location.x, location.y), new Vector2f(e.getSize().x, e.getSize().x))){
-			location.x-=e.getVelocity().x;
-			location.y-=e.getVelocity().y;
+			//location.x-=e.getVelocity().x;
+			//location.y-=e.getVelocity().y;
 		}
 		
 		touchUpdate(e);
@@ -138,10 +140,30 @@ public class MovementMK2 extends Movement{
 		e.getVelocity().x/=DP;
 		
 		//Y
-		if(!e.stunned() && control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y*accelerationFactor && (touchingGround || touchingWall != 0 || jumpCount < jumpCap) && canJump){
-			e.getVelocity().y = 0.3f;
-			jumpCount ++;
+		boolean jump = false;
+		if(control.isKeyPressed(control.KEY_JUMP)){
+			if(jumpState == 0){
+				jumpState = System.nanoTime()/1000000;
+				jumpCount ++;
+			}
+			
+			if((float)(System.nanoTime()/1000000) - jumpState <= 90){
+				jump = true;
+			}else{
+				jump = false;
+				canJump = false;
+			}
+		}
+		if(!control.isKeyPressed(control.KEY_JUMP) && jumpState != 0){
 			canJump = false;
+		}
+		
+		if(!e.stunned() && jump && e.getVelocity().y < accelerationLimit.y*accelerationFactor && canJump){
+			if(e.getVelocity().y < 0){
+				e.getVelocity().y = 0;
+			}
+			
+			e.getVelocity().y += 0.12f;
 			
 			if(!touchingGround && touchingWall != 0){
 				e.getVelocity().x+=0.6f*-touchingWall;
@@ -151,7 +173,12 @@ public class MovementMK2 extends Movement{
 		}
 		if(control.isKeyPressed(control.KEY_DUCK)) e.getVelocity().y = -0.5f;
 		
-		if(!control.isKeyPressed(control.KEY_JUMP)) canJump = true;
+		if(!control.isKeyPressed(control.KEY_JUMP) && (touchingGround || touchingWall != 0 || jumpCount < jumpCap)){
+			canJump = true;
+			jumpState = 0;
+		}else if(jumpState == 0){
+			canJump = false;
+		}
 		
 		e.getVelocity().y = Math.round(e.getVelocity().y*DP);
 		e.getVelocity().y/=DP;

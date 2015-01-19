@@ -111,6 +111,7 @@ public class Player extends Entity{
 			}
 		}
 		
+		setPowerUp(null);
 		if(Settings.isHostActive()){
 			Settings.host.forcePlayerUpdate();
 		}
@@ -154,7 +155,9 @@ public class Player extends Entity{
 		if(powerup != null){
 			powerup.dettach(this);
 		}
-		p.attach(this);
+		if(p != null){
+			p.attach(this);
+		}
 		powerup = p;
 	}
 	
@@ -183,6 +186,10 @@ public class Player extends Entity{
 		return control;
 	}
 	
+	public Powerup getPowerup() {
+		return powerup;
+	}
+
 	public void update(){
 		LastLocation =this.getLocation().clone();
 		this.LastUpdate = System.nanoTime()-MainControl.UPS;

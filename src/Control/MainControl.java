@@ -45,6 +45,8 @@ public class MainControl{
 				}catch(FileNotFoundException e){
 					
 				}
+			}else{
+				Settings.User.get(0).setControlScheme(Gamepad.keyboard.getGPID());
 			}
 			
 			

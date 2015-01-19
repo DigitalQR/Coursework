@@ -25,6 +25,7 @@ public class Attack extends Component{
 		float currentTime = System.nanoTime();
 		boolean canAttack = currentTime - lastAttack >= attackCoolDown*1000000;
 		boolean canBlock = currentTime - lastShield >= blockCoolDown*1000000;
+		boolean canPickup = currentTime - lastAttack >= 500*1000000;
 
 		if(canAttack && !e.stunned()){
 			if(control.isKeyPressed(control.KEY_PRIMARY)){
@@ -87,15 +88,29 @@ public class Attack extends Component{
 	
 				lastAttack = currentTime;
 				lastShield = currentTime;
-			}else if(control.isKeyPressed(control.KEY_GRAB)){
+			}else if(control.isKeyPressed(control.KEY_GRAB) && canPickup){
+				
+				boolean pickedUp = false;
 				for(Powerup p: Powerup.getPowerUps()){
 					SquareHitbox hb = new SquareHitbox(new Vector2f(p.getLocation().x, p.getLocation().y), new Vector2f(p.getSize().x, p.getSize().y));
 					if(hb.AreaIntersect(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x, e.getSize().y))){
 						Player pl = (Player) e;
 						pl.setPowerUp(p);
+						pickedUp = true;
 						break;
 					}
 				}
+				
+				if(!pickedUp){
+					Player pl = (Player) e;
+					Powerup p = pl.getPowerup();
+					if(p != null){
+						System.out.println("Det");
+						p.dettach(pl);
+						pl.setPowerUp(null);
+					}
+				}
+				lastAttack = currentTime;
 			}
 		}
 	}
