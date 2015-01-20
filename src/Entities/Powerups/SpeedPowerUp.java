@@ -10,13 +10,18 @@ import Entities.Powerup;
 public class SpeedPowerUp extends Powerup{
 
 	private static Animation animation = new Animation("Powerup/Speed", 100);
+	public static final int ID = 0;
 	private static final int LIFE = STANDARD_LIFE;
 	
-	public SpeedPowerUp() {
+	public SpeedPowerUp(){
 		super(new Vector2f(-10000, -10000), LIFE);
 		Vector2f location = getSpawn();
 		this.location.x = location.x;
 		this.location.y = location.y;
+	}
+	
+	public SpeedPowerUp(Vector2f location){
+		super(location, LIFE);
 	}
 
 	public Model getModel() {
@@ -48,6 +53,14 @@ public class SpeedPowerUp extends Powerup{
 		p.health.setDamageFactor(1);
 		p.getMovement().setAccelerationFactor(1f);
 		p.getMovement().setJumpCap(1);
+	}
+	
+	public int getID(){
+		return ID;
+	}
+
+	public String encode(){
+		return ID + "," + location.x + "," + location.y;
 	}
 
 }

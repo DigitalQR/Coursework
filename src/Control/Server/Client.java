@@ -19,8 +19,11 @@ import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
 import Entities.Entity;
 import Entities.Player;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
+import Entities.Powerups.PowerPowerUp;
+import Entities.Powerups.SpeedPowerUp;
 import Entities.Tools.Health;
 import Level.World;
 
@@ -244,6 +247,24 @@ public class Client implements Runnable{
 						}
 						
 						break;
+						
+					//Power
+					case 'p':
+						if(subCommand.equals("null")){
+							Settings.User.get(playerID).setPowerUp(null);
+						}else{
+							Powerup p = null;
+							switch(subCommand){
+							case "" + SpeedPowerUp.ID:
+								p = new SpeedPowerUp();
+								break;
+							case "" + PowerPowerUp.ID:
+								p = new PowerPowerUp();
+								break;
+							}
+							Settings.User.get(playerID).setPowerUp(p);
+						}
+						break;
 					}
 					
 				}
@@ -298,6 +319,21 @@ public class Client implements Runnable{
 							
 						}catch(NumberFormatException e){
 							ErrorPopup.createMessage(e, false);
+						}
+					}
+					
+					//Powerups
+					if(s.charAt(2) == 'p'){
+						String[] para = s.substring(3).split(",");
+						switch((int)Float.parseFloat(para[0])){
+						
+						case SpeedPowerUp.ID:
+							Powerup.add(new SpeedPowerUp(new Vector2f(Float.parseFloat(para[1]), Float.parseFloat(para[2]))));
+							break;
+							
+						case PowerPowerUp.ID:
+							Powerup.add(new PowerPowerUp(new Vector2f(Float.parseFloat(para[1]), Float.parseFloat(para[2]))));
+							break;
 						}
 					}
 				}

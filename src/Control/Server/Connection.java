@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import Control.Settings;
 import Control.Server.Assets.Player;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 import Entities.Tools.ServerControlScheme;
@@ -35,6 +36,7 @@ public class Connection {
 	protected World world;
 	protected ArrayList<Damage> damage = new ArrayList<Damage>();
 	protected ArrayList<Shield> shields = new ArrayList<Shield>();
+	protected ArrayList<Powerup> powerups = new ArrayList<Powerup>();
 	protected String additions = "";
 	
 	public String USERNAME = "?";

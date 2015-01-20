@@ -3,6 +3,7 @@ package Control.Server.Assets;
 import java.util.ArrayList;
 
 import Control.Settings;
+import Entities.Powerup;
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 
@@ -14,6 +15,7 @@ public class Player {
 	private int stock = 0;
 	private float factor = 0;
 	public boolean resetFlag = false;
+	public Powerup powerup;
 	
 	public Player(Vector2f location){
 		this.location = location;
@@ -25,6 +27,16 @@ public class Player {
 
 	public boolean locationEquals(Player p){
 		return (p.getLocation().x == getLocation().x && p.getLocation().y == getLocation().y) && !resetFlag;
+	}
+	
+	public boolean powerupEquals(Player p){
+		if(powerup == null && p.powerup == null){
+			return true;
+		}else if(powerup != null){
+			return powerup.equals(p.powerup);
+		}else{
+			return p.powerup.equals(powerup);
+		}
 	}
 	
 	public boolean colourEquals(Player p){
@@ -69,6 +81,7 @@ public class Player {
 			player.killCount = p.killCount;
 			player.factor = p.getFactor();
 			player.stock = p.getStock();
+			player.powerup = p.getPowerup();
 			players.add(player);
 		}
 		return players;

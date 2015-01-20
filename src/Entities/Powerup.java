@@ -45,6 +45,10 @@ public abstract class Powerup extends Entity{
 		}
 	}
 	
+	public static void add(Powerup p){
+		powerups.add(p);
+	}
+	
 	private float birth = System.nanoTime();
 	private int life;
 	
@@ -65,6 +69,8 @@ public abstract class Powerup extends Entity{
 			powerups.remove(this);
 		}
 	}
+	
+	public abstract int getID();
 	
 	public float getLifeLeft(){
 		final float currentTime = System.nanoTime();
@@ -114,4 +120,6 @@ public abstract class Powerup extends Entity{
 	
 	protected abstract void attachEffects(Player p);
 	protected abstract void dettachEffects(Player p);
+	public abstract String encode();
+	
 }

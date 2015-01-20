@@ -8,6 +8,7 @@ import Control.MainControl;
 import Control.Settings;
 import Control.Server.Assets.Player;
 import Debug.ErrorPopup;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 
@@ -109,6 +110,15 @@ public class Host{
 							if(!p.combatEquals(c.players.get(i)) ){
 								command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + "," + p.getStock() + ";";
 							}
+							
+							//Powerup
+							if(!p.powerupEquals(c.players.get(i))){
+								String pow = "null";
+								if(p.powerup != null){
+									pow = "" + p.powerup.getID();
+								}
+								command += "pl" + i + "p" + pow + ";";
+							}
 						}catch(IndexOutOfBoundsException e){
 							
 						}
@@ -167,6 +177,14 @@ public class Host{
 						}
 					}
 					c.shields = Shield.getShieldInfo();
+					
+					//Powerup
+					for(Powerup p: Powerup.getPowerUps()){
+						if(!c.powerups.contains(p)){
+							command += "wdp" +p.encode() + ";";
+						}
+					}
+					c.powerups = Powerup.getPowerUps();
 					
 					String message = c.getRecievedMessage();
 					if(message != ""){

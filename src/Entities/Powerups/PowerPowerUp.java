@@ -10,6 +10,7 @@ import Entities.Powerup;
 public class PowerPowerUp extends Powerup{
 
 	private static Animation animation = new Animation("Powerup/Power", 110);
+	public static final int ID = 1;
 	private static final int LIFE = STANDARD_LIFE;
 	
 	public PowerPowerUp() {
@@ -17,6 +18,10 @@ public class PowerPowerUp extends Powerup{
 		Vector2f location = getSpawn();
 		this.location.x = location.x;
 		this.location.y = location.y;
+	}
+	
+	public PowerPowerUp(Vector2f location){
+		super(location, LIFE);
 	}
 
 	public Model getModel() {
@@ -49,5 +54,12 @@ public class PowerPowerUp extends Powerup{
 		p.getMovement().setAccelerationFactor(1f);
 		p.getAttack().setDamageFactor(1);
 	}
+	
+	public int getID(){
+		return ID;
+	}
 
+	public String encode(){
+		return ID + "," + location.x + "," + location.y;
+	}
 }
