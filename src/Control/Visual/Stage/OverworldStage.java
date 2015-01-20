@@ -308,7 +308,7 @@ public class OverworldStage extends Stage{
 			}
 			
 			int seconds = 0;
-			while(dif > 60){
+			while(dif >= 60){
 				seconds++;
 				dif-=60;
 			}
