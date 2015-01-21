@@ -80,6 +80,16 @@ class Content extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private static BufferedImage header = Launch.header;
 	
+	private int gcd(int p, int q) {
+	    if (q == 0) return p;
+	    else return gcd(q, p % q);
+	}
+
+	private String ratio(int a, int b) {
+	   final int gcd = gcd(a,b);
+	   return(a/gcd + ":" + b/gcd);
+	}
+	
 	public Content(final JFrame parent) throws LWJGLException{
 		this.setLayout(null);
 		
@@ -90,10 +100,12 @@ class Content extends JPanel{
 		
 		int i = 0;
 		for(DisplayMode dm: displays){
-			if(dm.isFullscreenCapable() && (dm.getWidth()+dm.getHeight())%(16+9) == 0 ){
-				
-				if(!content.contains(dm.getWidth() + ":" + dm.getHeight())){
-					content.add(dm.getWidth() + ":" + dm.getHeight());
+			if(dm.isFullscreenCapable()){
+
+				String ratio = " (" + ratio(dm.getWidth(), dm.getHeight()) + ")";
+				if(!content.contains(dm.getWidth() + ":" + dm.getHeight() + ratio)){
+					
+					content.add(dm.getWidth() + ":" + dm.getHeight() + ratio);
 					displayPointer.add(i);
 				}
 			}
@@ -104,7 +116,7 @@ class Content extends JPanel{
 		final
 		JComboBox dropDown = new JComboBox(content.toArray());
 		dropDown.setLocation(30, 160);
-		dropDown.setSize(100, 20);
+		dropDown.setSize(140, 20);
 		dropDown.setBackground(new Color(0.9f,0.9f,0.9f));
 		dropDown.setForeground(new Color(0f,0f,0f));
 		this.add(dropDown);
@@ -166,7 +178,7 @@ class Content extends JPanel{
 		final JTextField name = new JTextField(System.getProperty("user.name"));
 		name.setBackground(new Color(0.9f,0.9f,0.9f));
 		name.setForeground(new Color(0f,0f,0f));
-		name.setLocation(150, 160);
+		name.setLocation(190, 160);
 		name.setSize(100, 20);
 		this.add(name);
 		
@@ -281,7 +293,7 @@ class Content extends JPanel{
 		drawText(g, 15, 25, 15, "Version " +Settings.Version);
 		drawText(g, 20, 130, 15, "Launch Options:");
 		drawText(g, 20, 150, 13, "Resolution");
-		drawText(g, 150, 150, 13, "Online Username");
+		drawText(g, 190, 150, 13, "Online Username");
 		drawText(g, 20, 200, 13, "Fullscreen");
 		drawText(g, 20, 250, 13, "Sound");
 	}

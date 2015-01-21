@@ -159,13 +159,11 @@ public class Client implements Runnable{
 					int ID = (int)Float.parseFloat(s.substring(3));
 					switch(s.substring(2,3)){
 					case "k":
-						System.out.println("CsKills");
 						Health.killCap = ID;
 						Health.stockCap = -1;
 						Health.timeCap = -1;
 						break;
 					case "s":
-						System.out.println("CsStock");
 						Health.killCap = -1;
 						Health.stockCap = ID;
 						Health.timeCap = -1;
@@ -174,17 +172,24 @@ public class Client implements Runnable{
 						}
 						break;
 					case "t":
-						System.out.println("CsTime");
 						Health.killCap = -1;
 						Health.stockCap = -1;
 						Health.timeCap = ID;
 						break;
 					}
 				}
-				
+
 				if(s.startsWith("Ssg")){
 					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
 					gm.addToQueueInfo(s.substring(3));
+				}
+				if(s.startsWith("Ssi")){
+					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+					gm.setModeInfo(s.substring(3));
+				}
+				if(s.startsWith("Ssv")){
+					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+					gm.val = (int)Float.parseFloat(s.substring(3));
 				}
 				
 				if(s.startsWith("ps")){

@@ -28,7 +28,9 @@ public class GamemodeStage extends Stage{
 	private World random = new BlankWorld();
 	private ArrayList<World> maps = new ArrayList<World>();
 		
-	private static final String[] modes = {"Deathmatch:Kills","Deathmatch:Stock","Deathmatch:Time"};
+	private static final String[] modes = {"Deathmatch:Kills","Deathmatch:Stock","Deathmatch:Time "};
+	private String mode = modes[0];
+	public int val = 3;
 	
 	private DropMenu mapList, modeList;
 	private Button add, clear, start, plus, modeValue, minus;
@@ -92,9 +94,10 @@ public class GamemodeStage extends Stage{
 		start.setTextSize(0.3f);
 		this.add(start);
 		
-		queueInfo = new TextBox(new Vector3f(-1.6f, -1f,-2.5f), new Vector3f(1.55f, 1.3f, 0.5f), null, "\nMap Queue:");
+		queueInfo = new TextBox(new Vector3f(-1.6f, -1f,-2.5f), new Vector3f(1.55f, 1.3f, 0.5f), "", "\nMap Queue:");
 		queueInfo.setContentTextSize(0.03f);
 		queueInfo.setHeaderHeight(-0.1f);
+		queueInfo.setHeaderColour(new float[]{1,1,1,0});
 		queueInfo.setContentColour(new float[]{1,1,1,0});
 		this.add(queueInfo);
 		
@@ -173,6 +176,10 @@ public class GamemodeStage extends Stage{
 			Settings.host.forcePlayerUpdate();
 		}
 		
+	}
+	
+	public void setModeInfo(String mode){
+		this.mode = mode;
 	}
 	
 	private void addToMap(){
@@ -269,7 +276,6 @@ public class GamemodeStage extends Stage{
 				Input.recieved();
 			}
 			
-			
 			if(Input.isKeyPressed(Input.KEY_FORWARD) && !Settings.isClientActive()){
 				switch(yi){
 					case 0:
@@ -299,6 +305,9 @@ public class GamemodeStage extends Stage{
 								val = 1;
 							}
 							modeValue.setMessage(" " + val);
+							if(Settings.isHostActive()){
+								Settings.host.addCommand("Ssv" + val + ";");
+							}
 							break;
 						case 2:
 							int val1 = Integer.parseInt(modeValue.getMessage().trim());
@@ -307,6 +316,7 @@ public class GamemodeStage extends Stage{
 								val1 = 10;
 							}
 							modeValue.setMessage(" " + val1);
+							Settings.host.addCommand("Ssv" + val1 + ";");
 							break;
 						}
 						break;
@@ -332,6 +342,9 @@ public class GamemodeStage extends Stage{
 	protected void updateUI(){
 		
 		if(!Settings.isClientActive()){
+			queueInfo.setHeader("");
+			queueInfo.setHeaderHeight(-0.1f);
+			
 			mapList.setDrawn(true);
 			add.setDrawn(true);
 			clear.setDrawn(true);
@@ -350,6 +363,9 @@ public class GamemodeStage extends Stage{
 				modeList.setDrawn(true);
 			}
 			if(modeList.hasFocus()){
+				if(Settings.isHostActive()){
+					Settings.host.addCommand("Ssi" + modeList.getCurrentItem() + ";");
+				}
 				queueInfo.setDrawn(false);
 			}
 
@@ -402,7 +418,9 @@ public class GamemodeStage extends Stage{
 			modeValue.setDrawn(false);
 			plus.setDrawn(false);
 			minus.setDrawn(false);
-			
+
+			queueInfo.setHeader("\nMode:\n " + mode + "  <" + val + ">");
+			queueInfo.setHeaderHeight(0.2f);
 			queueInfo.setLocation(new Vector3f(-1.6f, -0.3f,-2.5f)); 
 			queueInfo.setContentTextSize(0.07f);
 			queueInfo.setDrawn(true);
