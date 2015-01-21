@@ -8,7 +8,7 @@ import Tools.Maths.Vector3f;
 
 public class MovementMK2 extends Movement{
 	
-	protected static final int COLLISION_DEPTH = 50;
+	protected static final int COLLISION_DEPTH = 5;
 	protected static final int DP = 100000;
 	private boolean canJump = false;
 	

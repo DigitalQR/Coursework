@@ -12,6 +12,8 @@ public class Player {
 	private Vector2f location;
 	private Vector3f colour = new Vector3f(-1,-1,-1);
 	private int killCount = 0;
+	private int totalKillCount = 0;
+	private int totalDeathCount = 0;
 	private int stock = 0;
 	private float factor = 0;
 	public boolean resetFlag = false;
@@ -23,6 +25,14 @@ public class Player {
 	
 	public Vector3f getColour(){
 		return colour;
+	}
+
+	public int getTotalKillCount() {
+		return totalKillCount;
+	}
+
+	public int getTotalDeathCount() {
+		return totalDeathCount;
 	}
 
 	public boolean locationEquals(Player p){
@@ -44,7 +54,7 @@ public class Player {
 	}
 	
 	public boolean combatEquals(Player p){
-		return (killCount == p.killCount && factor == p.factor && stock == p.stock) && !resetFlag;
+		return (killCount == p.killCount && factor == p.factor && stock == p.stock && totalKillCount == p.totalKillCount && totalDeathCount == p.totalDeathCount) && !resetFlag;
 	}
 	
 	public Vector2f getLocation() {
@@ -82,6 +92,8 @@ public class Player {
 			player.factor = p.getFactor();
 			player.stock = p.getStock();
 			player.powerup = p.getPowerup();
+			player.totalKillCount = p.getTotalKills();
+			player.totalDeathCount = p.getTotalDeaths();
 			players.add(player);
 		}
 		return players;

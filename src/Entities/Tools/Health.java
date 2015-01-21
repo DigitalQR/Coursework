@@ -3,7 +3,9 @@ package Entities.Tools;
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
 import Control.Settings;
+import Control.Visual.Stage.GamemodeStage;
 import Entities.Entity;
+import Entities.Player;
 import Entities.Assets.Damage;
 
 public class Health extends Component{
@@ -18,8 +20,13 @@ public class Health extends Component{
 	private float factorFactor = 1;
 	private float lastHitTime = 0;
 	public Entity lastHit = null;
+	public Player parent = null;
 	private  float immuneTime = 100;
 
+	public Health(Player p){
+		parent = p;
+	}
+	
 	public void reset(){
 		if(stockCap != -1){
 			stock = stockCap;
@@ -90,9 +97,15 @@ public class Health extends Component{
 			stock--;
 		}
 		
-		if(lastHit != null && increaseKills){
-			lastHit.killCount++;
-			lastHit = null;
+		if(increaseKills && GamemodeStage.isGameOver() == -1){
+			parent.incrementTotalDeaths();
+			
+			if(lastHit != null){
+				lastHit.killCount++;
+				Player p1 = (Player) lastHit;
+				p1.incrementTotalKills();
+				lastHit = null;
+			}
 		}
 		
 	}

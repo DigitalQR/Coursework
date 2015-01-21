@@ -14,6 +14,7 @@ import Control.Visual.Stage.GamemodeStage;
 import Control.Visual.Stage.GamepadSetupStage;
 import Control.Visual.Stage.MenuStage;
 import Control.Visual.Stage.OverworldStage;
+import Control.Visual.Stage.ResultStage;
 import Control.Visual.Stage.ServerStage;
 import Control.Visual.Stage.SettingsStage;
 import Control.Visual.Stage.StartStage;
@@ -39,6 +40,7 @@ public abstract class Stage extends FocusableItem{
 		ConnectStage connect = new ConnectStage();
 		ServerStage server = new ServerStage();
 		GamemodeStage gamemode = new GamemodeStage();
+		ResultStage result = new ResultStage();
 
 		stageID.put("menu", menu.ID);
 		stageID.put("overworld", over.ID);
@@ -48,6 +50,7 @@ public abstract class Stage extends FocusableItem{
 		stageID.put("connect", connect.ID);
 		stageID.put("server", server.ID);
 		stageID.put("gamemode", gamemode.ID);
+		stageID.put("result", result.ID);
 		
 		for(int i = 0; i<stageID.size(); i++){
 			System.out.println(stageID.keySet().toArray()[i] + " " + stageID.get(stageID.keySet().toArray()[i]));

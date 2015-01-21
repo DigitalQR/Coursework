@@ -28,6 +28,9 @@ public class Player extends Entity{
 	private Attack attack;
 	public Health health;
 	private Powerup powerup;
+
+	private int totalKills = 0;
+	private int totalDeaths = 0;
 	
 	private float[] RGBA = new float[4];
 
@@ -45,7 +48,7 @@ public class Player extends Entity{
 		
 		this.addComponent(movement);
 		this.addComponent(attack);
-		health = new Health();
+		health = new Health(this);
 		this.addComponent(health);
 	}	
 	
@@ -112,6 +115,7 @@ public class Player extends Entity{
 		}
 		
 		setPowerUp(null);
+		
 		if(Settings.isHostActive()){
 			Settings.host.forcePlayerUpdate();
 		}
@@ -267,6 +271,36 @@ public class Player extends Entity{
 		}
 	}
 	
+	public void completeReset(){
+		totalKills = 0;
+		totalDeaths = 0;
+		reset();
+	}
+	
+	public int getTotalKills() {
+		return totalKills;
+	}
+
+	public int getTotalDeaths() {
+		return totalDeaths;
+	}
+
+	public void setTotalKills(int totalKills) {
+		this.totalKills = totalKills;
+	}
+	
+	public void incrementTotalKills() {
+		this.totalKills++;
+	}
+	
+	public void incrementTotalDeaths() {
+		this.totalDeaths++;
+	}
+
+	public void setTotalDeaths(int totalDeaths) {
+		this.totalDeaths = totalDeaths;
+	}
+
 	public void setRGBA(float[] rGBA) {
 		RGBA = rGBA;
 	}

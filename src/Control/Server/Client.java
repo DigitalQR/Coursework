@@ -245,10 +245,14 @@ public class Client implements Runnable{
 							int killCount = (int)Float.parseFloat(par[0]);
 							float factor = Float.parseFloat(par[1]);
 							int stock = (int)Float.parseFloat(par[2]);
+							int tkill = (int)Float.parseFloat(par[3]);
+							int tdeath = (int)Float.parseFloat(par[4]);
 
 							Settings.User.get(playerID).killCount = killCount;
 							Settings.User.get(playerID).health.factor = factor;
 							Settings.User.get(playerID).health.stock = stock;
+							Settings.User.get(playerID).setTotalKills(tkill);
+							Settings.User.get(playerID).setTotalDeaths(tdeath);
 						}
 						
 						break;

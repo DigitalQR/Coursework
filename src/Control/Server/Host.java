@@ -108,7 +108,7 @@ public class Host{
 							
 							//Health
 							if(!p.combatEquals(c.players.get(i)) ){
-								command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + "," + p.getStock() + ";";
+								command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + "," + p.getStock() + "," + p.getTotalKillCount() + "," + p.getTotalDeathCount() + ";";
 							}
 							
 							//Powerup

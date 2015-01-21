@@ -119,10 +119,11 @@ public class GamemodeStage extends Stage{
 	
 	public void cycleWorldQueue(){
 		if(queue.size() == 0){
-			Stage.setStage(this);
+			Stage.setStage(Stage.getStage("result"));
 			if(Settings.isHostActive()){
-				Settings.host.addCommand("Sst" + Stage.getStageID("gamemode") + ";");
+				Settings.host.addCommand("Sst" + Stage.getStageID("result") + ";");
 			}
+			Input.recieved();
 			
 		}else{
 			World w = queue.get(0);
@@ -168,7 +169,7 @@ public class GamemodeStage extends Stage{
 			Health.startTime = Camera.getLERPTime();
 			
 			break;
-		case "Deathmatch:Time":
+		case "Deathmatch:Time ":
 			Health.stockCap = -1;
 			Health.killCap = -1;
 			Health.timeCap = val;
@@ -216,13 +217,28 @@ public class GamemodeStage extends Stage{
 		if(Health.timeCap != -1){
 			int dif = Health.timeCap*60+7 - (int) Math.round((Camera.getLERPTime()-Health.startTime)/1000000000);
 			if(dif <= 0){
+				int pid = -1;
+				int val = 0;
 				for(Player p: Settings.User){
-					if(p.killCount > 0){
-						return i;
+					if(p.killCount >= val){
+						pid = i;
+						val = p.killCount;
 					}
 					i++;
 				}
+				
+				i = 0;
+				for(Player p: Settings.User){
+					if(p.killCount == val && i!= pid){
+						pid = -1;
+						val = 0;
+						break;
+					}
+					i++;
+				}
+				return pid;
 			}
+			
 		}
 		
 		if(stockID >= 0){
