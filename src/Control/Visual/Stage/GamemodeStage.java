@@ -17,6 +17,7 @@ import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Input;
 import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
+import Entities.Powerup;
 import Entities.Tools.Health;
 
 public class GamemodeStage extends Stage{
@@ -33,7 +34,7 @@ public class GamemodeStage extends Stage{
 	public int val = 3;
 	
 	private DropMenu mapList, modeList;
-	private Button add, clear, start, plus, modeValue, minus;
+	private Button add, clear, start, plus, modeValue, minus, power;
 	private TextBox queueInfo;
 	
 	public GamemodeStage(){
@@ -85,6 +86,10 @@ public class GamemodeStage extends Stage{
 		add = new Button(new Vector3f(0f, 0.7f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "add");
 		add.setTextSize(0.3f);
 		this.add(add);
+		
+		power = new Button(new Vector3f(0.85f, 0.4f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "powerups");
+		power.setTextSize(0.25f);
+		this.add(power);
 		
 		clear = new Button(new Vector3f(0.6f, 0.7f,-2.5f), new Vector3f(0.5f, 0.25f, 0.5f), "clear");
 		clear.setTextSize(0.3f);
@@ -260,7 +265,7 @@ public class GamemodeStage extends Stage{
 				bound = 2;
 				break;
 			case 1:
-				bound = 2;
+				bound = 3;
 				break;
 			}
 			
@@ -316,7 +321,12 @@ public class GamemodeStage extends Stage{
 								val1 = 10;
 							}
 							modeValue.setMessage(" " + val1);
-							Settings.host.addCommand("Ssv" + val1 + ";");
+							if(Settings.isHostActive()){
+								Settings.host.addCommand("Ssv" + val1 + ";");
+							}
+							break;
+						case 3:
+							Powerup.setSpawnPowerUps(!Powerup.isSpawnPowerUpsOn());
 							break;
 						}
 						break;
@@ -347,6 +357,7 @@ public class GamemodeStage extends Stage{
 			
 			mapList.setDrawn(true);
 			add.setDrawn(true);
+			power.setDrawn(true);
 			clear.setDrawn(true);
 			start.setDrawn(true);
 			modeValue.setDrawn(true);
@@ -376,6 +387,11 @@ public class GamemodeStage extends Stage{
 			clear.setColour(new float[]{1,1,1,0.5f});
 			plus.setColour(new float[]{1,1,1,0.5f});
 			minus.setColour(new float[]{1,1,1,0.5f});
+			if(Powerup.isSpawnPowerUpsOn()){
+				power.setColour(new float[]{0,1,0,0.5f});
+			}else{
+				power.setColour(new float[]{1,0,0,0.5f});
+			}
 			
 			switch(yi){
 				case 0:
@@ -402,6 +418,13 @@ public class GamemodeStage extends Stage{
 					case 2:
 						plus.setColour(new float[]{1,1,1,1});
 						break;
+					case 3:
+						if(Powerup.isSpawnPowerUpsOn()){
+							power.setColour(new float[]{0,1,0,1});
+						}else{
+							power.setColour(new float[]{1,0,0,1});
+						}
+						break;
 				}
 				break;
 					
@@ -414,6 +437,7 @@ public class GamemodeStage extends Stage{
 			modeList.setDrawn(false);
 			add.setDrawn(false);
 			start.setDrawn(false);
+			power.setDrawn(false);
 			clear.setDrawn(false);
 			modeValue.setDrawn(false);
 			plus.setDrawn(false);

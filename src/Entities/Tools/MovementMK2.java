@@ -11,7 +11,6 @@ public class MovementMK2 extends Movement{
 	protected static final int COLLISION_DEPTH = 50;
 	protected static final int DP = 100000;
 	private boolean canJump = false;
-	private float jumpState = 0;
 	
 	public MovementMK2(ControlScheme controlScheme) {
 		super(controlScheme);
@@ -143,45 +142,19 @@ public class MovementMK2 extends Movement{
 		e.getVelocity().x/=DP;
 		
 		//Y
-		boolean jump = false;
-		if(control.isKeyPressed(control.KEY_JUMP)){
-			if(jumpState == 0){
-				jumpState = System.nanoTime()/1000000;
+		if(!e.stunned() && control.isKeyPressed(control.KEY_JUMP) && e.getVelocity().y < accelerationLimit.y*accelerationFactor && (touchingGround || touchingWall != 0 || jumpCount < jumpCap) && canJump){
+				e.getVelocity().y = 0.35f;
 				jumpCount ++;
+				canJump = false;
 				
 				if(!touchingGround && touchingWall != 0){
-					e.getVelocity().x+=0.6f*-touchingWall;
-					jumpCount = 1;
+	 				e.getVelocity().x+=0.6f*-touchingWall;
 				}
-				touchingGround = false;
-			}
-			
-			if((float)(System.nanoTime()/1000000) - jumpState <= 90){
-				jump = true;
-			}else{
-				jump = false;
-				canJump = false;
-			}
-		}
-		if(!control.isKeyPressed(control.KEY_JUMP) && jumpState != 0){
-			canJump = false;
-		}
-		
-		if(!e.stunned() && jump && e.getVelocity().y < accelerationLimit.y*accelerationFactor && canJump){
-			if(e.getVelocity().y < 0){
-				e.getVelocity().y = 0;
-			}
-			e.getVelocity().y += 0.12f;
 		}
 		
 		if(control.isKeyPressed(control.KEY_DUCK)) e.getVelocity().y = -0.5f;
 		
-		if(!control.isKeyPressed(control.KEY_JUMP) && (touchingGround || touchingWall != 0 || jumpCount < jumpCap) && e.getVelocity().y <= 0){
-			canJump = true;
-			jumpState = 0;
-		}else if(jumpState == 0){
-			canJump = false;
-		}
+		if(!control.isKeyPressed(control.KEY_JUMP)) canJump = true;
 		
 		e.getVelocity().y = Math.round(e.getVelocity().y*DP);
 		e.getVelocity().y/=DP;

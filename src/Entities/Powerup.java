@@ -19,6 +19,7 @@ public abstract class Powerup extends Entity{
 	protected static ArrayList<Powerup> powerups = new ArrayList<Powerup>();
 	private static long cooldown = -1;
 	protected static final int STANDARD_LIFE = 5000;
+	private static boolean spawnPowerUps = true;
 	
 	public static ArrayList<Powerup> getPowerUps(){
 		@SuppressWarnings("unchecked")
@@ -26,13 +27,21 @@ public abstract class Powerup extends Entity{
 		return temp;
 	}
 	
+	public static void setSpawnPowerUps(boolean spawnPowerUps) {
+		Powerup.spawnPowerUps = spawnPowerUps;
+	}
+
+	public static boolean isSpawnPowerUpsOn() {
+		return spawnPowerUps;
+	}
+
 	public static void updatePowerups(){
 		for(Powerup p: getPowerUps()){
 			p.update();
 		}
 		
 		//Spawn
-		if(!Settings.isClientActive()){
+		if(!Settings.isClientActive() && spawnPowerUps){
 			while(powerups.size() < 20 && cooldown < 0){
 				if(Math.random() <= 0.5){
 					powerups.add(new SpeedPowerUp());
