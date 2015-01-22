@@ -26,6 +26,14 @@ public class Attack extends Component{
 		damageFactor = f;
 	}
 	
+	public void setAttackCoolDown(int attackCoolDown) {
+		this.attackCoolDown = attackCoolDown;
+	}
+
+	public void setBlockCoolDown(int blockCoolDown) {
+		this.blockCoolDown = blockCoolDown;
+	}
+
 	public void update(Entity e){
 		float currentTime = System.nanoTime();
 		boolean canAttack = currentTime - lastAttack >= attackCoolDown*1000000;
@@ -35,7 +43,7 @@ public class Attack extends Component{
 		if(canAttack && !e.stunned()){
 			if(control.isKeyPressed(control.KEY_PRIMARY)){
 				Vector2f velocity = new Vector2f(0,0);
-				Vector2f size = new Vector2f(0.3f, 0.6f);
+				Vector2f size = new Vector2f(0.6f, 1.2f);
 	
 				if(control.isKeyPressed(control.KEY_UP)){
 					velocity.y+=0.4f;
@@ -59,7 +67,7 @@ public class Attack extends Component{
 			
 			}else if( control.isKeyPressed(control.KEY_SECONDARY)){
 				Vector2f velocity = new Vector2f(0,0);
-				Vector2f size = new Vector2f(0.3f, 0.6f);
+				Vector2f size = new Vector2f(0.6f, 1.2f);
 				
 				if(control.isKeyPressed(control.KEY_UP)){
 					velocity.y+=0.5f;

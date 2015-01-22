@@ -1,8 +1,11 @@
 package Control.Visual.Stage;
 
+import java.util.HashMap;
+
 import Tools.Maths.Vector3f;
 import Control.Settings;
 import Control.Visual.Menu.Assets.Button;
+import Control.Visual.Menu.Assets.TextBox;
 import Control.Visual.Menu.Assets.Core.Action;
 import Control.Visual.Menu.Assets.Core.Input;
 import Control.Visual.Stage.Core.Stage;
@@ -11,12 +14,21 @@ public class SettingsStage extends Stage implements Action{
 	
 	private Button[] toggles;
 	private int currentButton = 0;
+	private String[] names = {
+			"Low Settings"
+	};
+	private HashMap<String, String> command = new HashMap<String, String>();
 	
 	public SettingsStage(){
-		toggles = new Button[Settings.toggleNames.size()];
+		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), "Settings", null);
+		header.setHeaderTextSize(0.10f);
+		this.add(header);
+		toggles = new Button[names.length];
+		
+		command.put("Low Settings", "s_low_settings");
 		
 		int i = 0;
-		for(String s: Settings.toggleNames){
+		for(String s: names){
 			toggles[i] = new Button(new Vector3f(-1.6f, 1.3f-0.4f*i, -2.5f), new Vector3f(1.2f, 0.3f, 0.5f), s);
 			toggles[i].setTextSize(0.2f);
 			toggles[i].setAction(this);
@@ -64,7 +76,7 @@ public class SettingsStage extends Stage implements Action{
 			}
 			
 			float[] RGBA = {1,0,0,alpha};
-			if(Settings.toggles.get(toggles[i].getMessage())){
+			if(Settings.toggles.get(command.get(toggles[i].getMessage()))){
 				RGBA[0] = 0;
 				RGBA[1] = 1;
 			}
@@ -75,7 +87,7 @@ public class SettingsStage extends Stage implements Action{
 	public void run(int ID) {
 		for(Button b: toggles){
 			if(ID == b.getID() && b.hasFocus()){
-				Settings.issueCommand("toggle " + b.getMessage());
+				Settings.issueCommand("toggle " + command.get(b.getMessage()));
 				b.unfocus();
 			}
 		}		

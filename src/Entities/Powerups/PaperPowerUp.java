@@ -7,20 +7,20 @@ import Tools.Maths.Vector3f;
 import Entities.Player;
 import Entities.Powerup;
 
-public class SpeedPowerUp extends Powerup{
+public class PaperPowerUp extends Powerup{
 
-	private static Animation animation = new Animation("Powerup/Speed", 100);
-	public static final int ID = 0;
+	private static Animation animation = new Animation("Powerup/Paper", 90);
+	public static final int ID = 2;
 	private static final int LIFE = STANDARD_LIFE;
 	
-	public SpeedPowerUp(){
+	public PaperPowerUp(){
 		super(new Vector2f(-10000, -10000), LIFE);
 		Vector2f location = getSpawn();
 		this.location.x = location.x;
 		this.location.y = location.y;
 	}
 	
-	public SpeedPowerUp(Vector2f location){
+	public PaperPowerUp(Vector2f location){
 		super(location, LIFE);
 	}
 
@@ -44,15 +44,15 @@ public class SpeedPowerUp extends Powerup{
 	}
 
 	protected void attachEffects(Player p){
-		p.health.setDamageFactor(2);
-		p.getMovement().setAccelerationFactor(1.5f);
-		p.getMovement().setJumpCap(3);
+		p.health.setDamageFactor(4);
+		p.getAttack().setAttackCoolDown(400);
+		p.getAttack().setBlockCoolDown(1000);
 	}
 
 	protected void dettachEffects(Player p){
 		p.health.setDamageFactor(1);
-		p.getMovement().setAccelerationFactor(1f);
-		p.getMovement().setJumpCap(1);
+		p.getAttack().setAttackCoolDown(800);
+		p.getAttack().setBlockCoolDown(2000);
 	}
 	
 	public int getID(){
@@ -62,5 +62,4 @@ public class SpeedPowerUp extends Powerup{
 	public String encode(){
 		return ID + "," + location.x + "," + location.y;
 	}
-
 }

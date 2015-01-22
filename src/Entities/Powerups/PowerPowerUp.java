@@ -46,13 +46,11 @@ public class PowerPowerUp extends Powerup{
 	protected void attachEffects(Player p){
 		p.health.setDamageFactor(0.5f);
 		p.getMovement().setAccelerationFactor(0.85f);
-		p.getAttack().setDamageFactor(2);
 	}
 
 	protected void dettachEffects(Player p){
 		p.health.setDamageFactor(1);
 		p.getMovement().setAccelerationFactor(1f);
-		p.getAttack().setDamageFactor(1);
 	}
 	
 	public int getID(){

@@ -73,7 +73,12 @@ public class ResultStage extends Stage{
 	protected void updateUI(){
 		int i = 0;
 		for(Player p: Settings.User){
-			drawPlayerAt(new Vector3f(-1.2f,-0.7f-0.5f*i+offset+0.25f,-2.5f+0.3f), p.getRGBA(), true, 1f);
+			drawPlayerAt(new Vector3f(-1.2f,-0.7f-0.5f*i+offset+0.3f,-2.5f+0.3f), p.getRGBA(), true, 0.9f);
+
+			TextBox number = new TextBox(new Vector3f(-1.6f,-2f-0.5f*i+offset,-2.5f),new Vector3f(0.1f,2f,0.5f), "" + (i+1) + ":", null);
+			number.setHeaderTextSize(0.05f);
+			number.setHeaderColour(new float[]{1,1,1,0});
+			number.draw();
 			
 			TextBox kills = new TextBox(new Vector3f(-0.6f,-2f-0.5f*i+offset,-2.5f),new Vector3f(1.9f,2f,0.5f), "" + p.getTotalKills(), null);
 			kills.setHeaderTextSize(0.05f);

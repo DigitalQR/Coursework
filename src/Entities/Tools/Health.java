@@ -97,7 +97,15 @@ public class Health extends Component{
 			stock--;
 		}
 		
-		if(increaseKills && GamemodeStage.isGameOver() == -1){
+		int playerID = -1;
+		for(int i = 0; i<Settings.User.size(); i++){
+			if(parent.equals(Settings.User.get(i))){
+				playerID = i;
+				break;
+			}
+		}
+		
+		if(increaseKills && GamemodeStage.isGameOver() != playerID){
 			parent.incrementTotalDeaths();
 			
 			if(lastHit != null){

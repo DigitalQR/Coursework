@@ -7,6 +7,7 @@ import java.util.List;
 import Collision.Hitbox;
 import Collision.SquareHitbox;
 import Control.Settings;
+import Entities.Powerups.PaperPowerUp;
 import Entities.Powerups.PowerPowerUp;
 import Entities.Powerups.SpeedPowerUp;
 import RenderEngine.Model.Model;
@@ -43,11 +44,16 @@ public abstract class Powerup extends Entity{
 		//Spawn
 		if(!Settings.isClientActive() && spawnPowerUps){
 			while(powerups.size() < 20 && cooldown < 0){
-				if(Math.random() <= 0.5){
+				float random = (float) Math.random();
+				
+				if(random <= 0.333){
 					powerups.add(new SpeedPowerUp());
-				}else{
+				}else if(random <= 0.666){
 					powerups.add(new PowerPowerUp());
+				}else{
+					powerups.add(new PaperPowerUp());
 				}
+				
 				cooldown = Toolkit.RandomInt(0, 5)*30L;
 			}
 			cooldown--;

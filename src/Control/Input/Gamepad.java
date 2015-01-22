@@ -107,7 +107,7 @@ public class Gamepad{
 	BUTTON_MENU_BACK = BUTTON_LENGTH++;
 		
 	private static String[] KeyName = 
-		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary\nattack", "Secondary\nattack", "Pause", "Menu\nForward", "Menu\nBack"};
+		{"Jump", "Ground\npound", "Sheild", "Grab\nPowerup", "Up", "Down", "Left", "Right", "Melee\nattack", "Ranged\nattack", "Pause", "Menu\nForward", "Menu\nBack"};
 	
 	private Button[] Key = new Button[KeyName.length];
 	private float[] Raw;
