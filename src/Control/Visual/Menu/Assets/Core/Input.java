@@ -32,8 +32,17 @@ public class Input {
 	KEY_PAUSE = 6;
 	
 	public static boolean isKeyPressed(int key){
-		Player p = Settings.User.get(0);
-		if(p.getControlScheme().getGPID() != -1){
+		int GPID = -1;
+		
+		Player p = null;
+		try{
+			p = Settings.p1;
+			GPID = p.getControlScheme().getGPID();
+		}catch(IndexOutOfBoundsException e){
+			
+		}
+		
+		if(GPID != -1){
 			if(hasTimePassed()){
 				switch(key){
 				case KEY_UP:
@@ -70,9 +79,9 @@ public class Input {
 					case KEY_RIGHT:
 						return Keyboard.isKeyDown(Keyboard.KEY_D);
 					case KEY_FORWARD:
-						return Keyboard.isKeyDown(Keyboard.KEY_F);
+						return Keyboard.isKeyDown(Keyboard.KEY_RETURN);
 					case KEY_BACK:
-						return Keyboard.isKeyDown(Keyboard.KEY_H);
+						return Keyboard.isKeyDown(Keyboard.KEY_BACK);
 					case KEY_PAUSE:
 						return Keyboard.isKeyDown(Keyboard.KEY_ESCAPE);
 					default:
@@ -84,6 +93,24 @@ public class Input {
 			}else{
 				return false;
 			}
+		}
+	}
+	
+	public static boolean usingDefaultInput(){
+		int GPID = -1;
+		
+		Player p = null;
+		try{
+			p = Settings.p1;
+			GPID = p.getControlScheme().getGPID();
+		}catch(IndexOutOfBoundsException e){
+			
+		}
+		
+		if(GPID != -1){
+			return false;
+		}else{
+			return true;
 		}
 	}
 	

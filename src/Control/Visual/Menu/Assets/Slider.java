@@ -38,6 +38,11 @@ public class Slider extends Component{
 	public void setValue(float value) {
 		this.value = value;
 	}
+
+	@Override
+	public void setColour(float[] RGBA) {
+		this.RGBA = RGBA;
+	}
 	
 }
 

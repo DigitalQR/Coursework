@@ -3,7 +3,7 @@ package Entities.Tools;
 public class ServerControlScheme extends ControlScheme{
 
 	public boolean[] keys = new boolean[14];
-	public static final int KEY_COUNT = 12;
+	public static final int KEY_COUNT = 13;
 	
 	public ServerControlScheme(){
 		super();
@@ -26,8 +26,9 @@ public class ServerControlScheme extends ControlScheme{
 		
 		KEY_PRIMARY = 9; 
 		KEY_SECONDARY = 10;
+		KEY_GRAB = 11;
 		
-		KEY_START = 11;
+		KEY_START = 12;
 	}
 	
 	public boolean isKeyPressed(int key){

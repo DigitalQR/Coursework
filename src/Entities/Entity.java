@@ -44,7 +44,7 @@ public abstract class Entity{
 		this.velocity = velocity;
 	}
 
-	private Vector3f size;
+	protected Vector3f size;
 	
 	public Entity(Vector3f location, Vector3f size){
 		this.setLocation(location);

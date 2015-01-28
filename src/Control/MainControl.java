@@ -1,5 +1,8 @@
 package Control;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import Control.Audio.Sound;
@@ -20,7 +23,37 @@ public class MainControl{
 		Settings.setup();
 		Gamepad.setup();
 		Sound.setup();
-		setup();
+		
+		try{
+			Settings.p1 = new Player(0,0);
+			
+			File GPIDfile = new File("Res/p1.pref");
+			if(GPIDfile.exists()){
+				Scanner prefScan;
+				try {
+					prefScan = new Scanner(GPIDfile);
+					String data = "";
+					while(prefScan.hasNext()) data+= prefScan.next();
+					prefScan.close();
+					
+					for(Gamepad gp: Gamepad.getGamepads()){
+						if(gp.getName().equals(data) && gp.getProfileStatus()){
+							Settings.p1.setControlScheme(gp.getGPID());
+							break;
+						}					
+					}
+				}catch(FileNotFoundException e){
+					
+				}
+			}else{
+				Settings.p1.setControlScheme(Gamepad.keyboard.getGPID());
+			}
+			
+			
+		}catch(NullPointerException e){
+			
+		}
+		
 		new Thread(new DisplayControl()).start();
 		
 		long overTime = 0;
@@ -58,16 +91,6 @@ public class MainControl{
 		}
 		System.out.println("Closing down main thread.");
 		System.exit(0);
-	}
-	
-	private static void setup(){
-		Settings.randomHitboxGen();
-		
-		Settings.User.add(new Player(0,0));
-		Settings.User.add(new Player(0,0));
-		Settings.User.add(new Player(0,0));
-		Settings.User.add(new Player(0,0));
-		
 	}
 
 }

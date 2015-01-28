@@ -164,4 +164,10 @@ public class TextBox extends Component{
 		}
 	}
 
+	@Override
+	public void setColour(float[] RGBA) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

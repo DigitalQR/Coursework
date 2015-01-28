@@ -23,7 +23,6 @@ public class Shield extends Asset{
 	public static void updateShields(){
 		for(Shield s: getShieldInfo()){
 			s.update();
-			
 		}
 	}
 	
@@ -103,7 +102,7 @@ public class Shield extends Asset{
 	public Model getModel(){
 		Model m = SHIELD.getCurrentFrame();
 		Vector3f loc = parent.getLERPLocation();
-		m.setLocation(new Vector3f(loc.x+0.1f, loc.y-0.4f, loc.z));
+		m.setLocation(new Vector3f(loc.x+0.1f, loc.y-0.4f, 0.5f));
 		m.setRGBA(RGBA[0], RGBA[1], RGBA[2], RGBA[3]);
 		m.scaleBy(4);
 		return m;

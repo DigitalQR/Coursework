@@ -7,8 +7,8 @@ import Entities.Entity;
 
 public class ControlScheme extends Component{
 	
-	public int KEY_JUMP, KEY_DUCK, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,  KEY_PRIMARY, KEY_SECONDARY, KEY_SELECT, KEY_BACK, KEY_START, KEY_BLOCK;
-	public static final int KEY_COUNT = 12;
+	public int KEY_JUMP, KEY_DUCK, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT,  KEY_PRIMARY, KEY_SECONDARY, KEY_SELECT, KEY_BACK, KEY_START, KEY_BLOCK, KEY_GRAB;
+	public static final int KEY_COUNT = 13;
 	protected int GPID;
 	
 	public ControlScheme(){
@@ -35,6 +35,7 @@ public class ControlScheme extends Component{
 		
 		KEY_PRIMARY = 0; 
 		KEY_SECONDARY = 0;
+		KEY_GRAB = 0;
 		
 		KEY_START = 0;
 	}
@@ -55,6 +56,7 @@ public class ControlScheme extends Component{
 		
 		KEY_PRIMARY = Gamepad.BUTTON_PRIMARY; 
 		KEY_SECONDARY = Gamepad.BUTTON_SECONDARY;
+		KEY_GRAB = Gamepad.BUTTON_GRAB;
 		
 		KEY_START = Gamepad.BUTTON_PAUSE;
 	}

@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-import Collision.Hitbox;
 import Control.MainControl;
 import Control.Settings;
 import Control.Server.Assets.Player;
-import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 
@@ -65,6 +64,14 @@ public class Host{
 		}
 	}
 	
+	public void forcePlayerUpdate(){
+		for(Connection c: connections){
+			for(Player p: c.players){
+				p.resetFlag = true;
+			}
+		}
+	}
+	
 	public void serverUpdate(){
 		if(active){
 				
@@ -86,52 +93,50 @@ public class Host{
 					
 					//Player information
 					for(int i = 0; i<player.size(); i++){
-						Player p = player.get(i);
-						
-						//Location
-						if(!player.get(i).locationEquals(c.players.get(i))){
-							command += "pl" + i + "l" + p.getLocation().x + "," + p.getLocation().y + ";"; 
+						try{
+							Player p = player.get(i);
+							
+							//Location
+							if(!p.locationEquals(c.players.get(i)) ){
+								command += "pl" + i + "l" + p.getLocation().x + "," + p.getLocation().y + ";"; 
+							}
+							
+							//Colour
+							if(!p.locationEquals(c.players.get(i)) ){
+								command += "pl" + i + "ic" + p.getColour().x + "," + p.getColour().y + "," + p.getColour().z + ";"; 
+							}
+							
+							//Health
+							if(!p.combatEquals(c.players.get(i)) ){
+								command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + "," + p.getStock() + "," + p.getTotalKillCount() + "," + p.getTotalDeathCount() + ";";
+							}
+							
+							//Powerup
+							if(!p.powerupEquals(c.players.get(i))){
+								String pow = "null";
+								if(p.powerup != null){
+									pow = "" + p.powerup.getID();
+								}
+								command += "pl" + i + "p" + pow + ";";
+							}
+						}catch(IndexOutOfBoundsException e){
+							
 						}
-						
-						//Colour
-						if(!player.get(i).colourEquals(c.players.get(i))){
-							command += "pl" + i + "ic" + p.getColour().x + "," + p.getColour().y + "," + p.getColour().z + ";"; 
-						}
-						
-						//Health
-						if(!player.get(i).combatEquals(c.players.get(i))){
-							command += "pl" + i + "ih" + p.getKillCount() + "," + p.getFactor() + ";";
-						}
-						
 					}
-					
 					
 					c.players = player;
 					
 					//World Information
-					if(!c.hitboxes.equals(Settings.hb)){
-						command += "wdh";
-						
-						//Hitboxes
-						int track = 0;
-						for(Hitbox hb: Settings.hb){
-							command += hb.getLocation().x + "," + hb.getLocation().y + "," + hb.getSize().x + "," + hb.getSize().y ;
-							if(track != Settings.hb.size()-1){
-								command +=",";
-							}else{
-								command +=";";
-							}
-							track++;
-						}
-						c.hitboxes = Settings.hb;
-						
-						//Stage
-						if(c.getStage() != Stage.getCurrentStage().getID()){
-							if(!Stage.isCurrentStage(Stage.getStage("server"))){
-								c.setStage(Stage.getCurrentStageID());
-								command += "Sst" + c.getStage() + ";";
-							}
-						}
+					boolean worldEqual = false;
+					if(c.world != null){
+						worldEqual = c.world.equals(Settings.getWorld());
+					}
+					
+					//World
+					if(!worldEqual){
+						c.world = Settings.getWorld();
+						String message = c.world.encode();
+						command += message;
 					}
 					
 					//Damage information
@@ -172,6 +177,14 @@ public class Host{
 						}
 					}
 					c.shields = Shield.getShieldInfo();
+					
+					//Powerup
+					for(Powerup p: Powerup.getPowerUps()){
+						if(!c.powerups.contains(p)){
+							command += "wdp" +p.encode() + ";";
+						}
+					}
+					c.powerups = Powerup.getPowerUps();
 					
 					String message = c.getRecievedMessage();
 					if(message != ""){
@@ -225,6 +238,8 @@ public class Host{
 									break;
 								case 'x':
 									c.controlScheme.setKeyState(c.controlScheme.KEY_START, val);
+								case 'g':
+									c.controlScheme.setKeyState(c.controlScheme.KEY_GRAB, val);
 									break;
 								}
 

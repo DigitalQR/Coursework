@@ -1,7 +1,10 @@
 package Entities.Tools;
 
+import Collision.SquareHitbox;
 import Control.Audio.Sound;
 import Entities.Entity;
+import Entities.Player;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
 import Tools.Maths.Vector2f;
@@ -13,35 +16,48 @@ public class Attack extends Component{
 	private float lastShield = 0;
 	private int attackCoolDown = 800;
 	private int blockCoolDown = 2000;
+	private float damageFactor = 1;
 	
 	public Attack(ControlScheme control){		
 		this.control = control;
-		
 	}
 	
+	public void setDamageFactor(float f){
+		damageFactor = f;
+	}
+	
+	public void setAttackCoolDown(int attackCoolDown) {
+		this.attackCoolDown = attackCoolDown;
+	}
+
+	public void setBlockCoolDown(int blockCoolDown) {
+		this.blockCoolDown = blockCoolDown;
+	}
+
 	public void update(Entity e){
 		float currentTime = System.nanoTime();
 		boolean canAttack = currentTime - lastAttack >= attackCoolDown*1000000;
 		boolean canBlock = currentTime - lastShield >= blockCoolDown*1000000;
+		boolean canPickup = currentTime - lastAttack >= 500*1000000;
 
 		if(canAttack && !e.stunned()){
 			if(control.isKeyPressed(control.KEY_PRIMARY)){
 				Vector2f velocity = new Vector2f(0,0);
-				Vector2f size = new Vector2f(0.25f, 0.5f);
+				Vector2f size = new Vector2f(0.6f, 1.2f);
 	
 				if(control.isKeyPressed(control.KEY_UP)){
-					velocity.y+=size.y-0.2f;
+					velocity.y+=0.4f;
 				}if(control.isKeyPressed(control.KEY_DOWN)){
-					velocity.y-=size.y;
+					velocity.y-=0.4f;
 				}if(control.isKeyPressed(control.KEY_LEFT)){
-					velocity.x-=size.x;
+					velocity.x-=0.2f;
 				}if(control.isKeyPressed(control.KEY_RIGHT)){
-					velocity.x+=size.x;
+					velocity.x+=0.2f;
 				}
 
 				Sound attackSound = new Sound("Effects/Attack");
 				
-				Damage d = new Damage(new Vector2f(0,0), size, 600, 0.2f, e, true, Damage.CUBE, attackSound);
+				Damage d = new Damage(new Vector2f(0,0), size, 600, 0.2f*damageFactor, e, true, Damage.CUBE, attackSound);
 				d.setVelocity(velocity);
 				d.setDamageVelocity(new Vector2f(velocity.x*0.8f, velocity.y*0.8f));
 				Damage.add(d);
@@ -51,19 +67,19 @@ public class Attack extends Component{
 			
 			}else if( control.isKeyPressed(control.KEY_SECONDARY)){
 				Vector2f velocity = new Vector2f(0,0);
-				Vector2f size = new Vector2f(0.3f, 0.6f);
+				Vector2f size = new Vector2f(0.6f, 1.2f);
 				
 				if(control.isKeyPressed(control.KEY_UP)){
-					velocity.y+=size.y-0.3f;
+					velocity.y+=0.5f;
 					e.getVelocity().y-=0.125f;
 				}if(control.isKeyPressed(control.KEY_DOWN)){
-					velocity.y-=size.y-0.3f;
+					velocity.y-=0.5f;
 					e.getVelocity().y+=0.25f;
 				}if(control.isKeyPressed(control.KEY_LEFT)){
-					velocity.x-=size.x;
+					velocity.x-=0.25f;
 					e.getVelocity().x+=0.3f;
 				}if(control.isKeyPressed(control.KEY_RIGHT)){
-					velocity.x+=size.x;
+					velocity.x+=0.25f;
 					e.getVelocity().x-=0.3f;
 				}
 				
@@ -71,7 +87,7 @@ public class Attack extends Component{
 				
 				Sound rangeSound = new Sound("Effects/Shoot");
 				
-				Damage d = new Damage(location, size, 500, 0.05f, e, false, Damage.CUBE, rangeSound);
+				Damage d = new Damage(location, size, 500, 0.05f*damageFactor, e, false, Damage.CUBE, rangeSound);
 				d.setVelocity(velocity);
 				d.setDamageVelocity(new Vector2f(velocity.x*0.8f, velocity.y*0.8f));
 				Damage.add(d);
@@ -85,6 +101,29 @@ public class Attack extends Component{
 	
 				lastAttack = currentTime;
 				lastShield = currentTime;
+			}else if(control.isKeyPressed(control.KEY_GRAB) && canPickup){
+				
+				boolean pickedUp = false;
+				for(Powerup p: Powerup.getPowerUps()){
+					SquareHitbox hb = new SquareHitbox(new Vector2f(p.getLocation().x, p.getLocation().y), new Vector2f(p.getSize().x, p.getSize().y));
+					if(hb.AreaIntersect(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x, e.getSize().y))){
+						Player pl = (Player) e;
+						pl.setPowerUp(p);
+						pickedUp = true;
+						break;
+					}
+				}
+				
+				if(!pickedUp){
+					Player pl = (Player) e;
+					Powerup p = pl.getPowerup();
+					if(p != null){
+						System.out.println("Det");
+						p.dettach(pl);
+						pl.setPowerUp(null);
+					}
+				}
+				lastAttack = currentTime;
 			}
 		}
 	}

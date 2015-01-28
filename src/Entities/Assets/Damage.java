@@ -2,6 +2,8 @@ package Entities.Assets;
 
 import java.util.ArrayList;
 
+import Collision.Hitbox;
+import Control.Settings;
 import Control.Audio.Sound;
 import Entities.Entity;
 import RenderEngine.Model.Animation;
@@ -12,7 +14,7 @@ import Tools.Maths.Vector3f;
 public class Damage extends Asset{
 
 	private static ArrayList<Damage> damage = new ArrayList<Damage>();
-	public final static Animation CUBE = new Animation("Cube/Spin", 10);
+	public final static Animation CUBE = new Animation("Cube/Damage", 50);
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<Damage> getDamageInfo(){
@@ -42,9 +44,11 @@ public class Damage extends Asset{
 	
 	public static Damage damageTouching(Entity e){
 		for(Damage d: getDamageInfo()){
-			if(!d.parent.equals(e) && d.touching(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x, e.getSize().y))){
-				return d;
-			}
+			try{
+				if(!d.parent.equals(e) && d.touching(new Vector2f(e.getLocation().x, e.getLocation().y), new Vector2f(e.getSize().x, e.getSize().y))){
+					return d;
+				}
+			}catch(NullPointerException ex){}
 		}
 		return null;
 	}
@@ -98,6 +102,12 @@ public class Damage extends Asset{
 		this.animation = animation;
 		sound.play();
 		update();
+		
+		if(!stuckToParent){
+			location.x = parent.getLocation().x-size.x/2+parent.getSize().x/2+velocity.x;
+			location.y = parent.getLocation().y-size.y/2+parent.getSize().y/2+velocity.y;
+		}
+		
 	}
 	
 	public boolean isStuckToParent() {
@@ -118,10 +128,10 @@ public class Damage extends Asset{
 	
 	public Model getModel(){
 		Model m = animation.getCurrentFrame();
-		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y, 0));
-		float[] colour = {0,1,0};
+		m.setLocation(new Vector3f(location.x+size.x/2, location.y-size.y/4, 0.5f));
+		float[] colour = {1,1,1};
 		m.setRGBA(colour[0], colour[1], colour[2], 1);
-		m.scaleBy(12);
+		m.scaleBy(30*((size.x+size.y)/4));
 		
 		return m;
 	}
@@ -172,11 +182,17 @@ public class Damage extends Asset{
 
 	public void update(){
 		if(stuckToParent){
-			location.x = parent.getLocation().x+velocity.x;
-			location.y = parent.getLocation().y+velocity.y;
+			location.x = parent.getLocation().x-size.x/2+parent.getSize().x/2+velocity.x;
+			location.y = parent.getLocation().y-size.y/2+parent.getSize().y/2+velocity.y;
 		}else{
 			location.x+=velocity.x;
 			location.y+=velocity.y;
+		}
+		for(Hitbox hb: Settings.getWorld().getHitboxList()){
+			if(hb.AreaIntersect(new Vector2f(location.x+size.x/2, location.y+size.y/2), new Vector2f(0,0))){
+				damage.remove(this);
+				break;
+			}
 		}
 	}
 

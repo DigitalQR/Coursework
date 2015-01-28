@@ -35,12 +35,13 @@ public class ServerStage extends Stage{
 		}
 		
 		if(Settings.host.getConnections().size() > 0 && Input.isKeyPressed(Input.KEY_FORWARD)){
-			Stage.setStage(Stage.getStage("start"));
-			Settings.host.addCommand("Sst" + Stage.getStageID("start") + ";");
+			Stage.setStage(Stage.getStage("gamemode"));
+			Settings.host.addCommand("Sst" + Stage.getStageID("gamemode") + ";");
+			
 			Input.recieved();
 		}
 		
-		if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_START)){
+		if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.p1.isKeyPressed(Settings.p1.getControlScheme().KEY_START)){
 			Stage.setStage(Stage.getStage("menu"));
 			Settings.host.destroy();
 			Input.recieved();

@@ -2,18 +2,40 @@ package Entities.Tools;
 
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
+import Control.Settings;
+import Control.Visual.Stage.GamemodeStage;
 import Entities.Entity;
+import Entities.Player;
 import Entities.Assets.Damage;
 
 public class Health extends Component{
 
+	public static int killCap = -1;
+	public static int stockCap = -1;
+	public static int timeCap = -1;
+	public static float startTime = 0;
+	
 	public Vector2f scale = new Vector2f(0.3f, 0.4f);
 	public float factor = 0.0f;
+	private float factorFactor = 1;
 	private float lastHitTime = 0;
 	public Entity lastHit = null;
+	public Player parent = null;
 	private  float immuneTime = 100;
+
+	public Health(Player p){
+		parent = p;
+	}
 	
 	public void reset(){
+		if(stockCap != -1){
+			stock = stockCap;
+		}else{
+			stock = -1;
+		}
+	}
+	
+	public void spawn(){
 		factor = 0.0f;
 		lastHitTime = 0;
 		immuneTime = 100;
@@ -28,7 +50,7 @@ public class Health extends Component{
 			Damage damage = Damage.damageTouching(e);
 			
 			if(damage != null){				
-				factor+=damage.getDamageValue();
+				factor+=damage.getDamageValue()*factorFactor;
 				lastHitTime = currentTime;
 				lastHit = damage.getParent();
 				Damage.remove(damage);
@@ -40,6 +62,10 @@ public class Health extends Component{
 				e.setVelocity(new Vector3f(x, y, 0));
 			}
 		}
+	}
+	
+	public void setDamageFactor(float f){
+		factorFactor = f;
 	}
 	
 	public void clientUpdate(Entity e){
@@ -56,6 +82,8 @@ public class Health extends Component{
 	}
 	
 	public boolean isDead = false;
+	public int stock = -1;
+	
 	private float deathTime = 0;
 	private  float respawnTime = 3500;
 	private int deathCount = 0;
@@ -64,9 +92,28 @@ public class Health extends Component{
 		isDead = true;
 		deathCount++;
 		deathTime = System.nanoTime();
-		if(lastHit != null && increaseKills){
-			lastHit.killCount++;
-			lastHit = null;
+		
+		if(!Settings.isClientActive() && stockCap != -1 && increaseKills){
+			stock--;
+		}
+		
+		int playerID = -1;
+		for(int i = 0; i<Settings.User.size(); i++){
+			if(parent.equals(Settings.User.get(i))){
+				playerID = i;
+				break;
+			}
+		}
+		
+		if(increaseKills && GamemodeStage.isGameOver() != playerID){
+			parent.incrementTotalDeaths();
+			
+			if(lastHit != null){
+				lastHit.killCount++;
+				Player p1 = (Player) lastHit;
+				p1.incrementTotalKills();
+				lastHit = null;
+			}
 		}
 		
 	}
@@ -76,7 +123,9 @@ public class Health extends Component{
 	}
 	
 	public boolean canRespawn(){
-		if(System.nanoTime() - deathTime >= respawnTime*1000000){
+		if(stockCap != -1 && stock <= 0){
+			return false;
+		}else if(System.nanoTime() - deathTime >= respawnTime*1000000){
 			return true;
 		}else{
 			return false;

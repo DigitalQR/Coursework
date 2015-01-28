@@ -9,7 +9,6 @@ import Tools.Maths.Vector3f;
 import Control.MainControl;
 import Control.Settings;
 import Control.Audio.Sound;
-import Control.Input.Gamepad;
 import Control.Server.Host;
 import Control.Visual.Menu.Assets.Button;
 import Control.Visual.Menu.Assets.TextBox;
@@ -26,7 +25,6 @@ public class MenuStage extends Stage implements Action{
 	
 	public MenuStage(){
 		super();
-		Settings.User.get(0).setControlScheme(Gamepad.getGamepads()[0].getGPID());
 		playRandomSong();
 		
 		TextBox header = new TextBox(new Vector3f(-1.6f,-0.5f,-2.5f),new Vector3f(3.2f,1.8f,0.5f), " Square off ", null);
@@ -198,7 +196,7 @@ public class MenuStage extends Stage implements Action{
 		//Local play
 		if(ID == button[4].getID() && button[4].hasFocus()){
 			Settings.destroyConnections();
-			Stage.setStage(Stage.getStage("start"));
+			Stage.setStage(Stage.getStage("gamemode"));
 		}
 	}
 

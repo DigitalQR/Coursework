@@ -7,21 +7,21 @@ import java.util.Scanner;
 
 import Tools.Maths.Cubef;
 import Tools.Maths.Vector3f;
-import Collision.Hitbox;
 import Control.Server.Client;
 import Control.Server.Host;
 import Control.Visual.DisplayManager;
-import Control.Visual.Stage.OverworldStage;
-import Control.Visual.Stage.Core.Stage;
 import Entities.Player;
+import Level.World;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.3.3 <WAN Mini-update>";
+	public static final String Version = "1.4.1 <BETA TESTING>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
-	public static ArrayList<Hitbox> hb;
-	public static String USERNAME;
-	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,1f));
+	public static Player p1;
+	private static World currentWorld; 
+	
+	public static String USERNAME = System.getProperty("user.name");
+	public static Cubef boundary = new Cubef(new Vector3f(-10,-10,0), new Vector3f(10,10,0f));
 
 	public static List<String> toggleNames = new ArrayList<String>();
 	public static HashMap<String,Boolean> toggles = new HashMap<String,Boolean>();
@@ -48,6 +48,25 @@ public class Settings implements Runnable{
 		}
 	}
 	
+	public static boolean doesWorldExist(){
+		return currentWorld != null;
+	}
+	
+	public static World getWorld(){
+		if(currentWorld == null){
+			try{
+				throw new Exception("World is null");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return currentWorld;
+	}
+	
+	public static void setWorld(World w){
+		currentWorld = w;
+	}
+	
 	public static void destroyConnections(){
 		if(client != null){
 			client.destroy();
@@ -59,19 +78,7 @@ public class Settings implements Runnable{
 		}
 	}
 	
-	public static List<Vector3f> playerColourProfiles = new ArrayList<Vector3f>();
-	
 	public static void setup(){
-		playerColourProfiles.add(new Vector3f(1,0,0));
-		playerColourProfiles.add(new Vector3f(0,1,0));
-		playerColourProfiles.add(new Vector3f(0,0,1));
-		playerColourProfiles.add(new Vector3f(1f,0.9f,0.2f));
-		
-		playerColourProfiles.add(new Vector3f(0.2f,1f,1));
-		playerColourProfiles.add(new Vector3f(1f,0f,0.5f));
-		playerColourProfiles.add(new Vector3f(0f,0.4f,0.2f));
-		playerColourProfiles.add(new Vector3f(0.8f,0.6f,1f));
-		
 		//d_? = draw ?
 		//s_? = setting ?
 
@@ -123,7 +130,6 @@ public class Settings implements Runnable{
 			System.out.println("list <list>");
 			System.out.println("set <variable> <value>");
 			System.out.println("set player_count <value>");
-			System.out.println("reset_stage");
 			System.out.println("stop");
 			System.out.println("");
 			break;
@@ -218,14 +224,10 @@ public class Settings implements Runnable{
 			break;
 			
 		case "reset_stage":
-			if(!isClientActive()){
-				if(raw.length == 1){
-					randomHitboxGen();
-					OverworldStage over = (OverworldStage) Stage.getStage("overworld");
-					over.generateHitboxModels();
-				}else{
-					System.out.println("Usage: reset_stage");
-				}
+			try{
+				throw new Exception("Depricated!");
+			}catch(Exception e){
+				
 			}
 			break;
 			
@@ -289,12 +291,6 @@ public class Settings implements Runnable{
 			System.out.println("Type help for a list of commands.");
 			break;
 		}
-	}
-	
-	public static void randomHitboxGen(){
-		int scale = 8;
-		hb = Hitbox.RandomGeneration(10, (int)Settings.boundary.getLocation().x*scale, (int)Settings.boundary.getLocation().y*scale, (int)Settings.boundary.getSize().x*scale, (int)Settings.boundary.getSize().y*scale, 10, 50);
-
 	}
 	
 	public static void update(){

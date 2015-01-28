@@ -51,7 +51,7 @@ public class Gamepad{
 					keyboard.Key[0] = new Button(59,1.0f);
 					keyboard.Key[1] = new Button(43,1.0f);
 					keyboard.Key[2] = new Button(56,1.0f);
-					keyboard.Key[3] = new Button(56,1.0f);
+					keyboard.Key[3] = new Button(54,1.0f);
 					keyboard.Key[4] = new Button(59,1.0f);
 					keyboard.Key[5] = new Button(55,1.0f);
 					keyboard.Key[6] = new Button(37,1.0f);
@@ -59,8 +59,8 @@ public class Gamepad{
 					keyboard.Key[8] = new Button(42,1.0f);
 					keyboard.Key[9] = new Button(44,1.0f);
 					keyboard.Key[10] = new Button(13,1.0f);
-					keyboard.Key[11] = new Button(42,1.0f);
-					keyboard.Key[12] = new Button(44,1.0f);
+					keyboard.Key[11] = new Button(2,1.0f);
+					keyboard.Key[12] = new Button(0,1.0f);
 					keyboard.doesProfileExist = true;
 				}
 				add(keyboard);
@@ -107,7 +107,7 @@ public class Gamepad{
 	BUTTON_MENU_BACK = BUTTON_LENGTH++;
 		
 	private static String[] KeyName = 
-		{"Jump", "Duck", "Block", "Grab", "Up", "Down", "Left", "Right", "Primary\nattack", "Secondary\nattack", "Pause", "Menu\nForward", "Menu\nBack"};
+		{"Jump", "Ground\npound", "Sheild", "Grab\nPowerup", "Up", "Down", "Left", "Right", "Melee\nattack", "Ranged\nattack", "Pause", "Menu\nForward", "Menu\nBack"};
 	
 	private Button[] Key = new Button[KeyName.length];
 	private float[] Raw;
@@ -126,7 +126,7 @@ public class Gamepad{
 	}
 	
 	public String getName(){
-		return Control.getName().trim();
+		return Control.getName().trim().replace("/", "");
 	}
 
 	List<String> BoundButtons;
@@ -203,7 +203,7 @@ public class Gamepad{
 			content+=Key[i].getID() + ":" + Key[i].getState() + ";";
 		}
 		try{
-			new File("Res/GPProfile").mkdirs();
+			new File("Res/GPProfile").mkdir();
 			Formatter scribe = new Formatter("Res/GPProfile/" + getName() + ".GPP");
 			scribe.format("%s", content);
 			scribe.close();

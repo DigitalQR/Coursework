@@ -1,6 +1,8 @@
 package Control.Visual.Stage;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -220,7 +222,16 @@ public class GamepadSetupStage extends Stage implements Action{
 		
 		//Assign
 		if(subButton[1].hasFocus()){
-			Settings.User.get(0).setControlScheme(Gamepad.getGamepads()[currentPad].getGPID());
+			Settings.p1.setControlScheme(Gamepad.getGamepads()[currentPad].getGPID());
+			
+			try{
+				Formatter pref = new Formatter("Res/p1.pref");
+				pref.format("%s", Gamepad.getGamepads()[currentPad].getName());
+				pref.close();
+			}catch(FileNotFoundException e){
+				e.printStackTrace();
+			}
+			
 			subButton[1].unfocus();
 			playerName.setDrawn(false);
 		}
@@ -242,8 +253,12 @@ public class GamepadSetupStage extends Stage implements Action{
 
 			float[] RGBA = {0.5f, 0.5f, 0.5f, 1f};
 			
-			if(Gamepad.getGamepads()[i].getGPID() == Settings.User.get(0).getControlScheme().getGPID()){
-				RGBA = Camera.getInverseRGBA();
+			try{
+				if(Gamepad.getGamepads()[i].getGPID() == Settings.p1.getControlScheme().getGPID()){
+					RGBA = Camera.getInverseRGBA();
+				}
+			}catch(IndexOutOfBoundsException e){
+				
 			}
 			
 			drawPlayerAt(new Vector3f(-0.5f, button[i].getLocation().y-0.05f,-2.3f), RGBA, pad.getProfileStatus(), 0.5f);

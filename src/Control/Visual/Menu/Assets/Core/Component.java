@@ -8,6 +8,14 @@ public abstract class Component extends FocusableItem{
 	private Action action;
 	private boolean drawn = true;
 	protected Vector3f location;
+	
+	public Vector3f getLocation() {
+		return location;
+	}
+
+	public void setLocation(Vector3f location) {
+		this.location = location;
+	}
 	protected Vector3f size;
 	
 	public Component(Vector3f location, Vector3f size){
@@ -58,4 +66,5 @@ public abstract class Component extends FocusableItem{
 	
 	protected abstract void process();
 	protected abstract void updateUI();
+	public abstract void setColour(float[] RGBA);
 }

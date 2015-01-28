@@ -6,22 +6,26 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 
 import Tools.Maths.Vector2f;
 import Tools.Maths.Vector3f;
-import Collision.Hitbox;
-import Collision.SquareHitbox;
 import Control.Settings;
 import Control.Audio.Sound;
+import Control.Visual.Stage.ConnectStage;
+import Control.Visual.Stage.GamemodeStage;
 import Control.Visual.Stage.OverworldStage;
 import Control.Visual.Stage.StartStage;
 import Control.Visual.Stage.Core.Stage;
 import Debug.ErrorPopup;
 import Entities.Entity;
 import Entities.Player;
+import Entities.Powerup;
 import Entities.Assets.Damage;
 import Entities.Assets.Shield;
+import Entities.Powerups.PowerPowerUp;
+import Entities.Powerups.SpeedPowerUp;
+import Entities.Tools.Health;
+import Level.World;
 
 public class Client implements Runnable{
 	
@@ -89,7 +93,7 @@ public class Client implements Runnable{
 	
 	private String processMovement(){
 		String command = "";
-		Player player = Settings.User.get(0);
+		Player player = Settings.p1;
 		
 		final int[] buttons = {
 				player.getControlScheme().KEY_JUMP,
@@ -102,11 +106,12 @@ public class Client implements Runnable{
 				player.getControlScheme().KEY_SECONDARY,
 				player.getControlScheme().KEY_BLOCK,
 				player.getControlScheme().KEY_SELECT,
-				player.getControlScheme().KEY_START
+				player.getControlScheme().KEY_START,
+				player.getControlScheme().KEY_GRAB
 		};
 		
 		final char[] prefix = {
-				 'j','d','l','r','u','D','p','s','b','S','x'
+				 'j','d','l','r','u','D','p','s','b','S','x','g'
 				 
 		};
 		
@@ -142,9 +147,49 @@ public class Client implements Runnable{
 				if(s.startsWith("Sst")){
 					int ID = (int)Float.parseFloat(s.substring(3));
 					Stage st = Stage.getStage(ID);
-					System.out.print(s + " : ");
-					System.out.println(ID + "," + st.getID());
+					if(st.equals(Stage.getStage("gamemode"))){
+						GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+						gm.reset();
+					}
+					
 					Stage.setStage(st);
+				}
+				
+				if(s.startsWith("Cs")){
+					int ID = (int)Float.parseFloat(s.substring(3));
+					switch(s.substring(2,3)){
+					case "k":
+						Health.killCap = ID;
+						Health.stockCap = -1;
+						Health.timeCap = -1;
+						break;
+					case "s":
+						Health.killCap = -1;
+						Health.stockCap = ID;
+						Health.timeCap = -1;
+						for(Player p: Settings.User){
+							p.health.stock = ID;
+						}
+						break;
+					case "t":
+						Health.killCap = -1;
+						Health.stockCap = -1;
+						Health.timeCap = ID;
+						break;
+					}
+				}
+
+				if(s.startsWith("Ssg")){
+					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+					gm.addToQueueInfo(s.substring(3));
+				}
+				if(s.startsWith("Ssi")){
+					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+					gm.setModeInfo(s.substring(3));
+				}
+				if(s.startsWith("Ssv")){
+					GamemodeStage gm = (GamemodeStage) (Stage.getStage("gamemode"));
+					gm.val = (int)Float.parseFloat(s.substring(3));
 				}
 				
 				if(s.startsWith("ps")){
@@ -168,62 +213,79 @@ public class Client implements Runnable{
 						}
 					}
 					String subCommand = s.substring( ("pl" + playerID + "" + action).length());
-
+					
 					switch(action){
-						//Location
-						case 'l':
-							
-							String[] para = subCommand.split(",");
-							float[] val = {
-									Float.parseFloat(para[0]),
-									Float.parseFloat(para[1])
-							};
-							
-							Settings.User.get(playerID).setLocation(new Vector3f(val[0], val[1], 0));
-							break;
+					//Location
+					case 'l':
 						
-						//Information
-						case 'i':
-							//Colour
-							if(subCommand.startsWith("c")){
-								String[] col = subCommand.substring(1).split(",");
-								float r = Float.parseFloat(col[0]);
-								float g = Float.parseFloat(col[1]);
-								float b = Float.parseFloat(col[2]);
-								
-								Settings.User.get(playerID).setRGBA(new float[]{r,g,b,1});
-							}
+						String[] para = subCommand.split(",");
+						float[] val = {
+								Float.parseFloat(para[0]),
+								Float.parseFloat(para[1])
+						};
+						
+						Settings.User.get(playerID).setLocation(new Vector3f(val[0], val[1], 0));
+						break;
+					
+					//Information
+					case 'i':
+						//Colour
+						if(subCommand.startsWith("c")){
+							String[] col = subCommand.substring(1).split(",");
+							float r = Float.parseFloat(col[0]);
+							float g = Float.parseFloat(col[1]);
+							float b = Float.parseFloat(col[2]);
 							
-							//Health
-							if(subCommand.startsWith("h")){
-								String[] par = subCommand.substring(1).split(",");
-								int killCount = (int)Float.parseFloat(par[0]);
-								float factor = Float.parseFloat(par[1]);
+							Settings.User.get(playerID).setRGBA(new float[]{r,g,b,1});
+						}
+						
+						//Health
+						if(subCommand.startsWith("h")){
+							String[] par = subCommand.substring(1).split(",");
+							int killCount = (int)Float.parseFloat(par[0]);
+							float factor = Float.parseFloat(par[1]);
+							int stock = (int)Float.parseFloat(par[2]);
+							int tkill = (int)Float.parseFloat(par[3]);
+							int tdeath = (int)Float.parseFloat(par[4]);
 
-								Settings.User.get(playerID).killCount = killCount;
-								Settings.User.get(playerID).health.factor = factor;
+							Settings.User.get(playerID).killCount = killCount;
+							Settings.User.get(playerID).health.factor = factor;
+							Settings.User.get(playerID).health.stock = stock;
+							Settings.User.get(playerID).setTotalKills(tkill);
+							Settings.User.get(playerID).setTotalDeaths(tdeath);
+						}
+						
+						break;
+						
+					//Power
+					case 'p':
+						if(subCommand.equals("null")){
+							Settings.User.get(playerID).setPowerUp(null);
+						}else{
+							Powerup p = null;
+							switch(subCommand){
+							case "" + SpeedPowerUp.ID:
+								p = new SpeedPowerUp();
+								break;
+							case "" + PowerPowerUp.ID:
+								p = new PowerPowerUp();
+								break;
 							}
-							
-							break;
+							Settings.User.get(playerID).setPowerUp(p);
+						}
+						break;
 					}
+					
 				}
 				
 				if(s.startsWith("wd")){
-					//Hitboxes
+					//World
 					if(s.charAt(2) == 'h'){
-						String[] hitboxes = s.substring(3).split(",");
-						ArrayList<Hitbox> hitbox = new ArrayList<Hitbox>();
+						World w = World.decode(s.substring(3));
+						Settings.setWorld(w);
 						
-						for(int i = 0; i<hitboxes.length; i+=4){
-							float x = Float.parseFloat(hitboxes[i]);
-							float y = Float.parseFloat(hitboxes[i+1]);
-							float width = Float.parseFloat(hitboxes[i+2]);
-							float height = Float.parseFloat(hitboxes[i+3]);
-							hitbox.add(new SquareHitbox(new Vector2f(x,y), new Vector2f(width, height)));
-						}
-						Settings.hb = hitbox;
-						OverworldStage overworld = (OverworldStage) Stage.getStage("overworld");
-						overworld.generateHitboxModels();
+						OverworldStage ow = (OverworldStage) Stage.getStage("overworld");
+						ow.reset();
 					}
 					
 					//Damage
@@ -268,6 +330,21 @@ public class Client implements Runnable{
 							ErrorPopup.createMessage(e, false);
 						}
 					}
+					
+					//Powerups
+					if(s.charAt(2) == 'p'){
+						String[] para = s.substring(3).split(",");
+						switch((int)Float.parseFloat(para[0])){
+						
+						case SpeedPowerUp.ID:
+							Powerup.add(new SpeedPowerUp(new Vector2f(Float.parseFloat(para[1]), Float.parseFloat(para[2]))));
+							break;
+							
+						case PowerPowerUp.ID:
+							Powerup.add(new PowerPowerUp(new Vector2f(Float.parseFloat(para[1]), Float.parseFloat(para[2]))));
+							break;
+						}
+					}
 				}
 				
 			}
@@ -284,8 +361,10 @@ public class Client implements Runnable{
 		try{
 			return input.readLine();
 		}catch(IOException e){
-			e.printStackTrace();
-			System.exit(0);
+			ConnectStage cs = (ConnectStage) Stage.getStage("connect");
+			Stage.setStage(cs);
+			cs.disconnect = true;
+			destroy();
 			return "";
 		}
 	}
