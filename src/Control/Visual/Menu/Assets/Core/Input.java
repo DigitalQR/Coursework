@@ -36,7 +36,7 @@ public class Input {
 		
 		Player p = null;
 		try{
-			p = Settings.User.get(0);
+			p = Settings.p1;
 			GPID = p.getControlScheme().getGPID();
 		}catch(IndexOutOfBoundsException e){
 			
@@ -101,7 +101,7 @@ public class Input {
 		
 		Player p = null;
 		try{
-			p = Settings.User.get(0);
+			p = Settings.p1;
 			GPID = p.getControlScheme().getGPID();
 		}catch(IndexOutOfBoundsException e){
 			

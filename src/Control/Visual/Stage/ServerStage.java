@@ -41,7 +41,7 @@ public class ServerStage extends Stage{
 			Input.recieved();
 		}
 		
-		if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_START)){
+		if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.p1.isKeyPressed(Settings.p1.getControlScheme().KEY_START)){
 			Stage.setStage(Stage.getStage("menu"));
 			Settings.host.destroy();
 			Input.recieved();

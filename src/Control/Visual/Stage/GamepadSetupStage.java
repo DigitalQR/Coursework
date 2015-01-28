@@ -222,7 +222,7 @@ public class GamepadSetupStage extends Stage implements Action{
 		
 		//Assign
 		if(subButton[1].hasFocus()){
-			Settings.User.get(0).setControlScheme(Gamepad.getGamepads()[currentPad].getGPID());
+			Settings.p1.setControlScheme(Gamepad.getGamepads()[currentPad].getGPID());
 			
 			try{
 				Formatter pref = new Formatter("Res/p1.pref");
@@ -254,7 +254,7 @@ public class GamepadSetupStage extends Stage implements Action{
 			float[] RGBA = {0.5f, 0.5f, 0.5f, 1f};
 			
 			try{
-				if(Gamepad.getGamepads()[i].getGPID() == Settings.User.get(0).getControlScheme().getGPID()){
+				if(Gamepad.getGamepads()[i].getGPID() == Settings.p1.getControlScheme().getGPID()){
 					RGBA = Camera.getInverseRGBA();
 				}
 			}catch(IndexOutOfBoundsException e){

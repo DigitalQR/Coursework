@@ -66,4 +66,5 @@ public abstract class Component extends FocusableItem{
 	
 	protected abstract void process();
 	protected abstract void updateUI();
+	public abstract void setColour(float[] RGBA);
 }

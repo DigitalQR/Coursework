@@ -473,5 +473,11 @@ class PlayerSelect extends Component{
 		
 		Stencil.disable();
 	}
+
+	@Override
+	public void setColour(float[] RGBA) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

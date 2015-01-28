@@ -46,12 +46,14 @@ public class PaperPowerUp extends Powerup{
 	protected void attachEffects(Player p){
 		p.health.setDamageFactor(4);
 		p.getAttack().setAttackCoolDown(400);
+		p.getAttack().setDamageFactor(0.75f);
 		p.getAttack().setBlockCoolDown(1000);
 	}
 
 	protected void dettachEffects(Player p){
 		p.health.setDamageFactor(1);
 		p.getAttack().setAttackCoolDown(800);
+		p.getAttack().setDamageFactor(1f);
 		p.getAttack().setBlockCoolDown(2000);
 	}
 	

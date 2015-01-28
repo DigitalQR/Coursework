@@ -25,7 +25,7 @@ public class MainControl{
 		Sound.setup();
 		
 		try{
-			Settings.User.add(new Player(0,0));
+			Settings.p1 = new Player(0,0);
 			
 			File GPIDfile = new File("Res/p1.pref");
 			if(GPIDfile.exists()){
@@ -38,7 +38,7 @@ public class MainControl{
 					
 					for(Gamepad gp: Gamepad.getGamepads()){
 						if(gp.getName().equals(data) && gp.getProfileStatus()){
-							Settings.User.get(0).setControlScheme(gp.getGPID());
+							Settings.p1.setControlScheme(gp.getGPID());
 							break;
 						}					
 					}
@@ -46,7 +46,7 @@ public class MainControl{
 					
 				}
 			}else{
-				Settings.User.get(0).setControlScheme(Gamepad.keyboard.getGPID());
+				Settings.p1.setControlScheme(Gamepad.keyboard.getGPID());
 			}
 			
 			

@@ -93,7 +93,7 @@ public class Client implements Runnable{
 	
 	private String processMovement(){
 		String command = "";
-		Player player = Settings.User.get(0);
+		Player player = Settings.p1;
 		
 		final int[] buttons = {
 				player.getControlScheme().KEY_JUMP,

@@ -15,8 +15,9 @@ import Level.World;
 
 public class Settings implements Runnable{
 	//Holds global key values
-	public static final String Version = "1.3.27 <Combat voxel re-vamp>";
+	public static final String Version = "1.3.28 <Combat voxel re-vamp>";
 	public static ArrayList<Player> User = new ArrayList<Player>();
+	public static Player p1;
 	private static World currentWorld; 
 	
 	public static String USERNAME = System.getProperty("user.name");

@@ -182,8 +182,6 @@ class Content extends JPanel{
 		name.setSize(100, 20);
 		this.add(name);
 		
-		
-		
 		//Start/Exit
 		JButton exit = new JButton("E X I T");
 		exit.setBackground(new Color(1f,0f,0f));

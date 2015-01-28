@@ -49,7 +49,7 @@ public class ConnectStage extends Stage{
 		}catch(IllegalStateException e){}
 		
 		if(!Settings.isClientActive()){
-			if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.User.get(0).isKeyPressed(Settings.User.get(0).getControlScheme().KEY_START) || Input.isKeyPressed(Input.KEY_PAUSE) ){
+			if(Input.isKeyPressed(Input.KEY_BACK) || Input.hasTimePassed() && Settings.p1.isKeyPressed(Settings.p1.getControlScheme().KEY_START) || Input.isKeyPressed(Input.KEY_PAUSE) ){
 				Stage.setStage(Stage.getStage("menu"));
 				Input.recieved();
 			}
