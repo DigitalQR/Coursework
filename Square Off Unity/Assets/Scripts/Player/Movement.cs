@@ -13,7 +13,10 @@ public class Movement : MonoBehaviour {
 	
 	void FixedUpdate () {
 
-        Vector3 direction = new Vector3(controller.getInput("Horizontal"), controller.getInput("Jump"), controller.getInput("Vertical"));
+        Vector3 direction = new Vector3(0, controller.getInput("Jump"), 0);
+        Transform cam = controller.movement_frame;
+        direction += controller.getInput("Vertical") * cam.transform.forward + controller.getInput("Horizontal") * cam.transform.right;
+
         body.AddForce(direction * 15f * body.mass);
 	}
 }

@@ -6,6 +6,11 @@ public class PlayerController : MonoBehaviour {
     public Color colour = Color.white;
     public uint controller_id;
     public bool keyboard_controlled = false;
+    public Transform movement_frame;
+
+    void Start() {
+        if (movement_frame == null) movement_frame = transform;
+    }
 
     //Return's the appropriate input for the player
     public float getInput(string value)
