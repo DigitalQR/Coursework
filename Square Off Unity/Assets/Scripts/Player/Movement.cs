@@ -4,19 +4,16 @@ using System.Collections;
 public class Movement : MonoBehaviour {
 
     private Rigidbody body;
+    private PlayerController controller;
 
 	void Start () {
         body = GetComponent<Rigidbody>();
-	}
+        controller = GetComponentInParent<PlayerController>();
+    }
 	
 	void FixedUpdate () {
-        string controller_name = "Keyboard ";
 
-        if (!GetComponentInParent<PlayerController>().keyboard_controlled) {
-            controller_name = "Gamepad " + GetComponentInParent<PlayerController>().controller_id + " ";
-        }
-
-        Vector3 direction = new Vector3(Input.GetAxis(controller_name + "Horizontal"), Input.GetAxis("Jump"), Input.GetAxis(controller_name + "Vertical"));
+        Vector3 direction = new Vector3(controller.getInput("Horizontal"), controller.getInput("Jump"), controller.getInput("Vertical"));
         body.AddForce(direction * 15f * body.mass);
 	}
 }
