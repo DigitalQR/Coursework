@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour {
 
         Vector3 direction = new Vector3(0, controller.getInput("Jump"), 0);
         Transform cam = controller.movement_frame;
-        direction += controller.getInput("Vertical") * cam.transform.forward + controller.getInput("Horizontal") * cam.transform.right;
+        direction += controller.getInput("Forward") * cam.transform.forward + controller.getInput("Strafe") * cam.transform.right;
 
         body.AddForce(direction * 15f * body.mass);
 	}

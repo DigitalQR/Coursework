@@ -23,14 +23,20 @@ public class PlayerController : MonoBehaviour {
 
         switch (value)
         {
-            case "Horizontal":
-                return Input.GetAxis(controller_name + "Horizontal");
+            case "Forward":
+                return Input.GetAxis(controller_name + "Forward");
 
-            case "Vertical":
-                return Input.GetAxis(controller_name + "Vertical");
+            case "Strafe":
+                return Input.GetAxis(controller_name + "Strafe");
 
             case "Jump":
                 return Input.GetAxis(controller_name + "Jump");
+
+            case "Lookleft":
+                return Input.GetAxis(controller_name + "Lookleft");
+
+            case "Lookup":
+                return Input.GetAxis(controller_name + "Lookup");
         }
 
         Debug.Log("No input found for '" + value + "'");

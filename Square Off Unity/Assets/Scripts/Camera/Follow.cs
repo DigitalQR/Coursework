@@ -8,10 +8,15 @@ public class Follow : MonoBehaviour {
     public GameObject target;
     public float distance = 3f;
     public Vector3 direction = Vector3.back;
+    [Range(0f,1f)]
+    private float angular_acceleration = 0.7f;
 
-    public const float weight = 0.9f;
+    private const float weight = 0.9f;
     private Vector3 last_postition;
     private Vector3 last_destination;
+
+    private float angle;
+    private float last_input;
 
     void Start() {
         target.GetComponent<PlayerController>().movement_frame = transform;
@@ -47,13 +52,16 @@ public class Follow : MonoBehaviour {
         last_postition = last_postition * weight + target.transform.position * (1f - weight);
         transform.position = last_postition;
 
-        Vector3 velocity = target.GetComponent<Rigidbody>().velocity;
-        if (velocity.sqrMagnitude >= 1f) {
-            velocity.Normalize();
-            velocity *= distance;
-            velocity.y = 0f;
-            last_destination = last_destination * weight + (target.transform.position + velocity) * (1f - weight);
+        float input = target.GetComponent<PlayerController>().getInput("Lookleft");
+        if (input != 0 && last_input != input) {
+            input += last_input * angular_acceleration;
         }
+        last_input = input;
+
+        angle += input;
+        Vector3 point_at = Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward;
+        last_destination = last_postition + point_at;
+        
         transform.LookAt(last_destination);
 
         transform.Translate(direction * distance);
