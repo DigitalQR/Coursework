@@ -1034,7 +1034,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 189196}
   distance: 4
-  direction: {x: 0, y: .200000003, z: -1}
+  direction: {x: .200000003, y: .300000012, z: -1}
 --- !u!114 &11463528
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1088,7 +1088,15 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: direction.y
+      value: .300000012
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: direction.x
+      value: .200000003
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 184362}
