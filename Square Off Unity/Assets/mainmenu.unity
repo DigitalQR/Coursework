@@ -474,12 +474,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 3
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Start
+  m_Text: '  Settings'
 --- !u!222 &144748634
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -762,7 +762,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 395741825}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.03999996, y: 8.19999981, z: -28.7900009}
+  m_LocalPosition: {x: 1.52999997, y: 5.3499999, z: -27.7800007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 975436452}
@@ -1070,8 +1070,8 @@ Transform:
   m_PrefabParentObject: {fileID: 424688, guid: 43b23be38beba44478475cfb5af6e2ba, type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 570443259}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .800000012, y: 6.51000023, z: -27.7199993}
+  m_LocalRotation: {x: 0, y: -.270684481, z: 0, w: .962668121}
+  m_LocalPosition: {x: .800000012, y: 3.72000003, z: -26.8899994}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1696899551}
@@ -1608,12 +1608,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 3
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Start
+  m_Text: '  Start'
 --- !u!222 &936352107
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2194,12 +2194,12 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 3
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Start
+  m_Text: '  Quit'
 --- !u!222 &1185968605
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2220,7 +2220,7 @@ GameObject:
   - 114: {fileID: 1223473499}
   - 114: {fileID: 1223473498}
   m_Layer: 5
-  m_Name: Start (1)
+  m_Name: Settings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2265,8 +2265,8 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: .140415907, g: 0, b: .286764681, a: 1}
-    m_HighlightedColor: {r: .230426103, g: 0, b: .470588207, a: 1}
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: .301470578, g: .29315415, b: 0, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .501960814}
     m_ColorMultiplier: 1
@@ -2286,8 +2286,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1223473499}
-        m_MethodName: switchScene
-        m_Mode: 5
+        m_MethodName: 
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2295,7 +2295,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: stage
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1223473499
@@ -2430,8 +2430,8 @@ Transform:
   m_PrefabParentObject: {fileID: 424688, guid: 43b23be38beba44478475cfb5af6e2ba, type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1426246611}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.1400001, y: 4.74163389, z: -28.7431965}
+  m_LocalRotation: {x: 0, y: .114070237, z: 0, w: .993472695}
+  m_LocalPosition: {x: 2.1400001, y: 3.68000007, z: -28.7431965}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 170320569}
@@ -2819,7 +2819,7 @@ GameObject:
   - 114: {fileID: 1493396537}
   - 114: {fileID: 1493396536}
   m_Layer: 5
-  m_Name: Start (2)
+  m_Name: Quit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2864,8 +2864,8 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: .140415907, g: 0, b: .286764681, a: 1}
-    m_HighlightedColor: {r: .230426103, g: 0, b: .470588207, a: 1}
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: .301470578, g: .29315415, b: 0, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .501960814}
     m_ColorMultiplier: 1
@@ -2894,7 +2894,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: stage
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 0
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1493396537
@@ -3134,8 +3134,8 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: .140415907, g: 0, b: .286764681, a: 1}
-    m_HighlightedColor: {r: .230426103, g: 0, b: .470588207, a: 1}
+    m_NormalColor: {r: 0, g: 0, b: 0, a: 1}
+    m_HighlightedColor: {r: .301470578, g: .29315415, b: 0, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: .784313738, g: .784313738, b: .784313738, a: .501960814}
     m_ColorMultiplier: 1
