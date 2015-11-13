@@ -74,7 +74,10 @@
     <Compile Include="Assets\Scripts\Player\ColourPanel.cs" />
     <Compile Include="Assets\Scripts\Player\Movement.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\UI\DisableAtStart.cs" />
+    <Compile Include="Assets\Scripts\UI\QuitScript.cs" />
     <Compile Include="Assets\Scripts\UI\SceneManager.cs" />
+    <Compile Include="Assets\Scripts\UI\TogglePanel.cs" />
     <Compile Include="Assets\TestSpawnScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
