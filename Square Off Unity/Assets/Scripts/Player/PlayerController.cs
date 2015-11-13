@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour
+{
 
     public Color colour = Color.white;
     public uint controller_id;
-    public bool keyboard_controlled = false;
     public Transform movement_frame;
 
-    void Start() {
+    public GameObject overlay_xbox;
+    public GameObject overlay_keyboard;
+
+    void Start()
+    {
         if (movement_frame == null) movement_frame = transform;
     }
 
@@ -16,7 +20,7 @@ public class PlayerController : MonoBehaviour {
     public float getInput(string value)
     {
         string controller_name = "Keyboard ";
-        if (!keyboard_controlled)
+        if (controller_id != 0)
         {
             controller_name = "Gamepad " + controller_id + " ";
         }
@@ -41,5 +45,21 @@ public class PlayerController : MonoBehaviour {
 
         Debug.Log("No input found for '" + value + "'");
         return 0f;
+    }
+
+    void FixedUpdate()
+    {
+        Debug.Log(controller_id);
+        if (controller_id == 0)
+        {
+            overlay_xbox.SetActive(false);
+            overlay_keyboard.SetActive(true);
+
+        }
+        else
+        {
+            overlay_xbox.SetActive(true);
+            overlay_keyboard.SetActive(false);
+        }
     }
 }

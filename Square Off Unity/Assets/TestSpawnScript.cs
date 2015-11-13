@@ -21,16 +21,8 @@ public class TestSpawnScript : MonoBehaviour {
             if (Input.GetAxis(lookups[i] + "Jump") != 0 && !players[i]) {
                 GameObject new_player = Instantiate(player);
                 new_player.GetComponentInChildren<PlayerController>().colour = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-
-                if (i == 0)
-                {
-                    new_player.GetComponentInChildren<PlayerController>().keyboard_controlled = true;
-                }
-                else
-                {
-                    new_player.GetComponentInChildren<PlayerController>().keyboard_controlled = false;
-                    new_player.GetComponentInChildren<PlayerController>().controller_id = i;
-                }
+                
+                new_player.GetComponentInChildren<PlayerController>().controller_id = i;
 
                 players[i] = true;
             }
