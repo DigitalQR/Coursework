@@ -21,6 +21,11 @@ public class Follow : MonoBehaviour {
     void Start() {
         target.GetComponent<PlayerController>().movement_frame = transform;
         setupViewPort();
+
+        last_postition = target.transform.position;
+        transform.Translate(direction * distance);
+
+
     }
 
     private void setupViewPort() {
@@ -65,5 +70,21 @@ public class Follow : MonoBehaviour {
         transform.LookAt(last_destination);
 
         transform.Translate(direction * distance);
-	}
+
+
+        RaycastHit hit;
+
+        Vector3 to_camera = transform.position - last_destination;
+
+        Debug.DrawRay(last_destination + to_camera.normalized, to_camera - to_camera.normalized, Color.red);
+
+        if (Physics.Raycast(last_destination + to_camera.normalized, to_camera - to_camera.normalized, out hit, (to_camera - to_camera.normalized * 2f).magnitude))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            if (hit.collider.gameObject.name != "Player")
+            {
+                transform.position = hit.point - to_camera.normalized*0.1f;
+            }
+        }
+    }
 }

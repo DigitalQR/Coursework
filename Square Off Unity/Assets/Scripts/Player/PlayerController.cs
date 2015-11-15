@@ -49,7 +49,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log(controller_id);
         if (controller_id == 0)
         {
             overlay_xbox.SetActive(false);
