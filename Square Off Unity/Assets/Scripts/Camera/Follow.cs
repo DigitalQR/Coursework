@@ -7,6 +7,7 @@ public class Follow : MonoBehaviour {
 
     public GameObject target;
     public float distance = 3f;
+    public float surface_distance = 1f;
     public Vector3 direction = Vector3.back;
     [Range(0f,1f)]
     private float angular_acceleration = 0.7f;
@@ -76,14 +77,14 @@ public class Follow : MonoBehaviour {
 
         Vector3 to_camera = transform.position - last_destination;
 
-        Debug.DrawRay(last_destination + to_camera.normalized, to_camera - to_camera.normalized, Color.red);
+        Debug.DrawRay(last_destination + to_camera.normalized * surface_distance, to_camera - to_camera.normalized * surface_distance, Color.red);
 
-        if (Physics.Raycast(last_destination + to_camera.normalized, to_camera - to_camera.normalized, out hit, (to_camera - to_camera.normalized * 2f).magnitude))
+        if (Physics.Raycast(last_destination + to_camera.normalized * surface_distance, to_camera - to_camera.normalized * surface_distance, out hit, (to_camera - to_camera.normalized * surface_distance).magnitude))
         {
             Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.gameObject.name != "Player")
             {
-                transform.position = hit.point - to_camera.normalized*0.1f;
+                transform.position = hit.point - to_camera.normalized * surface_distance;
             }
         }
     }

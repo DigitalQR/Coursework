@@ -808,7 +808,7 @@ Camera:
     y: .5
     width: .5
     height: .5
-  near clip plane: .00999999978
+  near clip plane: .150000006
   far clip plane: 1000
   field of view: 70
   orthographic: 0
@@ -1394,6 +1394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 189196}
   distance: 4
+  surface_distance: .300000012
   direction: {x: .200000003, y: .300000012, z: -1}
 --- !u!114 &11418020
 MonoBehaviour:
@@ -1809,7 +1810,7 @@ Canvas:
   serializedVersion: 2
   m_RenderMode: 1
   m_Camera: {fileID: 2029450}
-  m_PlaneDistance: .0399999991
+  m_PlaneDistance: .159999996
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -2107,6 +2108,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_PlaneDistance
       value: .310000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: surface_distance
+      value: .300000012
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
