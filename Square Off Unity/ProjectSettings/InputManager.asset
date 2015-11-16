@@ -43,8 +43,8 @@ InputManager:
     descriptiveNegativeName: 
     negativeButton: j
     positiveButton: l
-    altNegativeButton: a
-    altPositiveButton: d
+    altNegativeButton: 
+    altPositiveButton: 
     gravity: 3
     dead: .00100000005
     sensitivity: 3
@@ -57,10 +57,10 @@ InputManager:
     m_Name: Keyboard Forward
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: down
-    positiveButton: up
-    altNegativeButton: s
-    altPositiveButton: w
+    negativeButton: s
+    positiveButton: w
+    altNegativeButton: 
+    altPositiveButton: 
     gravity: 3
     dead: .00100000005
     sensitivity: 3
@@ -91,8 +91,8 @@ InputManager:
     descriptiveNegativeName: 
     negativeButton: i
     positiveButton: k
-    altNegativeButton: s
-    altPositiveButton: w
+    altNegativeButton: 
+    altPositiveButton: 
     gravity: 3
     dead: .00100000005
     sensitivity: 3
