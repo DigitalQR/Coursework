@@ -25,8 +25,6 @@ public class Follow : MonoBehaviour {
 
         last_postition = target.transform.position;
         transform.Translate(direction * distance);
-
-
     }
 
     private void setupViewPort() {
@@ -55,6 +53,7 @@ public class Follow : MonoBehaviour {
     }
 
     void Update() {
+        //Interpolate between new and old values
         last_postition = last_postition * weight + target.transform.position * (1f - weight);
         transform.position = last_postition;
 
@@ -64,24 +63,25 @@ public class Follow : MonoBehaviour {
         }
         last_input = input;
 
+        //Update camera angle based on input
         angle += input;
         Vector3 point_at = Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward;
         last_destination = last_postition + point_at;
         
+        //Move camera to desired position and angle
         transform.LookAt(last_destination);
-
         transform.Translate(direction * distance);
 
 
         RaycastHit hit;
-
         Vector3 to_camera = transform.position - last_destination;
 
-        Debug.DrawRay(last_destination + to_camera.normalized * surface_distance, to_camera - to_camera.normalized * surface_distance, Color.red);
+        //Draw ray to for editor debugging 
+        Debug.DrawRay(target.transform.position + to_camera.normalized * surface_distance, to_camera, Color.red);
 
-        if (Physics.Raycast(last_destination + to_camera.normalized * surface_distance, to_camera - to_camera.normalized * surface_distance, out hit, (to_camera - to_camera.normalized * surface_distance).magnitude))
+        //Adjust camera, if it tries to look through a wall
+        if (Physics.Raycast(target.transform.position + to_camera.normalized * surface_distance, to_camera, out hit, to_camera.magnitude))
         {
-            Debug.Log(hit.collider.gameObject.name);
             if (hit.collider.gameObject.name != "Player")
             {
                 transform.position = hit.point - to_camera.normalized * surface_distance;
